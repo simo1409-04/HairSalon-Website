@@ -1,11 +1,11 @@
-﻿using HairSalonWebsite.Common;
-using HairSalonWebsite.Data.Enums;
+﻿using HairSalon_Website.Common;
+using HairSalon_Website.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalonWebsite.Common.ValidationConstrants.ServiceConstrants;
+using static HairSalon_Website.Common.ValidationConstrants.ServiceConstrants;
 
 
-namespace HairSalonWebsite.Data.Models
+namespace HairSalon_Website.Data.Models
 {
     public class Service
     {

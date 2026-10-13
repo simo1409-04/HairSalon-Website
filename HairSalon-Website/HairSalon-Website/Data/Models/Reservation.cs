@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalonWebsite.Common.ValidationConstrants.ReservationConstrants;
+using static HairSalon_Website.Common.ValidationConstrants.ReservationConstrants;
 
-namespace HairSalonWebsite.Data.Models
+namespace HairSalon_Website.Data.Models
 {
     public class Reservation
     {

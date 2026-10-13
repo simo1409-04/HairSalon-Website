@@ -1,4 +1,4 @@
-using HairSalon_Website.Models;
+using HairSalon_Website.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

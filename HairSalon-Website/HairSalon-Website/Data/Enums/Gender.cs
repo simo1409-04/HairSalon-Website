@@ -1,4 +1,4 @@
-﻿namespace HairSalonWebsite.Data.Enums
+﻿namespace HairSalon_Website.Data.Enums
 {
     public enum Gender
     {

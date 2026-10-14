@@ -22,68 +22,6 @@ namespace HairSalon_Website.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("HairDresserService", b =>
-                {
-                    b.Property<int>("HairDressersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServicesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("HairDressersId", "ServicesId");
-
-                    b.HasIndex("ServicesId");
-
-                    b.ToTable("HairDresserService");
-
-                    b.HasData(
-                        new
-                        {
-                            HairDressersId = 1,
-                            ServicesId = 1
-                        },
-                        new
-                        {
-                            HairDressersId = 1,
-                            ServicesId = 2
-                        },
-                        new
-                        {
-                            HairDressersId = 1,
-                            ServicesId = 3
-                        },
-                        new
-                        {
-                            HairDressersId = 2,
-                            ServicesId = 4
-                        },
-                        new
-                        {
-                            HairDressersId = 2,
-                            ServicesId = 5
-                        },
-                        new
-                        {
-                            HairDressersId = 2,
-                            ServicesId = 6
-                        },
-                        new
-                        {
-                            HairDressersId = 3,
-                            ServicesId = 1
-                        },
-                        new
-                        {
-                            HairDressersId = 3,
-                            ServicesId = 3
-                        },
-                        new
-                        {
-                            HairDressersId = 3,
-                            ServicesId = 4
-                        });
-                });
-
             modelBuilder.Entity("HairSalon_Website.Data.Models.HairDresser", b =>
                 {
                     b.Property<int>("Id")
@@ -465,21 +403,6 @@ namespace HairSalon_Website.Migrations
                             ReservationsId = 3,
                             ServicesId = 3
                         });
-                });
-
-            modelBuilder.Entity("HairDresserService", b =>
-                {
-                    b.HasOne("HairSalon_Website.Data.Models.HairDresser", null)
-                        .WithMany()
-                        .HasForeignKey("HairDressersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HairSalon_Website.Data.Models.Service", null)
-                        .WithMany()
-                        .HasForeignKey("ServicesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("HairSalon_Website.Data.Models.Reservation", b =>

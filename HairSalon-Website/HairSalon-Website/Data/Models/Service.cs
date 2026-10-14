@@ -39,7 +39,6 @@ namespace HairSalon_Website.Data.Models
 
         public string? Details { get; set; }
 
-        public virtual ICollection<HairDresser> HairDressers { get; set; } = new HashSet<HairDresser>();
         public virtual ICollection<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
 
 

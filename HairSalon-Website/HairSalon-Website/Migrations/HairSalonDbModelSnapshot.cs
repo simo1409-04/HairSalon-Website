@@ -35,6 +35,53 @@ namespace HairSalon_Website.Migrations
                     b.HasIndex("ServicesId");
 
                     b.ToTable("HairDresserService");
+
+                    b.HasData(
+                        new
+                        {
+                            HairDressersId = 1,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            HairDressersId = 1,
+                            ServicesId = 2
+                        },
+                        new
+                        {
+                            HairDressersId = 1,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            HairDressersId = 2,
+                            ServicesId = 4
+                        },
+                        new
+                        {
+                            HairDressersId = 2,
+                            ServicesId = 5
+                        },
+                        new
+                        {
+                            HairDressersId = 2,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            HairDressersId = 3,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            HairDressersId = 3,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            HairDressersId = 3,
+                            ServicesId = 4
+                        });
                 });
 
             modelBuilder.Entity("HairSalon_Website.Data.Models.HairDresser", b =>
@@ -67,6 +114,35 @@ namespace HairSalon_Website.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HairDressers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AcademicCertificateUrl = "/images/aleksandar-dimitrov/certificate.png",
+                            AdditionalInformation = "Специализира в мъжко подстригване, оформяне на брада и класически барбер стил.",
+                            Name = "Александър Димитров",
+                            ProfilePictureUrl = "/images/aleksandar-dimitrov/profile-picture.png",
+                            YearsOfExperiance = 7
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AcademicCertificateUrl = "/images/viktoria-petrova/certificate.png",
+                            AdditionalInformation = "Специализира в боядисване, балеаж, кичури и съвременни дамски прически.",
+                            Name = "Виктория Петрова",
+                            ProfilePictureUrl = "/images/viktoria-petrova/profile-picture.png",
+                            YearsOfExperiance = 9
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AcademicCertificateUrl = "/images/martin-ivanov/certificate.png",
+                            AdditionalInformation = "Работи с модерни мъжки и унисекс прически, оформяне и ежедневен стайлинг.",
+                            Name = "Мартин Иванов",
+                            ProfilePictureUrl = "/images/martin-ivanov/profile-picture.png",
+                            YearsOfExperiance = 4
+                        });
                 });
 
             modelBuilder.Entity("HairSalon_Website.Data.Models.Reservation", b =>
@@ -98,6 +174,168 @@ namespace HairSalon_Website.Migrations
                     b.HasIndex("HairDresserId");
 
                     b.ToTable("Reservations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClientName = "Иван Петров",
+                            ClientPhone = "0888123456",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 20, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClientName = "Мария Георгиева",
+                            ClientPhone = "0899123456",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 20, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClientName = "Георги Иванов",
+                            ClientPhone = "0878123456",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 20, 9, 30, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClientName = "Елена Димитрова",
+                            ClientPhone = "0887456789",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 21, 11, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClientName = "Николай Стоянов",
+                            ClientPhone = "0898456789",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 21, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClientName = "Десислава Костова",
+                            ClientPhone = "0879456789",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 21, 11, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClientName = "Петър Христов",
+                            ClientPhone = "0887567890",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 22, 14, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ClientName = "Анна Василева",
+                            ClientPhone = "0898567890",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 22, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ClientName = "Калин Тодоров",
+                            ClientPhone = "0879567890",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 22, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ClientName = "Ралица Николова",
+                            ClientPhone = "0887678901",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 23, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ClientName = "Стефан Марков",
+                            ClientPhone = "0898678901",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 23, 13, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ClientName = "Йоана Пенева",
+                            ClientPhone = "0879678901",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 23, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ClientName = "Борислав Илиев",
+                            ClientPhone = "0887789012",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 24, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ClientName = "Кристина Ангелова",
+                            ClientPhone = "0898789012",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 24, 10, 30, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ClientName = "Валентин Попов",
+                            ClientPhone = "0879789012",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 24, 14, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClientName = "Теодора Миланова",
+                            ClientPhone = "0887890123",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 26, 16, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClientName = "Михаил Колев",
+                            ClientPhone = "0898890123",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 26, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClientName = "Симона Донева",
+                            ClientPhone = "0879890123",
+                            HairDresserId = 3,
+                            ReservationDate = new DateTime(2026, 10, 26, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClientName = "Александра Кирова",
+                            ClientPhone = "0888901234",
+                            HairDresserId = 1,
+                            ReservationDate = new DateTime(2026, 10, 27, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClientName = "Даниел Борисов",
+                            ClientPhone = "0899901234",
+                            HairDresserId = 2,
+                            ReservationDate = new DateTime(2026, 10, 27, 17, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("HairSalon_Website.Data.Models.Service", b =>
@@ -133,6 +371,68 @@ namespace HairSalon_Website.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Services");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Details = "Консултация, измиване, подстригване и оформяне.",
+                            DurationInMinutes = 45,
+                            Gender = 0,
+                            Name = "Мъжко подстригване",
+                            Price = 20.00m,
+                            ServicePhotoExampleUrl = "/images/services/mens-haircut.png"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Details = "Оформяне, контуриране и грижа за брадата.",
+                            DurationInMinutes = 30,
+                            Gender = 0,
+                            Name = "Оформяне на брада",
+                            Price = 12.00m,
+                            ServicePhotoExampleUrl = "/images/services/beard-trim.png"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Details = "Комбинирана услуга за подстригване и оформяне на брада.",
+                            DurationInMinutes = 75,
+                            Gender = 0,
+                            Name = "Мъжко подстригване и брада",
+                            Price = 30.00m,
+                            ServicePhotoExampleUrl = "/images/services/mens-cut-and-beard.png"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Details = "Подстригване според типа коса и професионално оформяне със сешоар.",
+                            DurationInMinutes = 60,
+                            Gender = 1,
+                            Name = "Дамско подстригване и сешоар",
+                            Price = 45.00m,
+                            ServicePhotoExampleUrl = "/images/services/womens-haircut.png"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Details = "Боядисване на израснали корени и завършващо оформяне.",
+                            DurationInMinutes = 120,
+                            Gender = 1,
+                            Name = "Боядисване на корени",
+                            Price = 65.00m,
+                            ServicePhotoExampleUrl = "/images/services/root-coloring.png"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Details = "Индивидуална техника за естествен светъл преливащ ефект.",
+                            DurationInMinutes = 210,
+                            Gender = 1,
+                            Name = "Балеаж",
+                            Price = 200.00m,
+                            ServicePhotoExampleUrl = "/images/services/balayage.png"
+                        });
                 });
 
             modelBuilder.Entity("ReservationService", b =>
@@ -148,6 +448,23 @@ namespace HairSalon_Website.Migrations
                     b.HasIndex("ServicesId");
 
                     b.ToTable("ReservationService");
+
+                    b.HasData(
+                        new
+                        {
+                            ReservationsId = 1,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 2,
+                            ServicesId = 4
+                        },
+                        new
+                        {
+                            ReservationsId = 3,
+                            ServicesId = 3
+                        });
                 });
 
             modelBuilder.Entity("HairDresserService", b =>

@@ -1,10 +1,11 @@
 ﻿using HairSalon_Website.Data.Enums;
 using HairSalon_Website.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HairSalon_Website.Data.Configurations
 {
-    public class ReservationConfiguration
+    public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
     {
 
         public List<Reservation> Reservations = new List<Reservation>

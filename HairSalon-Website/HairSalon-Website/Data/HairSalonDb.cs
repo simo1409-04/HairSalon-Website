@@ -26,19 +26,7 @@ namespace HairSalon_Website.Data
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(HairSalonDb).Assembly);
 
-            modelBuilder.Entity("HairDresserService").HasData(
-        new { HairDressersId = 1, ServicesId = 1 },
-        new { HairDressersId = 1, ServicesId = 2 },
-        new { HairDressersId = 1, ServicesId = 3 },
-
-        new { HairDressersId = 2, ServicesId = 4 },
-        new { HairDressersId = 2, ServicesId = 5 },
-        new { HairDressersId = 2, ServicesId = 6 },
-
-        new { HairDressersId = 3, ServicesId = 1 },
-        new { HairDressersId = 3, ServicesId = 3 },
-        new { HairDressersId = 3, ServicesId = 4 }
-    );
+          
 
             modelBuilder.Entity("ReservationService").HasData(
                 new { ReservationsId = 1, ServicesId = 1 },

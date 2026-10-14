@@ -1,8 +1,79 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model IEnumerable<Service>
+
+@{
+    ViewData["Title"] = "Graphite Barber Studio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<main class="graphite-home">
+    <section class="graphite-hero" aria-labelledby="hero-title">
+        <div class="graphite-hero__shade" aria-hidden="true"></div>
+
+        <div class="graphite-shell graphite-hero__content">
+            <p class="graphite-brand">Graphite <span>Barber Studio</span></p>
+            <p class="graphite-kicker">Мястото за твоя стил</p>
+
+            <h1 id="hero-title">Точност във всеки <em>детайл.</em></h1>
+
+            <p class="graphite-hero__text">
+                Класически барбер ритуал, модерни техники и отношение,
+                което започва още с първия разговор.
+            </p>
+
+            <a class="graphite-booking" href="/Reservations/Create">Запази час <span aria-hidden="true">→</span></a>
+        </div>
+
+        <p class="graphite-hero__side-label" aria-hidden="true">Graphite Barber Studio · Est. 2026</p>
+    </section>
+
+    <section class="graphite-intro" aria-labelledby="intro-title">
+        <div class="graphite-shell graphite-intro__grid">
+            <p class="graphite-kicker graphite-kicker--dark">За студиото</p>
+            <div>
+                <h2 id="intro-title">Изградена визия.<br /><em>Естествено усещане.</em></h2>
+                <p>
+                    Тук всяка прическа се изгражда спрямо формата, косата и начина,
+                    по който искаш да се чувстваш, когато излезеш от стола.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="graphite-gallery" aria-labelledby="gallery-title">
+        <div class="graphite-shell">
+            <div class="graphite-gallery__heading">
+                <div>
+                    <p class="graphite-kicker graphite-kicker--dark">Нашата работа</p>
+                    <h2 id="gallery-title">Прически с характер.</h2>
+                </div>
+                <p>Докосни кадър, за да видиш името на стила.</p>
+            </div>
+
+            <div class="graphite-gallery__grid" aria-label="Галерия с прически">
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/textured-crop.png" alt="Текстуриран crop с нисък fade" loading="lazy" />
+                    <figcaption>Textured crop</figcaption>
+                </figure>
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/classic-side-part.png" alt="Класическа side part прическа" loading="lazy" />
+                    <figcaption>Classic side part</figcaption>
+                </figure>
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/buzz-taper.png" alt="Buzz cut с прецизен taper" loading="lazy" />
+                    <figcaption>Buzz taper</figcaption>
+                </figure>
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/wavy-taper.png" alt="Средно дълга вълниста прическа с taper" loading="lazy" />
+                    <figcaption>Wavy taper</figcaption>
+                </figure>
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/pompadour-beard.png" alt="Pompadour с прецизно оформена брада" loading="lazy" />
+                    <figcaption>Pompadour &amp; beard</figcaption>
+                </figure>
+                <figure class="gallery-card" tabindex="0">
+                    <img src="~/images/gallery/curly-low-fade.png" alt="Къдрава прическа с нисък fade" loading="lazy" />
+                    <figcaption>Curly low fade</figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+</main>

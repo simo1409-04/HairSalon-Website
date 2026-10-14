@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HairSalon_Website.Data.Configurations
 {
-    public class ServiceConfiguration
+    public class ServiceConfiguration : IEntityTypeConfiguration<Service>
     {
         public List<Service> Services = new List<Service>
         {

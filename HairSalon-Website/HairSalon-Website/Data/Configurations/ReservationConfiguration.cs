@@ -199,6 +199,13 @@ namespace HairSalon_Website.Data.Configurations
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder.HasData(Reservations);
+            builder.HasIndex(x => new
+            {
+                x.HairDresserId,
+                x.ReservationDate,
+                x.ReservationTime
+            })
+.IsUnique();
 
         }
 

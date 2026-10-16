@@ -20,22 +20,19 @@ namespace HairSalon_Website.Data.Models
         public Gender Gender { get; set; } 
 
 
-        [Required(ErrorMessage = "Продължителността е задължителна")]
-        [Range(DurationInMinutesMin, DurationInMinutesMax, ErrorMessage = "Продължителността трябва да бъде между {0} и {1} минути")]
-        public int DurationInMinutes { get; set; }
-
+       
         [Required(ErrorMessage = "Цената е задължителна")]
-        [Range(typeof(decimal), nameof(PriceMin), nameof(PriceMax), ErrorMessage = "Цената трябва да бъде между {0} и {1} лв.")]
+        [Range(typeof(decimal), nameof(PriceMin), nameof(PriceMax), ErrorMessage = "Цената трябва да бъде между {1} и {1} лв.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
 
         [Required(ErrorMessage = "Снимката на услугата е задължителна")]
-        [MaxLength(ServicePhotoExampleUrlMaxLength, ErrorMessage = "URL адресът на снимката не трябва да надвишава {0} знака")]
+        [MaxLength(ServicePhotoExampleUrlMaxLength, ErrorMessage = "URL адресът на снимката не трябва да надвишава {1} знака")]
         public string ServicePhotoExampleUrl { get; set; } = null!;
 
 
-        [MaxLength(DetailsMaxLength, ErrorMessage = "Описанието не трябва да надвишава {0} знака")]
+        [MaxLength(DetailsMaxLength, ErrorMessage = "Описанието не трябва да надвишава {1} знака")]
 
         public string? Details { get; set; }
 

@@ -1,3 +1,4 @@
+/* CSS for Index view */
 .graphite-home {
     --graphite: #131313;
     --coal: #22201f;
@@ -29,10 +30,12 @@
     position: absolute;
     z-index: -1;
     inset: 0;
-    background: linear-gradient(90deg, rgba(10, 10, 10, .94) 0%, rgba(10, 10, 10, .78) 37%, rgba(10, 10, 10, .15) 76%, rgba(10, 10, 10, .24) 100%);
+    background: linear-gradient( 90deg, rgba(10, 10, 10, .94) 0%, rgba(10, 10, 10, .78) 37%, rgba(10, 10, 10, .15) 76%, rgba(10, 10, 10, .24) 100% );
 }
 
-.graphite-hero__content { padding-block: 120px; }
+.graphite-hero__content {
+    padding-block: 120px;
+}
 
 .graphite-brand,
 .graphite-kicker {
@@ -43,16 +46,28 @@
     text-transform: uppercase;
 }
 
-.graphite-brand { color: #fff; }
-.graphite-brand span { color: var(--copper); }
-.graphite-kicker { margin-bottom: 20px; color: var(--copper); }
-.graphite-kicker--dark { color: #9a5c39; }
+.graphite-brand {
+    color: #fff;
+}
+
+    .graphite-brand span {
+        color: var(--copper);
+    }
+
+.graphite-kicker {
+    margin-bottom: 20px;
+    color: var(--copper);
+}
+
+.graphite-kicker--dark {
+    color: #9a5c39;
+}
 
 .graphite-hero h1,
 .graphite-intro h2,
 .graphite-gallery h2 {
     margin: 0;
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: Georgia, "Times New Roman", serif;
     font-weight: 400;
     letter-spacing: -.055em;
 }
@@ -65,8 +80,11 @@
     line-height: .91;
 }
 
-.graphite-hero h1 em,
-.graphite-intro h2 em { color: var(--copper); font-weight: inherit; }
+    .graphite-hero h1 em,
+    .graphite-intro h2 em {
+        color: var(--copper);
+        font-weight: inherit;
+    }
 
 .graphite-hero__text {
     max-width: 480px;
@@ -92,8 +110,16 @@
     transition: background .2s ease, transform .2s ease;
 }
 
-.graphite-booking:hover { background: #e0a276; color: #17110d; transform: translateY(-3px); }
-.graphite-booking span { font-size: 1.2rem; line-height: .6; }
+    .graphite-booking:hover {
+        background: #e0a276;
+        color: #17110d;
+        transform: translateY(-3px);
+    }
+
+    .graphite-booking span {
+        font-size: 1.2rem;
+        line-height: .6;
+    }
 
 .graphite-hero__side-label {
     position: absolute;
@@ -108,38 +134,177 @@
     writing-mode: vertical-rl;
 }
 
-.graphite-intro { padding-block: clamp(78px, 11vw, 150px); background: var(--cream); }
-.graphite-intro__grid { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 1.45fr); gap: 40px; }
+.graphite-intro {
+    padding-block: clamp(78px, 11vw, 150px);
+    background: var(--cream);
+}
+
+.graphite-intro__grid {
+    display: grid;
+    grid-template-columns: minmax(150px, .55fr) minmax(0, 1.45fr);
+    gap: 40px;
+}
+
 .graphite-intro h2,
-.graphite-gallery h2 { font-size: clamp(2.8rem, 5.7vw, 5.5rem); line-height: .93; }
-.graphite-intro h2 { max-width: 730px; }
-.graphite-intro p:not(.graphite-kicker) { max-width: 540px; margin: 34px 0 0; color: #625c56; font-size: 1.04rem; line-height: 1.8; }
+.graphite-gallery h2 {
+    font-size: clamp(2.8rem, 5.7vw, 5.5rem);
+    line-height: .93;
+}
 
-.graphite-gallery { padding-block: clamp(76px, 9vw, 130px); background: #1a1918; color: #fffaf3; }
-.graphite-gallery__heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 46px; }
-.graphite-gallery h2 { color: #fffaf3; }
-.graphite-gallery__heading > p { max-width: 250px; margin: 0 0 7px; color: #bcb4ab; font-size: .94rem; line-height: 1.6; }
+.graphite-intro h2 {
+    max-width: 730px;
+}
 
-.graphite-gallery__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.gallery-card { position: relative; min-width: 0; aspect-ratio: 3 / 4; margin: 0; overflow: hidden; outline: 0; background: #272422; cursor: pointer; }
-.gallery-card:nth-child(2), .gallery-card:nth-child(5) { transform: translateY(42px); }
-.gallery-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease, filter .45s ease; }
-.gallery-card figcaption { position: absolute; right: 0; bottom: 0; left: 0; padding: 28px 20px 19px; background: linear-gradient(transparent, rgba(0, 0, 0, .82)); color: #fffaf3; font-family: Georgia, 'Times New Roman', serif; font-size: 1.28rem; opacity: 0; transform: translateY(7px); transition: opacity .25s ease, transform .25s ease; }
-.gallery-card:hover img, .gallery-card:focus img { filter: brightness(.78); transform: scale(1.045); }
-.gallery-card:hover figcaption, .gallery-card:focus figcaption { opacity: 1; transform: translateY(0); }
-.gallery-card:focus-visible { outline: 3px solid var(--copper); outline-offset: 3px; }
+.graphite-intro p:not(.graphite-kicker) {
+    max-width: 540px;
+    margin: 34px 0 0;
+    color: #625c56;
+    font-size: 1.04rem;
+    line-height: 1.8;
+}
+
+.graphite-gallery {
+    padding-block: clamp(76px, 9vw, 130px);
+    background: #1a1918;
+    color: #fffaf3;
+}
+
+.graphite-gallery__heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 46px;
+}
+
+.graphite-gallery h2 {
+    color: #fffaf3;
+}
+
+.graphite-gallery__heading > p {
+    max-width: 250px;
+    margin: 0 0 7px;
+    color: #bcb4ab;
+    font-size: .94rem;
+    line-height: 1.6;
+}
+
+.graphite-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.gallery-card {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 3 / 4;
+    margin: 0;
+    overflow: hidden;
+    outline: 0;
+    background: #272422;
+    cursor: pointer;
+}
+
+    .gallery-card:nth-child(2),
+    .gallery-card:nth-child(5) {
+        transform: translateY(42px);
+    }
+
+    .gallery-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .45s ease, filter .45s ease;
+    }
+
+    .gallery-card figcaption {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 28px 20px 19px;
+        background: linear-gradient(transparent, rgba(0, 0, 0, .82));
+        color: #fffaf3;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 1.28rem;
+        opacity: 0;
+        transform: translateY(7px);
+        transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .gallery-card:hover img,
+    .gallery-card:focus img {
+        filter: brightness(.78);
+        transform: scale(1.045);
+    }
+
+    .gallery-card:hover figcaption,
+    .gallery-card:focus figcaption {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .gallery-card:focus-visible {
+        outline: 3px solid var(--copper);
+        outline-offset: 3px;
+    }
 
 @media (max-width: 767.98px) {
-    .graphite-shell { width: min(100% - 32px, 1240px); }
-    .graphite-hero { min-height: 670px; background-position: 61% center; }
-    .graphite-hero__shade { background: linear-gradient(90deg, rgba(10, 10, 10, .92) 0%, rgba(10, 10, 10, .63) 100%); }
-    .graphite-hero__content { padding-block: 90px; }
-    .graphite-hero h1 { margin-top: 38px; font-size: clamp(3.55rem, 15vw, 5.5rem); }
-    .graphite-hero__side-label { display: none; }
-    .graphite-intro__grid { grid-template-columns: 1fr; gap: 22px; }
-    .graphite-gallery__heading { display: block; margin-bottom: 30px; }
-    .graphite-gallery__heading > p { margin-top: 19px; }
-    .graphite-gallery__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .gallery-card:nth-child(2), .gallery-card:nth-child(5) { transform: translateY(0); }
-    .gallery-card figcaption { padding: 23px 14px 14px; font-size: 1rem; opacity: 1; transform: none; }
+    .graphite-shell {
+        width: min(100% - 32px, 1240px);
+    }
+
+    .graphite-hero {
+        min-height: 670px;
+        background-position: 61% center;
+    }
+
+    .graphite-hero__shade {
+        background: linear-gradient( 90deg, rgba(10, 10, 10, .92) 0%, rgba(10, 10, 10, .63) 100% );
+    }
+
+    .graphite-hero__content {
+        padding-block: 90px;
+    }
+
+    .graphite-hero h1 {
+        margin-top: 38px;
+        font-size: clamp(3.55rem, 15vw, 5.5rem);
+    }
+
+    .graphite-hero__side-label {
+        display: none;
+    }
+
+    .graphite-intro__grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .graphite-gallery__heading {
+        display: block;
+        margin-bottom: 30px;
+    }
+
+        .graphite-gallery__heading > p {
+            margin-top: 19px;
+        }
+
+    .graphite-gallery__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .gallery-card:nth-child(2),
+    .gallery-card:nth-child(5) {
+        transform: translateY(0);
+    }
+
+    .gallery-card figcaption {
+        padding: 23px 14px 14px;
+        font-size: 1rem;
+        opacity: 1;
+        transform: none;
+    }
 }

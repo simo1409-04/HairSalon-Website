@@ -10,7 +10,8 @@ namespace HairSalon_Website.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(HairDreeserConstrants.NameMaxLength, ErrorMessage = "Името не трябва да надвишава {0} знака")]
+        [MaxLength(HairDreeserConstrants.NameMaxLength, ErrorMessage = "Името не трябва да надвишава {1} знака")]
+
         public string Name { get; set; } = null!;
 
 

@@ -13,167 +13,193 @@ namespace HairSalon_Website.Data.Configurations
     new Reservation
     {
         Id = 1,
-        ClientName = "Иван Петров",
+        ClientName = "Иван",
         ClientPhone = "0888123456",
-        ReservationDate = new DateTime(2026, 10, 20, 9, 0, 0),
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(10, 0),
         HairDresserId = 1
     },
     new Reservation
     {
         Id = 2,
-        ClientName = "Мария Георгиева",
-        ClientPhone = "0899123456",
-        ReservationDate = new DateTime(2026, 10, 20, 10, 0, 0),
-        HairDresserId = 2
+        ClientName = "Петър",
+        ClientPhone = "0888123457",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(11, 40),
+        HairDresserId = 1
     },
     new Reservation
     {
         Id = 3,
-        ClientName = "Георги Иванов",
-        ClientPhone = "0878123456",
-        ReservationDate = new DateTime(2026, 10, 20, 9, 30, 0),
-        HairDresserId = 3
+        ClientName = "Георги",
+        ClientPhone = "0888123458",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(14, 0),
+        HairDresserId = 1
     },
     new Reservation
     {
         Id = 4,
-        ClientName = "Елена Димитрова",
-        ClientPhone = "0887456789",
-        ReservationDate = new DateTime(2026, 10, 21, 11, 0, 0),
+        ClientName = "Николай",
+        ClientPhone = "0888123459",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(17, 20),
         HairDresserId = 1
     },
     new Reservation
     {
         Id = 5,
-        ClientName = "Николай Стоянов",
-        ClientPhone = "0898456789",
-        ReservationDate = new DateTime(2026, 10, 21, 12, 0, 0),
-        HairDresserId = 2
+        ClientName = "Димитър",
+        ClientPhone = "0888123460",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(19, 0),
+        HairDresserId = 1
     },
+
     new Reservation
     {
         Id = 6,
-        ClientName = "Десислава Костова",
-        ClientPhone = "0879456789",
-        ReservationDate = new DateTime(2026, 10, 21, 11, 0, 0),
-        HairDresserId = 3
+        ClientName = "Алекс",
+        ClientPhone = "0888123461",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(10, 50),
+        HairDresserId = 2
     },
     new Reservation
     {
         Id = 7,
-        ClientName = "Петър Христов",
-        ClientPhone = "0887567890",
-        ReservationDate = new DateTime(2026, 10, 22, 14, 0, 0),
-        HairDresserId = 1
-    },
-    new Reservation
-    {
-        Id = 8,
-        ClientName = "Анна Василева",
-        ClientPhone = "0898567890",
-        ReservationDate = new DateTime(2026, 10, 22, 9, 0, 0),
+        ClientName = "Борис",
+        ClientPhone = "0888123462",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(12, 30),
         HairDresserId = 2
     },
     new Reservation
     {
+        Id = 8,
+        ClientName = "Виктор",
+        ClientPhone = "0888123463",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(15, 40),
+        HairDresserId = 2
+    },
+
+    new Reservation
+    {
         Id = 9,
-        ClientName = "Калин Тодоров",
-        ClientPhone = "0879567890",
-        ReservationDate = new DateTime(2026, 10, 22, 15, 0, 0),
+        ClientName = "Мартин",
+        ClientPhone = "0888123464",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(10, 0),
         HairDresserId = 3
     },
     new Reservation
     {
         Id = 10,
-        ClientName = "Ралица Николова",
-        ClientPhone = "0887678901",
-        ReservationDate = new DateTime(2026, 10, 23, 10, 0, 0),
-        HairDresserId = 1
-    },
-    new Reservation
-    {
-        Id = 11,
-        ClientName = "Стефан Марков",
-        ClientPhone = "0898678901",
-        ReservationDate = new DateTime(2026, 10, 23, 13, 0, 0),
-        HairDresserId = 2
-    },
-    new Reservation
-    {
-        Id = 12,
-        ClientName = "Йоана Пенева",
-        ClientPhone = "0879678901",
-        ReservationDate = new DateTime(2026, 10, 23, 12, 0, 0),
+        ClientName = "Стефан",
+        ClientPhone = "0888123465",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(14, 50),
         HairDresserId = 3
     },
     new Reservation
     {
+        Id = 11,
+        ClientName = "Калин",
+        ClientPhone = "0888123466",
+        ReservationDate = new DateOnly(2026, 10, 20),
+        ReservationTime = new TimeOnly(18, 10),
+        HairDresserId = 3
+    },
+
+    new Reservation
+    {
+        Id = 12,
+        ClientName = "Антон",
+        ClientPhone = "0888123467",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(10, 50),
+        HairDresserId = 1
+    },
+    new Reservation
+    {
         Id = 13,
-        ClientName = "Борислав Илиев",
-        ClientPhone = "0887789012",
-        ReservationDate = new DateTime(2026, 10, 24, 9, 0, 0),
+        ClientName = "Тодор",
+        ClientPhone = "0888123468",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(16, 30),
         HairDresserId = 1
     },
     new Reservation
     {
         Id = 14,
-        ClientName = "Кристина Ангелова",
-        ClientPhone = "0898789012",
-        ReservationDate = new DateTime(2026, 10, 24, 10, 30, 0),
-        HairDresserId = 2
+        ClientName = "Румен",
+        ClientPhone = "0888123469",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(19, 50),
+        HairDresserId = 1
     },
+
     new Reservation
     {
         Id = 15,
-        ClientName = "Валентин Попов",
-        ClientPhone = "0879789012",
-        ReservationDate = new DateTime(2026, 10, 24, 14, 0, 0),
-        HairDresserId = 3
+        ClientName = "Стоян",
+        ClientPhone = "0888123470",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(10, 0),
+        HairDresserId = 2
     },
     new Reservation
     {
         Id = 16,
-        ClientName = "Теодора Миланова",
-        ClientPhone = "0887890123",
-        ReservationDate = new DateTime(2026, 10, 26, 16, 0, 0),
-        HairDresserId = 1
-    },
-    new Reservation
-    {
-        Id = 17,
-        ClientName = "Михаил Колев",
-        ClientPhone = "0898890123",
-        ReservationDate = new DateTime(2026, 10, 26, 15, 0, 0),
+        ClientName = "Любомир",
+        ClientPhone = "0888123471",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(14, 0),
         HairDresserId = 2
     },
     new Reservation
     {
+        Id = 17,
+        ClientName = "Васил",
+        ClientPhone = "0888123472",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(17, 20),
+        HairDresserId = 2
+    },
+
+    new Reservation
+    {
         Id = 18,
-        ClientName = "Симона Донева",
-        ClientPhone = "0879890123",
-        ReservationDate = new DateTime(2026, 10, 26, 10, 0, 0),
+        ClientName = "Красимир",
+        ClientPhone = "0888123473",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(11, 40),
         HairDresserId = 3
     },
     new Reservation
     {
         Id = 19,
-        ClientName = "Александра Кирова",
-        ClientPhone = "0888901234",
-        ReservationDate = new DateTime(2026, 10, 27, 12, 0, 0),
-        HairDresserId = 1
+        ClientName = "Радослав",
+        ClientPhone = "0888123474",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(15, 40),
+        HairDresserId = 3
     },
     new Reservation
     {
         Id = 20,
-        ClientName = "Даниел Борисов",
-        ClientPhone = "0899901234",
-        ReservationDate = new DateTime(2026, 10, 27, 17, 0, 0),
-        HairDresserId = 2
+        ClientName = "Милен",
+        ClientPhone = "0888123475",
+        ReservationDate = new DateOnly(2026, 10, 21),
+        ReservationTime = new TimeOnly(19, 0),
+        HairDresserId = 3
     }
 };
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder.HasData(Reservations);
+
         }
 
     }

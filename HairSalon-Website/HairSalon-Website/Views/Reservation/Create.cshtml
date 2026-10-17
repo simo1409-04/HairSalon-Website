@@ -1,1 +1,312 @@
-﻿
+﻿@using System.Globalization
+@model HairSalon_Website.Data.Models.Reservation
+
+@{
+    ViewData["Title"] = "Запази час";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/create.css"
+          asp-append-version="true" />
+}
+
+<main class="reservation-page">
+    <div class="reservation-shell">
+        <section class="reservation-heading" aria-labelledby="reservation-title">
+            <p class="reservation-kicker">Graphite Barber Studio</p>
+            <h1 id="reservation-title">Запази своя <em>час.</em></h1>
+            <p>
+                Избери фризьор, ден и свободен час. След това завърши
+                резервацията само с няколко стъпки.
+            </p>
+        </section>
+
+        <form asp-controller="Reservation"
+              asp-action="Create"
+              method="post"
+              class="reservation-form"
+              id="reservation-form">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="reservation-validation-summary">
+            </div>
+
+            <input asp-for="HairDresserId"
+                   type="hidden"
+                   id="selected-hairdresser-id"
+                   value="" />
+
+            <input asp-for="ReservationDate"
+                   type="hidden"
+                   id="selected-reservation-date"
+                   value="" />
+
+            <input asp-for="ReservationTime"
+                   type="hidden"
+                   id="selected-reservation-time"
+                   value="" />
+
+            <section class="booking-step booking-step--calendar"
+                     id="calendar-step"
+                     aria-labelledby="calendar-step-title">
+
+                <div class="booking-step__heading">
+                    <span class="booking-step__number">01</span>
+
+                    <div>
+                        <p class="reservation-kicker reservation-kicker--dark">
+                            Избор на час
+                        </p>
+                        <h2 id="calendar-step-title">
+                            Кога ти е удобно?
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="hairdresser-picker">
+                    <label for="hairdresser-select">
+                        Избери фризьор
+                    </label>
+
+                    <select id="hairdresser-select"
+                            class="reservation-select">
+                        @foreach (var hairDresser in ViewBag.HairDressers)
+                        {
+                            <option value="@hairDresser.Value">
+                                @hairDresser.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="calendar-layout"
+                     id="booking-calendar"
+                     data-busy-slots-url="@Url.Action("GetHairdresserBusySlots", "Reservation")">
+
+                    <section class="calendar-card"
+                             aria-labelledby="calendar-month-title">
+
+                        <div class="calendar-card__header">
+                            <button class="calendar-navigation"
+                                    id="previous-month"
+                                    type="button"
+                                    aria-label="Предишен месец">
+                                ←
+                            </button>
+
+                            <h3 id="calendar-month-title"></h3>
+
+                            <button class="calendar-navigation"
+                                    id="next-month"
+                                    type="button"
+                                    aria-label="Следващ месец">
+                                →
+                            </button>
+                        </div>
+
+                        <div class="calendar-weekdays" aria-hidden="true">
+                            <span>Пн</span>
+                            <span>Вт</span>
+                            <span>Ср</span>
+                            <span>Чт</span>
+                            <span>Пт</span>
+                            <span>Сб</span>
+                            <span>Нд</span>
+                        </div>
+
+                        <div class="calendar-days"
+                             id="calendar-days"
+                             aria-label="Календар за избор на дата">
+                        </div>
+
+                        <div class="calendar-legend">
+                            <span>
+                                <i class="calendar-legend__dot calendar-legend__dot--available"></i>
+                                Свободни часове
+                            </span>
+
+                            <span>
+                                <i class="calendar-legend__dot calendar-legend__dot--full"></i>
+                                Няма свободни часове
+                            </span>
+                        </div>
+                    </section>
+
+                    <aside class="time-slots-card"
+                           aria-labelledby="time-slots-title">
+
+                        <p class="reservation-kicker reservation-kicker--dark">
+                            Свободни часове
+                        </p>
+
+                        <h3 id="time-slots-title">
+                            Избери дата от календара
+                        </h3>
+
+                        <p class="time-slots-card__description"
+                           id="selected-date-label">
+                            След това ще видиш свободните часове.
+                        </p>
+
+                        <div class="time-slots"
+                             id="time-slots"
+                             aria-live="polite">
+                        </div>
+
+                        <p class="calendar-status"
+                           id="calendar-status"
+                           role="status">
+                            Зареждаме графика...
+                        </p>
+                    </aside>
+                </div>
+
+                <div class="calendar-server-validation">
+                    <span asp-validation-for="HairDresserId"></span>
+                    <span asp-validation-for="ReservationDate"></span>
+                    <span asp-validation-for="ReservationTime"></span>
+                </div>
+
+                <p class="calendar-selection-error"
+                   id="calendar-selection-error"
+                   role="alert"
+                   hidden>
+                </p>
+
+                <button type="button"
+                        class="reservation-button reservation-button--primary"
+                        id="continue-to-details"
+                        disabled>
+                    Продължи <span aria-hidden="true">→</span>
+                </button>
+            </section>
+
+            <section class="booking-step booking-step--details"
+                     id="details-step"
+                     aria-labelledby="details-step-title"
+                     hidden>
+
+                <div class="booking-step__heading">
+                    <span class="booking-step__number">02</span>
+
+                    <div>
+                        <p class="reservation-kicker reservation-kicker--dark">
+                            Данни за резервацията
+                        </p>
+                        <h2 id="details-step-title">
+                            Почти готово.
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="reservation-summary" aria-live="polite">
+                    <p class="reservation-summary__title">
+                        Избраният от теб час
+                    </p>
+
+                    <p class="reservation-summary__value"
+                       id="booking-summary">
+                    </p>
+
+                    <button type="button"
+                            class="reservation-summary__change"
+                            id="change-booking">
+                        Промени
+                    </button>
+                </div>
+
+                <div class="reservation-fields">
+                    <div class="reservation-field">
+                        <label asp-for="ClientName">Име</label>
+
+                        <input asp-for="ClientName"
+                               class="reservation-input"
+                               placeholder="Въведи твоето име"
+                               autocomplete="name" />
+
+                        <span asp-validation-for="ClientName"></span>
+                    </div>
+
+                    <div class="reservation-field">
+                        <label asp-for="ClientPhone">Телефонен номер</label>
+
+                        <input asp-for="ClientPhone"
+                               class="reservation-input"
+                               placeholder="088 000 0000"
+                               autocomplete="tel"
+                               inputmode="tel" />
+
+                        <span asp-validation-for="ClientPhone"></span>
+                    </div>
+                </div>
+
+                <fieldset class="services-picker">
+                    <legend>Избери услуги</legend>
+
+                    <p class="services-picker__description">
+                        Можеш да добавиш една или повече услуги.
+                    </p>
+
+                    <div class="services-grid">
+                        @foreach (var service in ViewBag.Services)
+                        {
+                            <div class="service-option">
+                                <input type="checkbox"
+                                       name="serviceIds"
+                                       value="@service.Id"
+                                       id="service-@service.Id"
+                                       data-price="@Convert.ToDecimal(service.Price).ToString(CultureInfo.InvariantCulture)" />
+
+                                <label for="service-@service.Id">
+                                    <span class="service-option__check" aria-hidden="true">
+                                        ✓
+                                    </span>
+
+                                    <span class="service-option__name">
+                                        @service.Name
+                                    </span>
+
+                                    <span class="service-option__price">
+                                        @Convert.ToDecimal(service.Price).ToString("0.00", CultureInfo.GetCultureInfo("bg-BG")) eur.
+                                    </span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+
+                    <p class="services-error"
+                       id="services-error"
+                       role="alert">
+                    </p>
+                </fieldset>
+
+                <div class="reservation-total">
+                    <span>Обща цена</span>
+
+                    <strong id="total-price">0,00 eur.</strong>
+                </div>
+
+                <div class="reservation-actions">
+                    <button type="button"
+                            class="reservation-button reservation-button--secondary"
+                            id="back-to-calendar">
+                        ← Назад
+                    </button>
+
+                    <button type="submit"
+                            class="reservation-button reservation-button--primary">
+                        Завърши резервация <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </section>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="~/js/Create.js"
+            asp-append-version="true"></script>
+}

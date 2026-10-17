@@ -16,9 +16,8 @@ namespace HairSalon_Website.Controllers
         }
         public IActionResult Index()
         {
-            List<Service> services = context.Services.ToList();
 
-            return View(services);
+            return View();
         }
 
         public IActionResult Privacy()

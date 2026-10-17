@@ -29,6 +29,8 @@ namespace HairSalon_Website.Data.Models
         [Required(ErrorMessage = "Датата на резервация е задължителна")]
         public DateOnly ReservationDate { get; set; }
 
+
+
         [Required(ErrorMessage = "Часът на резервация е задължителен")]
         public TimeOnly ReservationTime { get; set; }
 
@@ -36,7 +38,9 @@ namespace HairSalon_Website.Data.Models
         [Required(ErrorMessage ="Моля изберете фризьор!")]
         public int HairDresserId { get; set; }
 
-        public virtual HairDresser HairDresser { get; set; } = null!;
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TotalPrice { get; set; }
+        public virtual HairDresser? HairDresser { get; set; }
 
         public virtual ICollection<Service> Services { get; set; } = new HashSet<Service>();
 

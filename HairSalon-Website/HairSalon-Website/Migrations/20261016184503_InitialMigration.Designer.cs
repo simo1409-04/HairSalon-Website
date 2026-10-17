@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HairSalon_Website.Migrations
 {
     [DbContext(typeof(HairSalonDb))]
-    [Migration("20261016085222_InitialMigration")]
+    [Migration("20261016184503_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -113,9 +113,13 @@ namespace HairSalon_Website.Migrations
                     b.Property<TimeOnly>("ReservationTime")
                         .HasColumnType("time");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("HairDresserId");
+                    b.HasIndex("HairDresserId", "ReservationDate", "ReservationTime")
+                        .IsUnique();
 
                     b.ToTable("Reservations");
 
@@ -127,7 +131,8 @@ namespace HairSalon_Website.Migrations
                             ClientPhone = "0888123456",
                             HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(10, 0, 0)
+                            ReservationTime = new TimeOnly(10, 0, 0),
+                            TotalPrice = 15.00m
                         },
                         new
                         {
@@ -136,7 +141,8 @@ namespace HairSalon_Website.Migrations
                             ClientPhone = "0888123457",
                             HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(11, 40, 0)
+                            ReservationTime = new TimeOnly(10, 50, 0),
+                            TotalPrice = 8.00m
                         },
                         new
                         {
@@ -145,7 +151,8 @@ namespace HairSalon_Website.Migrations
                             ClientPhone = "0888123458",
                             HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(14, 0, 0)
+                            ReservationTime = new TimeOnly(11, 40, 0),
+                            TotalPrice = 20.00m
                         },
                         new
                         {
@@ -154,7 +161,8 @@ namespace HairSalon_Website.Migrations
                             ClientPhone = "0888123459",
                             HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(17, 20, 0)
+                            ReservationTime = new TimeOnly(12, 30, 0),
+                            TotalPrice = 10.00m
                         },
                         new
                         {
@@ -163,61 +171,68 @@ namespace HairSalon_Website.Migrations
                             ClientPhone = "0888123460",
                             HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(19, 0, 0)
+                            ReservationTime = new TimeOnly(14, 0, 0),
+                            TotalPrice = 10.00m
                         },
                         new
                         {
                             Id = 6,
                             ClientName = "Алекс",
                             ClientPhone = "0888123461",
-                            HairDresserId = 2,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(10, 50, 0)
+                            ReservationTime = new TimeOnly(14, 50, 0),
+                            TotalPrice = 18.00m
                         },
                         new
                         {
                             Id = 7,
                             ClientName = "Борис",
                             ClientPhone = "0888123462",
-                            HairDresserId = 2,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(12, 30, 0)
+                            ReservationTime = new TimeOnly(15, 40, 0),
+                            TotalPrice = 11.00m
                         },
                         new
                         {
                             Id = 8,
                             ClientName = "Виктор",
                             ClientPhone = "0888123463",
-                            HairDresserId = 2,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(15, 40, 0)
+                            ReservationTime = new TimeOnly(16, 30, 0),
+                            TotalPrice = 23.00m
                         },
                         new
                         {
                             Id = 9,
                             ClientName = "Мартин",
                             ClientPhone = "0888123464",
-                            HairDresserId = 3,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(10, 0, 0)
+                            ReservationTime = new TimeOnly(17, 20, 0),
+                            TotalPrice = 15.00m
                         },
                         new
                         {
                             Id = 10,
                             ClientName = "Стефан",
                             ClientPhone = "0888123465",
-                            HairDresserId = 3,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(14, 50, 0)
+                            ReservationTime = new TimeOnly(18, 10, 0),
+                            TotalPrice = 20.00m
                         },
                         new
                         {
                             Id = 11,
                             ClientName = "Калин",
                             ClientPhone = "0888123466",
-                            HairDresserId = 3,
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 20),
-                            ReservationTime = new TimeOnly(18, 10, 0)
+                            ReservationTime = new TimeOnly(19, 0, 0),
+                            TotalPrice = 11.00m
                         },
                         new
                         {
@@ -225,80 +240,269 @@ namespace HairSalon_Website.Migrations
                             ClientName = "Антон",
                             ClientPhone = "0888123467",
                             HairDresserId = 1,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(10, 50, 0)
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(19, 50, 0),
+                            TotalPrice = 13.00m
                         },
                         new
                         {
                             Id = 13,
-                            ClientName = "Тодор",
+                            ClientName = "Стоян",
                             ClientPhone = "0888123468",
-                            HairDresserId = 1,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(16, 30, 0)
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(10, 50, 0),
+                            TotalPrice = 20.00m
                         },
                         new
                         {
                             Id = 14,
-                            ClientName = "Румен",
+                            ClientName = "Любомир",
                             ClientPhone = "0888123469",
-                            HairDresserId = 1,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(19, 50, 0)
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(12, 30, 0),
+                            TotalPrice = 8.00m
                         },
                         new
                         {
                             Id = 15,
-                            ClientName = "Стоян",
+                            ClientName = "Васил",
                             ClientPhone = "0888123470",
                             HairDresserId = 2,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(10, 0, 0)
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(16, 30, 0),
+                            TotalPrice = 18.00m
                         },
                         new
                         {
                             Id = 16,
-                            ClientName = "Любомир",
+                            ClientName = "Красимир",
                             ClientPhone = "0888123471",
                             HairDresserId = 2,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(14, 0, 0)
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(19, 0, 0),
+                            TotalPrice = 13.00m
                         },
                         new
                         {
                             Id = 17,
-                            ClientName = "Васил",
+                            ClientName = "Радослав",
                             ClientPhone = "0888123472",
-                            HairDresserId = 2,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(17, 20, 0)
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(10, 0, 0),
+                            TotalPrice = 10.00m
                         },
                         new
                         {
                             Id = 18,
-                            ClientName = "Красимир",
+                            ClientName = "Милен",
                             ClientPhone = "0888123473",
                             HairDresserId = 3,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(11, 40, 0)
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(14, 0, 0),
+                            TotalPrice = 23.00m
                         },
                         new
                         {
                             Id = 19,
-                            ClientName = "Радослав",
+                            ClientName = "Тодор",
                             ClientPhone = "0888123474",
                             HairDresserId = 3,
-                            ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(15, 40, 0)
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(17, 20, 0),
+                            TotalPrice = 15.00m
                         },
                         new
                         {
                             Id = 20,
-                            ClientName = "Милен",
+                            ClientName = "Румен",
                             ClientPhone = "0888123475",
                             HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 20),
+                            ReservationTime = new TimeOnly(19, 50, 0),
+                            TotalPrice = 11.00m
+                        },
+                        new
+                        {
+                            Id = 21,
+                            ClientName = "Кирил",
+                            ClientPhone = "0888123476",
+                            HairDresserId = 1,
                             ReservationDate = new DateOnly(2026, 10, 21),
-                            ReservationTime = new TimeOnly(19, 0, 0)
+                            ReservationTime = new TimeOnly(10, 0, 0),
+                            TotalPrice = 20.00m
+                        },
+                        new
+                        {
+                            Id = 22,
+                            ClientName = "Павел",
+                            ClientPhone = "0888123477",
+                            HairDresserId = 1,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(11, 40, 0),
+                            TotalPrice = 10.00m
+                        },
+                        new
+                        {
+                            Id = 23,
+                            ClientName = "Даниел",
+                            ClientPhone = "0888123478",
+                            HairDresserId = 1,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(14, 50, 0),
+                            TotalPrice = 18.00m
+                        },
+                        new
+                        {
+                            Id = 24,
+                            ClientName = "Атанас",
+                            ClientPhone = "0888123479",
+                            HairDresserId = 1,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(18, 10, 0),
+                            TotalPrice = 10.00m
+                        },
+                        new
+                        {
+                            Id = 25,
+                            ClientName = "Боян",
+                            ClientPhone = "0888123480",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(10, 0, 0),
+                            TotalPrice = 8.00m
+                        },
+                        new
+                        {
+                            Id = 26,
+                            ClientName = "Валентин",
+                            ClientPhone = "0888123481",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(12, 30, 0),
+                            TotalPrice = 23.00m
+                        },
+                        new
+                        {
+                            Id = 27,
+                            ClientName = "Григор",
+                            ClientPhone = "0888123482",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(15, 40, 0),
+                            TotalPrice = 15.00m
+                        },
+                        new
+                        {
+                            Id = 28,
+                            ClientName = "Емил",
+                            ClientPhone = "0888123483",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(19, 50, 0),
+                            TotalPrice = 10.00m
+                        },
+                        new
+                        {
+                            Id = 29,
+                            ClientName = "Живко",
+                            ClientPhone = "0888123484",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(10, 50, 0),
+                            TotalPrice = 13.00m
+                        },
+                        new
+                        {
+                            Id = 30,
+                            ClientName = "Захари",
+                            ClientPhone = "0888123485",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(14, 0, 0),
+                            TotalPrice = 20.00m
+                        },
+                        new
+                        {
+                            Id = 31,
+                            ClientName = "Илия",
+                            ClientPhone = "0888123486",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(16, 30, 0),
+                            TotalPrice = 11.00m
+                        },
+                        new
+                        {
+                            Id = 32,
+                            ClientName = "Йордан",
+                            ClientPhone = "0888123487",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 21),
+                            ReservationTime = new TimeOnly(19, 0, 0),
+                            TotalPrice = 15.00m
+                        },
+                        new
+                        {
+                            Id = 33,
+                            ClientName = "Костадин",
+                            ClientPhone = "0888123488",
+                            HairDresserId = 1,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(11, 40, 0),
+                            TotalPrice = 23.00m
+                        },
+                        new
+                        {
+                            Id = 34,
+                            ClientName = "Лъчезар",
+                            ClientPhone = "0888123489",
+                            HairDresserId = 1,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(17, 20, 0),
+                            TotalPrice = 10.00m
+                        },
+                        new
+                        {
+                            Id = 35,
+                            ClientName = "Момчил",
+                            ClientPhone = "0888123490",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(14, 50, 0),
+                            TotalPrice = 10.00m
+                        },
+                        new
+                        {
+                            Id = 36,
+                            ClientName = "Ненчо",
+                            ClientPhone = "0888123491",
+                            HairDresserId = 2,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(18, 10, 0),
+                            TotalPrice = 11.00m
+                        },
+                        new
+                        {
+                            Id = 37,
+                            ClientName = "Огнян",
+                            ClientPhone = "0888123492",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(10, 0, 0),
+                            TotalPrice = 21.00m
+                        },
+                        new
+                        {
+                            Id = 38,
+                            ClientName = "Пламен",
+                            ClientPhone = "0888123493",
+                            HairDresserId = 3,
+                            ReservationDate = new DateOnly(2026, 10, 22),
+                            ReservationTime = new TimeOnly(19, 50, 0),
+                            TotalPrice = 20.00m
                         });
                 });
 
@@ -435,11 +639,6 @@ namespace HairSalon_Website.Migrations
                         },
                         new
                         {
-                            ReservationsId = 2,
-                            ServicesId = 8
-                        },
-                        new
-                        {
                             ReservationsId = 3,
                             ServicesId = 1
                         },
@@ -480,48 +679,48 @@ namespace HairSalon_Website.Migrations
                         },
                         new
                         {
+                            ReservationsId = 8,
+                            ServicesId = 8
+                        },
+                        new
+                        {
                             ReservationsId = 9,
                             ServicesId = 2
                         },
                         new
                         {
-                            ReservationsId = 9,
-                            ServicesId = 8
-                        },
-                        new
-                        {
                             ReservationsId = 10,
-                            ServicesId = 4
+                            ServicesId = 1
                         },
                         new
                         {
                             ReservationsId = 11,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            ReservationsId = 11,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 12,
                             ServicesId = 5
                         },
                         new
                         {
                             ReservationsId = 12,
+                            ServicesId = 8
+                        },
+                        new
+                        {
+                            ReservationsId = 13,
                             ServicesId = 1
-                        },
-                        new
-                        {
-                            ReservationsId = 13,
-                            ServicesId = 2
-                        },
-                        new
-                        {
-                            ReservationsId = 13,
-                            ServicesId = 6
                         },
                         new
                         {
                             ReservationsId = 14,
                             ServicesId = 3
-                        },
-                        new
-                        {
-                            ReservationsId = 14,
-                            ServicesId = 8
                         },
                         new
                         {
@@ -530,23 +729,33 @@ namespace HairSalon_Website.Migrations
                         },
                         new
                         {
-                            ReservationsId = 16,
-                            ServicesId = 1
-                        },
-                        new
-                        {
-                            ReservationsId = 17,
-                            ServicesId = 3
-                        },
-                        new
-                        {
-                            ReservationsId = 17,
+                            ReservationsId = 15,
                             ServicesId = 7
                         },
                         new
                         {
-                            ReservationsId = 18,
+                            ReservationsId = 16,
                             ServicesId = 4
+                        },
+                        new
+                        {
+                            ReservationsId = 16,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 17,
+                            ServicesId = 5
+                        },
+                        new
+                        {
+                            ReservationsId = 18,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 18,
+                            ServicesId = 6
                         },
                         new
                         {
@@ -555,13 +764,143 @@ namespace HairSalon_Website.Migrations
                         },
                         new
                         {
-                            ReservationsId = 19,
-                            ServicesId = 8
+                            ReservationsId = 20,
+                            ServicesId = 3
                         },
                         new
                         {
                             ReservationsId = 20,
+                            ServicesId = 8
+                        },
+                        new
+                        {
+                            ReservationsId = 21,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 22,
+                            ServicesId = 4
+                        },
+                        new
+                        {
+                            ReservationsId = 23,
+                            ServicesId = 2
+                        },
+                        new
+                        {
+                            ReservationsId = 23,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 24,
                             ServicesId = 5
+                        },
+                        new
+                        {
+                            ReservationsId = 25,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            ReservationsId = 26,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 26,
+                            ServicesId = 8
+                        },
+                        new
+                        {
+                            ReservationsId = 27,
+                            ServicesId = 2
+                        },
+                        new
+                        {
+                            ReservationsId = 28,
+                            ServicesId = 4
+                        },
+                        new
+                        {
+                            ReservationsId = 29,
+                            ServicesId = 5
+                        },
+                        new
+                        {
+                            ReservationsId = 29,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 30,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 31,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            ReservationsId = 31,
+                            ServicesId = 7
+                        },
+                        new
+                        {
+                            ReservationsId = 32,
+                            ServicesId = 2
+                        },
+                        new
+                        {
+                            ReservationsId = 33,
+                            ServicesId = 1
+                        },
+                        new
+                        {
+                            ReservationsId = 33,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 34,
+                            ServicesId = 4
+                        },
+                        new
+                        {
+                            ReservationsId = 35,
+                            ServicesId = 5
+                        },
+                        new
+                        {
+                            ReservationsId = 36,
+                            ServicesId = 3
+                        },
+                        new
+                        {
+                            ReservationsId = 36,
+                            ServicesId = 8
+                        },
+                        new
+                        {
+                            ReservationsId = 37,
+                            ServicesId = 2
+                        },
+                        new
+                        {
+                            ReservationsId = 37,
+                            ServicesId = 6
+                        },
+                        new
+                        {
+                            ReservationsId = 37,
+                            ServicesId = 7
+                        },
+                        new
+                        {
+                            ReservationsId = 38,
+                            ServicesId = 1
                         });
                 });
 

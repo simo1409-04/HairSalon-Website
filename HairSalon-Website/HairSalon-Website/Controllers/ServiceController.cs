@@ -12,6 +12,13 @@ namespace HairSalon_Website.Controllers
         {
             this.context = context;
         }
-        
+        public IActionResult Index()
+        {
+
+            List<Service> services = context.Services.ToList();
+
+
+            return View(services);
+        }
     }
 }

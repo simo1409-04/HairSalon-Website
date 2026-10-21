@@ -1,0 +1,76 @@
+﻿@using System.Globalization
+@model IEnumerable<Service>
+
+@{
+    ViewData["Title"] = "Услуги";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/services.css"
+          asp-append-version="true" />
+}
+
+<main class="services-page">
+    <div class="services-shell">
+        <header class="services-hero">
+            <p class="services-kicker">Graphite Barber Studio</p>
+
+            <h1>Избери грижа<br /><em>за своя стил.</em></h1>
+
+            <p>
+                Всяка услуга е съобразена с твоята визия, комфорт и внимание към детайла.
+            </p>
+        </header>
+
+        @if (Model.Any())
+        {
+            <section class="services-grid"
+                     aria-label="Списък с услуги">
+
+                @foreach (var service in Model)
+                {
+                   
+                    <a 
+                       asp-controller="Reservation" asp-action="Create"><article class="service-card">
+                        <div class="service-card__image-wrapper">
+                            <img src="@service.ServicePhotoExampleUrl"
+                                 alt="@service.Name"
+                                 class="service-card__image"
+                                 loading="lazy" />
+
+                            <span class="service-card__price">
+                                @service.Price.ToString(
+                                    "0.00",
+                                    CultureInfo.GetCultureInfo("bg-BG")) €
+                            </span>
+                        </div>
+
+                        <div class="service-card__content">
+                            <h2>@service.Name</h2>
+
+                            <p>
+                                @(string.IsNullOrWhiteSpace(service.Details)
+                                    ? "Професионална грижа и прецизно изпълнение."
+                                    : service.Details)
+                            </p>
+
+                            <div class="service-card__footer">
+                                <span>Graphite Barber Studio</span>
+
+                                <span aria-hidden="true">✦</span>
+                            </div>
+                        </div>
+                    </article>
+                    </a>
+                }
+            </section>
+        }
+        else
+        {
+            <section class="services-empty">
+                <p>Услугите ще бъдат добавени скоро.</p>
+            </section>
+        }
+    </div>
+</main>

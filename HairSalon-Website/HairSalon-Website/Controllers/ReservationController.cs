@@ -23,7 +23,16 @@ namespace HairSalon_Website.Controllers
     new TimeOnly(17, 20),
     new TimeOnly(18, 10),
     new TimeOnly(19, 0),
-    new TimeOnly(19, 50)
+};
+
+        private List<DayOfWeek> nonWorkingDays = new List<DayOfWeek>
+{
+
+
+            DayOfWeek.Monday,
+            DayOfWeek.Tuesday
+
+
 };
 
         public ReservationController(HairSalonDb context)
@@ -34,16 +43,7 @@ namespace HairSalon_Website.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Services = context.Services
-    .Select(x => new
-    {
-        Id = x.Id,
-        Name = x.Name,
-        Price = x.Price
-    })
-    .ToList();
-            ViewBag.HairDressers = context.HairDressers.Select(x=>new { Name = x.Name, Value = x.Id }).ToList();
-
+            LoadCreateViewData();
 
             return View();
         }
@@ -68,9 +68,9 @@ namespace HairSalon_Website.Controllers
             bool isModelStateValid = ModelState.IsValid;
             bool isHairDresserIdIsValid = HairDresserIdsInDb.Contains(reservationDto.HairDresserId);
             bool isSlotAvailable = !context.Reservations.Any(x => x.ReservationDate == reservationDto.ReservationDate && x.ReservationTime == reservationDto.ReservationTime && x.HairDresserId == reservationDto.HairDresserId);
+            bool isDayOfWeekForReservationValid = !nonWorkingDays.Contains(reservationDto.ReservationDate.DayOfWeek);
 
-
-            if (areServiceIdsValid && isModelStateValid && isHairDresserIdIsValid&& isSlotAvailable)
+            if (areServiceIdsValid && isModelStateValid && isHairDresserIdIsValid&& isSlotAvailable&& isDayOfWeekForReservationValid)
             {
 
                 if (reservationDto.ReservationDate > today ||
@@ -114,12 +114,15 @@ namespace HairSalon_Website.Controllers
 
 
                         }
-                         
+
                         catch (Exception)
                         {
-                            ViewBag.ErrorMessage = "Резервацията не беше запаметена. Моля, опитай отново.";
-                            return View("Result");
+                            TempData["ErrorMessage"] = "Резервацията не беше запаметена. Моля, опитай отново.";
+
+
+                            return RedirectToAction("Index", "Home");
                         }
+                       
 
 
 
@@ -130,9 +133,10 @@ namespace HairSalon_Website.Controllers
                 }
 
             }
+            LoadCreateViewData();
 
-            ViewBag.ErrorMessage = "Въведени са невалидни данни!";
-            return View("Result");
+
+            return View(reservationDto);
 
 
         }
@@ -149,5 +153,29 @@ namespace HairSalon_Website.Controllers
             return Json(hairdresserSlotsDic);
 
         }
+
+
+        private void LoadCreateViewData()
+        {
+            ViewBag.Services = context.Services
+                .Select(x => new
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Price = x.Price
+                })
+                .ToList();
+
+            ViewBag.HairDressers = context.HairDressers
+                .Select(x => new
+                {
+                    Name = x.Name,
+                    Value = x.Id
+                })
+                .ToList();
+        }
+
+        
+
     }
 }

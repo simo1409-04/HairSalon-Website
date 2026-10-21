@@ -1,4 +1,5 @@
-﻿(() => {
+﻿
+(() => {
     const calendarRoot = document.getElementById("booking-calendar");
 
     if (!calendarRoot) {
@@ -16,11 +17,14 @@
         "16:30",
         "17:20",
         "18:10",
-        "19:00",
-        "19:50"
+        "19:00"
     ];
 
+    const nonWorkingWeekDays = new Set([1, 2]);
+
     const form = document.getElementById("reservation-form");
+    const submitButton = document.getElementById("complete-reservation");
+    const validationNotification = document.getElementById("form-validation-notification");
     const hairdresserSelect = document.getElementById("hairdresser-select");
 
     const selectedHairdresserInput = document.getElementById("selected-hairdresser-id");
@@ -59,6 +63,15 @@
     let selectedDate = "";
     let selectedTime = "";
     let busySlotsByDate = {};
+    let validationNotificationTimer;
+    let validationNotificationHideTimer;
+
+    const restoreSelection = window.bookingRestoreSelection ?? null;
+    let shouldRestoreSelection = Boolean(restoreSelection);
+
+    if (shouldRestoreSelection) {
+        hairdresserSelect.value = String(restoreSelection.hairdresserId);
+    }
 
     const monthFormatter = new Intl.DateTimeFormat("bg-BG", {
         month: "long",
@@ -91,6 +104,10 @@
         return new Date(year, month - 1, day);
     }
 
+    function isNonWorkingDay(dateKey) {
+        return nonWorkingWeekDays.has(dateFromKey(dateKey).getDay());
+    }
+
     function normalizeTime(value) {
         return String(value).slice(0, 5);
     }
@@ -106,14 +123,18 @@
         return busySlotsByDate[dateKey] ?? [];
     }
 
- function getAvailableSlots(dateKey) {
-    const busyTimes = getBusyTimes(dateKey);
+    function getAvailableSlots(dateKey) {
+        if (isNonWorkingDay(dateKey)) {
+            return [];
+        }
 
-    return slots.filter(slot =>
-        !busyTimes.includes(slot) &&
-        !isPastSlot(dateKey, slot)
-    );
-}
+        const busyTimes = getBusyTimes(dateKey);
+
+        return slots.filter(slot =>
+            !busyTimes.includes(slot) &&
+            !isPastSlot(dateKey, slot)
+        );
+    }
 
     function setCalendarStatus(message) {
         calendarStatus.textContent = message;
@@ -147,6 +168,7 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateKey = toDateKey(year, month, day);
             const isPast = isPastDate(year, month, day);
+            const isNonWorking = isNonWorkingDay(dateKey);
             const availableSlots = isPast ? [] : getAvailableSlots(dateKey);
 
             const dayButton = document.createElement("button");
@@ -158,6 +180,11 @@
                 dayButton.classList.add("calendar-day--past");
                 dayButton.disabled = true;
                 dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – минала дата`);
+            } else if (isNonWorking) {
+                dayButton.classList.add("calendar-day--past");
+                dayButton.disabled = true;
+                dayButton.title = "Почивен ден";
+                dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – почивен ден`);
             } else if (availableSlots.length === 0) {
                 dayButton.classList.add("calendar-day--full");
                 dayButton.disabled = true;
@@ -299,7 +326,11 @@
         setCalendarStatus("Зареждаме актуалния график...");
 
         try {
-            const url = new URL(calendarRoot.dataset.busySlotsUrl, window.location.origin);
+            const url = new URL(
+                calendarRoot.dataset.busySlotsUrl,
+                window.location.origin
+            );
+
             url.searchParams.set("id", hairdresserId);
 
             const response = await fetch(url, {
@@ -318,6 +349,44 @@
 
             renderCalendar();
             setCalendarStatus("Избери свободен ден и удобен час.");
+
+            // Добавена логика:
+            // Само при върнат модел, след нормалното AJAX зареждане.
+            if (
+                shouldRestoreSelection &&
+                hairdresserId === String(restoreSelection.hairdresserId) &&
+                hairdresserSelect.value === hairdresserId
+            ) {
+                shouldRestoreSelection = false;
+
+                const restoredDate = restoreSelection.date;
+                const restoredTime = normalizeTime(restoreSelection.time);
+                const parsedDate = dateFromKey(restoredDate);
+
+                if (
+                    !Number.isNaN(parsedDate.getTime()) &&
+                    parsedDate >= today &&
+                    getAvailableSlots(restoredDate).includes(restoredTime)
+                ) {
+                    displayedMonth = new Date(
+                        parsedDate.getFullYear(),
+                        parsedDate.getMonth(),
+                        1
+                    );
+
+                    selectedDate = restoredDate;
+                    selectedTime = restoredTime;
+
+                    selectedDateInput.value = restoredDate;
+                    selectedTimeInput.value = restoredTime;
+
+                    renderCalendar();
+                    renderTimeSlots();
+                    updateContinueButton();
+
+                    showDetailsStep();
+                }
+            }
         } catch {
             busySlotsByDate = {};
 
@@ -346,10 +415,13 @@
             return;
         }
 
-        const hairdresserName = hairdresserSelect.options[hairdresserSelect.selectedIndex].text;
+        const hairdresserName =
+            hairdresserSelect.options[hairdresserSelect.selectedIndex].text;
+
         const date = dateFormatter.format(dateFromKey(selectedDate));
 
-        bookingSummary.textContent = `${hairdresserName} · ${date} · ${selectedTime} – ${getEndTime(selectedTime)}`;
+        bookingSummary.textContent =
+            `${hairdresserName} · ${date} · ${selectedTime} – ${getEndTime(selectedTime)}`;
 
         calendarStep.hidden = true;
         detailsStep.hidden = false;
@@ -410,15 +482,54 @@
         });
     });
 
+    submitButton.addEventListener("click", () => {
+        const validator = window.jQuery && window.jQuery.validator
+            ? window.jQuery(form).validate()
+            : null;
+
+        const isFormValid = validator
+            ? validator.form()
+            : form.checkValidity();
+
+        if (isFormValid) {
+            return;
+        }
+
+        clearTimeout(validationNotificationTimer);
+        clearTimeout(validationNotificationHideTimer);
+
+        validationNotification.hidden = false;
+
+        requestAnimationFrame(() => {
+            validationNotification.classList.add(
+                "form-validation-notification--visible"
+            );
+        });
+
+        validationNotificationTimer = setTimeout(() => {
+            validationNotification.classList.remove(
+                "form-validation-notification--visible"
+            );
+
+            validationNotificationHideTimer = setTimeout(() => {
+                validationNotification.hidden = true;
+            }, 350);
+        }, 10000);
+    });
+
     form.addEventListener("submit", event => {
-        const hasService = [...serviceCheckboxes].some(checkbox => checkbox.checked);
+        const hasService = [...serviceCheckboxes].some(
+            checkbox => checkbox.checked
+        );
 
         if (!selectedDate || !selectedTime || !hairdresserSelect.value) {
             event.preventDefault();
 
             showCalendarStep();
 
-            calendarSelectionError.textContent = "Моля, избери фризьор, дата и свободен час.";
+            calendarSelectionError.textContent =
+                "Моля, избери фризьор, дата и свободен час.";
+
             calendarSelectionError.hidden = false;
 
             return;
@@ -434,7 +545,7 @@
     loadBusySlots();
 })();
 
-        function isPastSlot(dateKey, slot) {
+function isPastSlot(dateKey, slot) {
     const [year, month, day] = dateKey.split("-").map(Number);
     const [hour, minute] = slot.split(":").map(Number);
 

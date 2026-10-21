@@ -1,14 +1,9 @@
-﻿@using System.Globalization
-@model HairSalon_Website.Data.Models.Reservation?
+﻿
+@using System.Globalization
+@model HairSalon_Website.Data.Models.Reservation
 
 @{
-    ViewData["Title"] = "Статус на резервацията";
-
-    string? errorMessage = ViewBag.ErrorMessage as string;
-
-    bool isSuccessful =
-        Model != null &&
-        string.IsNullOrWhiteSpace(errorMessage);
+    ViewData["Title"] = "Успешна резервация";
 }
 
 @section Styles {
@@ -18,120 +13,97 @@
 }
 
 <main class="reservation-result-page">
+    <div class="reservation-success-notification"
+         role="status"
+         aria-live="polite">
+        <span class="reservation-success-notification__icon"
+              aria-hidden="true">✓</span>
+
+        <p>Резервацията беше направена успешно!</p>
+    </div>
+
     <div class="reservation-result-shell">
 
-        @if (isSuccessful)
-        {
-            <section class="reservation-result-card reservation-result-card--success">
-                <div class="reservation-result-icon" aria-hidden="true">✓</div>
+        <section class="reservation-result-card reservation-result-card--success">
+            <div class="reservation-result-icon" aria-hidden="true">✓</div>
 
-                <p class="reservation-result-kicker">
-                    Graphite Barber Studio
-                </p>
+            <p class="reservation-result-kicker">
+                Graphite Barber Studio
+            </p>
 
-                <h1>Резервацията е <em>приета.</em></h1>
+            <h1>Резервация за <em>@Model.ClientName.</em></h1>
 
-                <p class="reservation-result-intro">
-                    Очакваме те. По-долу са всички детайли за запазения час.
-                </p>
+            <p class="reservation-result-intro">
+                По-долу са всички детайли за запазения час.
+            </p>
 
-                <div class="reservation-result-details">
-                    <div class="reservation-result-detail">
-                        <span>Фризьор</span>
-                        <strong>@Model.HairDresser?.Name</strong>
-                    </div>
-
-                    <div class="reservation-result-detail">
-                        <span>Дата</span>
-                        <strong>
-                            @Model.ReservationDate.ToString(
-                                "dddd, dd.MM.yyyy",
-                                CultureInfo.GetCultureInfo("bg-BG"))
-                        </strong>
-                    </div>
-
-                    <div class="reservation-result-detail">
-                        <span>Час</span>
-                        <strong>
-                            @Model.ReservationTime.ToString("HH:mm") –
-                            @Model.ReservationTime.AddMinutes(45).ToString("HH:mm")
-                        </strong>
-                    </div>
+            <div class="reservation-result-details">
+                <div class="reservation-result-detail">
+                    <span>Фризьор</span>
+                    <strong>@Model.HairDresser.Name</strong>
                 </div>
 
-                <section class="reservation-result-services"
-                         aria-labelledby="services-title">
-                    <h2 id="services-title">Избрани услуги</h2>
-
-                    <ul>
-                        @foreach (var service in Model.Services)
-                        {
-                            <li>
-                                <span>@service.Name</span>
-                                <strong>
-                                    @service.Price.ToString(
-                                        "0.00",
-                                        CultureInfo.GetCultureInfo("bg-BG")) лв.
-                                </strong>
-                            </li>
-                        }
-                    </ul>
-                </section>
-
-                <div class="reservation-result-total">
-                    <span>Обща цена</span>
-
+                <div class="reservation-result-detail">
+                    <span>Дата</span>
                     <strong>
-                        @Model.TotalPrice.ToString(
-                            "0.00",
-                            CultureInfo.GetCultureInfo("bg-BG")) лв.
+                        @Model.ReservationDate.ToString(
+                            "dddd, dd.MM.yyyy",
+                            CultureInfo.GetCultureInfo("bg-BG"))
                     </strong>
                 </div>
 
-                <div class="reservation-result-actions">
-                    <a asp-controller="Home"
-                       asp-action="Index"
-                       class="result-button result-button--secondary">
-                        Към началната страница
-                    </a>
-
-                    <a asp-controller="Reservation"
-                       asp-action="Create"
-                       class="result-button result-button--primary">
-                        Нова резервация <span aria-hidden="true">→</span>
-                    </a>
+                <div class="reservation-result-detail">
+                    <span>Час</span>
+                    <strong>
+                        @Model.ReservationTime.ToString("HH:mm") –
+                        @Model.ReservationTime.AddMinutes(45).ToString("HH:mm")
+                    </strong>
                 </div>
+            </div>
+
+            <section class="reservation-result-services"
+                     aria-labelledby="services-title">
+                <h2 id="services-title">Избрани услуги</h2>
+
+                <ul>
+                    @foreach (var service in Model.Services)
+                    {
+                        <li>
+                            <span>@service.Name</span>
+                            <strong>
+                                @service.Price.ToString(
+                                    "0.00",
+                                    CultureInfo.GetCultureInfo("bg-BG")) eur.
+                            </strong>
+                        </li>
+                    }
+                </ul>
             </section>
-        }
-        else
-        {
-            <section class="reservation-result-card reservation-result-card--error">
-                <div class="reservation-result-icon reservation-result-icon--error"
-                     aria-hidden="true">
-                    !
-                </div>
 
-                <p class="reservation-result-kicker">
-                    Graphite Barber Studio
-                </p>
+            <div class="reservation-result-total">
+                <span>Обща цена</span>
 
-                <h1>Не успяхме да запазим <em>часа.</em></h1>
+                <strong>
+                    @Model.TotalPrice.ToString(
+                        "0.00",
+                        CultureInfo.GetCultureInfo("bg-BG")) eur.
+                </strong>
+            </div>
 
-                <p class="reservation-result-intro">
-                    @(string.IsNullOrWhiteSpace(errorMessage)
-                        ? "Възникна неочакван проблем. Моля, опитай отново."
-                        : errorMessage)
-                </p>
+            <div class="reservation-result-actions">
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="result-button result-button--secondary">
+                    Към началната страница
+                </a>
 
-                <div class="reservation-result-actions">
-                    <a asp-controller="Reservation"
-                       asp-action="Create"
-                       class="result-button result-button--primary">
-                        Опитай отново <span aria-hidden="true">→</span>
-                    </a>
-                </div>
-            </section>
-        }
+                <a asp-controller="Reservation"
+                   asp-action="Create"
+                   class="result-button result-button--primary">
+                    Нова резервация <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </section>
 
     </div>
 </main>

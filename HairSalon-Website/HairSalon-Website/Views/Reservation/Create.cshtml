@@ -29,6 +29,17 @@
               class="reservation-form"
               id="reservation-form">
 
+            <div class="form-validation-notification"
+                 id="form-validation-notification"
+                 role="alert"
+                 aria-live="assertive"
+                 hidden>
+                <span class="form-validation-notification__icon"
+                      aria-hidden="true">!</span>
+
+                <p>Данните в полетата трябва да бъдат попълнени правилно.</p>
+            </div>
+
             <div asp-validation-summary="ModelOnly"
                  class="reservation-validation-summary">
             </div>
@@ -293,6 +304,7 @@
                     </button>
 
                     <button type="submit"
+                            id="complete-reservation"
                             class="reservation-button reservation-button--primary">
                         Завърши резервация <span aria-hidden="true">→</span>
                     </button>

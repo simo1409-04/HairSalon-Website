@@ -17,11 +17,14 @@
         "16:30",
         "17:20",
         "18:10",
-        "19:00",
-        "19:50"
+        "19:00"
     ];
 
+    const nonWorkingWeekDays = new Set([1, 2]);
+
     const form = document.getElementById("reservation-form");
+    const submitButton = document.getElementById("complete-reservation");
+    const validationNotification = document.getElementById("form-validation-notification");
     const hairdresserSelect = document.getElementById("hairdresser-select");
 
     const selectedHairdresserInput = document.getElementById("selected-hairdresser-id");
@@ -60,12 +63,12 @@
     let selectedDate = "";
     let selectedTime = "";
     let busySlotsByDate = {};
+    let validationNotificationTimer;
+    let validationNotificationHideTimer;
 
-    // Данни от върнатия MVC модел, ако съществува
     const restoreSelection = window.bookingRestoreSelection ?? null;
     let shouldRestoreSelection = Boolean(restoreSelection);
 
-    // Възстановяваме фризьора преди първата AJAX заявка
     if (shouldRestoreSelection) {
         hairdresserSelect.value = String(restoreSelection.hairdresserId);
     }
@@ -101,6 +104,10 @@
         return new Date(year, month - 1, day);
     }
 
+    function isNonWorkingDay(dateKey) {
+        return nonWorkingWeekDays.has(dateFromKey(dateKey).getDay());
+    }
+
     function normalizeTime(value) {
         return String(value).slice(0, 5);
     }
@@ -117,6 +124,10 @@
     }
 
     function getAvailableSlots(dateKey) {
+        if (isNonWorkingDay(dateKey)) {
+            return [];
+        }
+
         const busyTimes = getBusyTimes(dateKey);
 
         return slots.filter(slot =>
@@ -157,6 +168,7 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateKey = toDateKey(year, month, day);
             const isPast = isPastDate(year, month, day);
+            const isNonWorking = isNonWorkingDay(dateKey);
             const availableSlots = isPast ? [] : getAvailableSlots(dateKey);
 
             const dayButton = document.createElement("button");
@@ -168,6 +180,11 @@
                 dayButton.classList.add("calendar-day--past");
                 dayButton.disabled = true;
                 dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – минала дата`);
+            } else if (isNonWorking) {
+                dayButton.classList.add("calendar-day--past");
+                dayButton.disabled = true;
+                dayButton.title = "Почивен ден";
+                dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – почивен ден`);
             } else if (availableSlots.length === 0) {
                 dayButton.classList.add("calendar-day--full");
                 dayButton.disabled = true;
@@ -463,6 +480,41 @@
             servicesError.textContent = "";
             updateTotalPrice();
         });
+    });
+
+    submitButton.addEventListener("click", () => {
+        const validator = window.jQuery && window.jQuery.validator
+            ? window.jQuery(form).validate()
+            : null;
+
+        const isFormValid = validator
+            ? validator.form()
+            : form.checkValidity();
+
+        if (isFormValid) {
+            return;
+        }
+
+        clearTimeout(validationNotificationTimer);
+        clearTimeout(validationNotificationHideTimer);
+
+        validationNotification.hidden = false;
+
+        requestAnimationFrame(() => {
+            validationNotification.classList.add(
+                "form-validation-notification--visible"
+            );
+        });
+
+        validationNotificationTimer = setTimeout(() => {
+            validationNotification.classList.remove(
+                "form-validation-notification--visible"
+            );
+
+            validationNotificationHideTimer = setTimeout(() => {
+                validationNotification.hidden = true;
+            }, 350);
+        }, 10000);
     });
 
     form.addEventListener("submit", event => {

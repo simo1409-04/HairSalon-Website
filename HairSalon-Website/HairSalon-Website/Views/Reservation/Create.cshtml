@@ -1,5 +1,6 @@
-﻿@using System.Globalization
-@model HairSalon_Website.Data.Models.Reservation
+﻿
+@using System.Globalization
+@model HairSalon_Website.DTOs_Import.ReservationDtoImport
 
 @{
     ViewData["Title"] = "Запази час";
@@ -28,24 +29,32 @@
               class="reservation-form"
               id="reservation-form">
 
+            <div class="form-validation-notification"
+                 id="form-validation-notification"
+                 role="alert"
+                 aria-live="assertive"
+                 hidden>
+                <span class="form-validation-notification__icon"
+                      aria-hidden="true">!</span>
+
+                <p>Данните в полетата трябва да бъдат попълнени правилно.</p>
+            </div>
+
             <div asp-validation-summary="ModelOnly"
                  class="reservation-validation-summary">
             </div>
 
             <input asp-for="HairDresserId"
                    type="hidden"
-                   id="selected-hairdresser-id"
-                   value="" />
+                   id="selected-hairdresser-id" />
 
             <input asp-for="ReservationDate"
                    type="hidden"
-                   id="selected-reservation-date"
-                   value="" />
+                   id="selected-reservation-date" />
 
             <input asp-for="ReservationTime"
                    type="hidden"
-                   id="selected-reservation-time"
-                   value="" />
+                   id="selected-reservation-time" />
 
             <section class="booking-step booking-step--calendar"
                      id="calendar-step"
@@ -295,6 +304,7 @@
                     </button>
 
                     <button type="submit"
+                            id="complete-reservation"
                             class="reservation-button reservation-button--primary">
                         Завърши резервация <span aria-hidden="true">→</span>
                     </button>
@@ -306,6 +316,20 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    
+    @if (Model != null &&
+         Model.ReservationDate != default &&
+         Model.ReservationTime != default)
+    {
+        <script>
+            window.bookingRestoreSelection = {
+                date: "@Model.ReservationDate.ToString("yyyy-MM-dd")",
+                time: "@Model.ReservationTime.ToString("HH:mm")",
+                hairdresserId: "@Model.HairDresserId"
+            };
+        </script>
+    }
 
     <script src="~/js/Create.js"
             asp-append-version="true"></script>

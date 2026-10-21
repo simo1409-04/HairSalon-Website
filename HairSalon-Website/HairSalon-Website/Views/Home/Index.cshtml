@@ -1,9 +1,25 @@
 
 @{
     ViewData["Title"] = "Graphite Barber Studio";
+    var errorMessage = TempData["ErrorMessage"];
 }
 
 <main class="graphite-home">
+
+    @if (errorMessage != null && errorMessage.ToString() != "")
+    {
+        <div id="error-notification"
+             class="error-notification"
+             role="alert">
+
+            <span class="error-notification__icon"
+                  aria-hidden="true">!</span>
+
+            <p class="error-notification__message">
+                @errorMessage
+            </p>
+        </div>
+    }
     <section class="graphite-hero" aria-labelledby="hero-title">
         <div class="graphite-hero__shade" aria-hidden="true"></div>
 
@@ -76,3 +92,26 @@
         </div>
     </section>
 </main>
+@section Scripts {
+    <script>
+        (() => {
+            const notification =
+                document.getElementById("error-notification");
+
+            if (!notification) {
+                return;
+            }
+
+            setTimeout(() => {
+                notification.classList.add(
+                    "error-notification--hide"
+                );
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 400);
+
+            }, 5000);
+        })();
+    </script>
+}

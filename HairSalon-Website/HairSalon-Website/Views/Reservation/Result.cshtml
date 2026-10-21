@@ -13,6 +13,15 @@
 }
 
 <main class="reservation-result-page">
+    <div class="reservation-success-notification"
+         role="status"
+         aria-live="polite">
+        <span class="reservation-success-notification__icon"
+              aria-hidden="true">✓</span>
+
+        <p>Резервацията беше направена успешно!</p>
+    </div>
+
     <div class="reservation-result-shell">
 
         <section class="reservation-result-card reservation-result-card--success">
@@ -22,16 +31,16 @@
                 Graphite Barber Studio
             </p>
 
-            <h1>Резервацията е <em>приета.</em></h1>
+            <h1>Резервация за <em>@Model.ClientName.</em></h1>
 
             <p class="reservation-result-intro">
-                Очакваме те. По-долу са всички детайли за запазения час.
+                По-долу са всички детайли за запазения час.
             </p>
 
             <div class="reservation-result-details">
                 <div class="reservation-result-detail">
                     <span>Фризьор</span>
-                    <strong>@Model.HairDresser?.Name</strong>
+                    <strong>@Model.HairDresser.Name</strong>
                 </div>
 
                 <div class="reservation-result-detail">

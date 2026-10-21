@@ -23,7 +23,16 @@ namespace HairSalon_Website.Controllers
     new TimeOnly(17, 20),
     new TimeOnly(18, 10),
     new TimeOnly(19, 0),
-    new TimeOnly(19, 50)
+};
+
+        private List<DayOfWeek> nonWorkingDays = new List<DayOfWeek>
+{
+
+
+            DayOfWeek.Monday,
+            DayOfWeek.Tuesday
+
+
 };
 
         public ReservationController(HairSalonDb context)
@@ -59,9 +68,9 @@ namespace HairSalon_Website.Controllers
             bool isModelStateValid = ModelState.IsValid;
             bool isHairDresserIdIsValid = HairDresserIdsInDb.Contains(reservationDto.HairDresserId);
             bool isSlotAvailable = !context.Reservations.Any(x => x.ReservationDate == reservationDto.ReservationDate && x.ReservationTime == reservationDto.ReservationTime && x.HairDresserId == reservationDto.HairDresserId);
+            bool isDayOfWeekForReservationValid = !nonWorkingDays.Contains(reservationDto.ReservationDate.DayOfWeek);
 
-
-            if (areServiceIdsValid && isModelStateValid && isHairDresserIdIsValid&& isSlotAvailable)
+            if (areServiceIdsValid && isModelStateValid && isHairDresserIdIsValid&& isSlotAvailable&& isDayOfWeekForReservationValid)
             {
 
                 if (reservationDto.ReservationDate > today ||
@@ -165,6 +174,8 @@ namespace HairSalon_Website.Controllers
                 })
                 .ToList();
         }
+
+        
 
     }
 }

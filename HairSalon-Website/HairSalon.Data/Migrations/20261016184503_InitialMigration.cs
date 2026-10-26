@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace HairSalon_Website.Migrations
+namespace HairSalon.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

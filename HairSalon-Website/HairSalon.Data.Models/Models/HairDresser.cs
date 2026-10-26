@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static HairSalon_Website.Common.ValidationConstrants;
+using static HairSalon.Common.ValidationConstrants;
 
-namespace HairSalon_Website.Data.Models
+namespace HairSalon.Data.Models
 {
     public class HairDresser
     {

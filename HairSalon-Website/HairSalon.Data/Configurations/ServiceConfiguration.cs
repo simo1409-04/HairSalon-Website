@@ -1,9 +1,9 @@
-﻿using HairSalon_Website.Data.Enums;
-using HairSalon_Website.Data.Models;
+﻿using HairSalon.Data.Models.Enums;
+using HairSalon.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace HairSalon_Website.Data.Configurations
+namespace HairSalon.Data.Configurations
 {
     public class ServiceConfiguration : IEntityTypeConfiguration<Service>
     {

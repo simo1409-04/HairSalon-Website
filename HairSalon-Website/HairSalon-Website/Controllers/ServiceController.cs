@@ -1,6 +1,6 @@
-﻿using HairSalon_Website.Data;
+﻿using HairSalon.Data;
 using Microsoft.AspNetCore.Mvc;
-using HairSalon_Website.Data.Models;
+using HairSalon.Data.Models;
 
 namespace HairSalon_Website.Controllers
 {

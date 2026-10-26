@@ -1,13 +1,15 @@
-﻿using HairSalon_Website.Data.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalon_Website.Common.ValidationConstrants.ReservationConstrants;
+using static HairSalon.Common.ValidationConstrants.ReservationConstrants;
 
-namespace HairSalon_Website.DTOs_Import
+namespace HairSalon.Data.Models
 {
-    public class ReservationDtoImport
+    public class Reservation
     {
 
+        [Key]
+        public int Id { get; set; }
+        [Required(ErrorMessage = "Името на клиента е задължително")]
 
         [MinLength(3,
             ErrorMessage = "Името трябва да съдържа поне {1} букви")]
@@ -19,8 +21,6 @@ namespace HairSalon_Website.DTOs_Import
             ErrorMessage = "Името трябва да съдържа само букви")]
 
         public string ClientName { get; set; } = null!;
-
-
         [Required(ErrorMessage = "Телефонът е задължителен")]
         [MinLength(ClientPhoneMinLength, ErrorMessage = "Телефонът трябва да има поне {1} цифри")]
         [MaxLength(ClientPhoneMaxLength, ErrorMessage = "Телефонът не трябва да надвишава {1} цифри")]
@@ -34,17 +34,15 @@ namespace HairSalon_Website.DTOs_Import
         [Required(ErrorMessage = "Часът на резервация е задължителен")]
         public TimeOnly ReservationTime { get; set; }
 
-
-
         [ForeignKey(nameof(HairDresser))]
-        [Required(ErrorMessage = "Моля изберете фризьор!")]
+        [Required(ErrorMessage ="Моля изберете фризьор!")]
         public int HairDresserId { get; set; }
-
-
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+        public virtual HairDresser? HairDresser { get; set; }
 
+        public virtual ICollection<Service> Services { get; set; } = new HashSet<Service>();
 
 
 

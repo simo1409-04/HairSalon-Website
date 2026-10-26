@@ -1,8 +1,8 @@
-﻿using HairSalon_Website.Data.Models;
+﻿using HairSalon.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace HairSalon_Website.Data.Configurations
+namespace HairSalon.Data.Configurations
 {
     public class HairDresserConfiguration: IEntityTypeConfiguration<HairDresser>
     {

@@ -1,4 +1,4 @@
-﻿namespace HairSalon_Website.Common
+﻿namespace HairSalon.Common
 {
     public static class ValidationConstrants
     {

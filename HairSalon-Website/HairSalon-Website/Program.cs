@@ -1,4 +1,4 @@
-using HairSalon_Website.Data;
+using HairSalon.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

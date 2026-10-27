@@ -1,3 +1,8 @@
 <Solution>
   <Project Path="HairSalon-Website/HairSalon_Website.csproj" />
+  <Project Path="HairSalon.Common/HairSalon.Common.csproj" Id="3379504f-a503-4a21-8afa-d31dcb48d15d" />
+  <Project Path="HairSalon.Data.Models/HairSalon.Data.Models.csproj" Id="c105673a-6193-42c8-85d9-04ac82271e27" />
+  <Project Path="HairSalon.Data/HairSalon.Data.csproj" Id="d90ef022-cc17-43ca-8304-1bde45fe2135" />
+  <Project Path="HairSalon.DataTransferObjects/HairSalon.DataTransferObjects.csproj" Id="64fdca6b-4328-4158-a9e3-0f9fd1dae1a0" />
+  <Project Path="HairSalon.Services.Core/HairSalon.Services.Core.csproj" Id="3a9897cd-3b82-4219-a93b-b877d3397096" />
 </Solution>

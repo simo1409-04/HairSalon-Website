@@ -1,9 +1,10 @@
 ﻿
 @using System.Globalization
-@model HairSalon_Website.DTOs_Import.ReservationDtoImport
+@model HairSalon.DataTransferObjects.Reservations.ReservationDtoImport
 
 @{
     ViewData["Title"] = "Запази час";
+    List<int> selectedServiceIds = ViewBag.SelectedServiceIds ?? new List<int>();
 }
 
 @section Styles {
@@ -265,6 +266,7 @@
                                        name="serviceIds"
                                        value="@service.Id"
                                        id="service-@service.Id"
+                                       checked="@(selectedServiceIds.Contains((int)service.Id))"
                                        data-price="@Convert.ToDecimal(service.Price).ToString(CultureInfo.InvariantCulture)" />
 
                                 <label for="service-@service.Id">

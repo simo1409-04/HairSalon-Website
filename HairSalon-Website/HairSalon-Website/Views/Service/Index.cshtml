@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model IEnumerable<Service>
+@model IEnumerable<ServiceView>
 
 @{
     ViewData["Title"] = "Услуги";
@@ -31,8 +31,10 @@
                 @foreach (var service in Model)
                 {
                    
-                    <a 
-                       asp-controller="Reservation" asp-action="Create"><article class="service-card">
+                    <a asp-controller="Reservation"
+                       asp-action="Create"
+                       class="service-card-link"
+                       aria-label="Запази час за @service.Name"><article class="service-card">
                         <div class="service-card__image-wrapper">
                             <img src="@service.ServicePhotoExampleUrl"
                                  alt="@service.Name"

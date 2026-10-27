@@ -1,6 +1,6 @@
 ﻿
 @using System.Globalization
-@model HairSalon_Website.Data.Models.Reservation
+@model HairSalon.Data.Models.Reservation
 
 @{
     ViewData["Title"] = "Успешна резервация";
@@ -40,7 +40,7 @@
             <div class="reservation-result-details">
                 <div class="reservation-result-detail">
                     <span>Фризьор</span>
-                    <strong>@Model.HairDresser.Name</strong>
+                    <strong>@Model.HairDresser?.Name</strong>
                 </div>
 
                 <div class="reservation-result-detail">

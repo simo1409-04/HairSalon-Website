@@ -10,8 +10,5 @@ namespace HairSalon.Services.Core.Reservations
 
         public Reservation? Reservation { get; set; }
 
-        public string? ErrorField { get; set; }
-
-        public string? ErrorMessage { get; set; }
     }
 }

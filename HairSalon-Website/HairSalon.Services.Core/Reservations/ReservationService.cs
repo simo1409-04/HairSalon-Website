@@ -5,40 +5,56 @@ using HairSalon.DataTransferObjects.Service;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+
 
 namespace HairSalon.Services.Core.Reservations
 {
-    public class ReservationService(IRepository repository) : IReservationService
+    public  class ReservationService(IRepository repository, ReservationResult result) : IReservationService
     {
-        private static readonly HashSet<TimeOnly> ValidSlots = new()
-        {
-            new(10, 0), new(10, 50), new(11, 40), new(12, 30),
-            new(14, 0), new(14, 50), new(15, 40), new(16, 30),
-            new(17, 20), new(18, 10), new(19, 0)
-        };
+        private List<TimeOnly> validSlots = new List<TimeOnly>
+{
+    new TimeOnly(10, 0),
+    new TimeOnly(10, 50),
+    new TimeOnly(11, 40),
+    new TimeOnly(12, 30),
 
-        private static readonly HashSet<DayOfWeek> NonWorkingDays = new()
-        {
+    new TimeOnly(14, 0),
+    new TimeOnly(14, 50),
+    new TimeOnly(15, 40),
+    new TimeOnly(16, 30),
+    new TimeOnly(17, 20),
+    new TimeOnly(18, 10),
+    new TimeOnly(19, 0),
+};
+
+        private List<DayOfWeek> nonWorkingDays = new List<DayOfWeek>{
+
+
             DayOfWeek.Monday,
             DayOfWeek.Tuesday
-        };
 
-        public async Task<Dictionary<DateOnly, TimeOnly[]>> GetHairdresserBusySlots(int id)
+
+};
+
+        public async  Task<Dictionary<DateOnly, TimeOnly[]> >GetHairdresserBusySlots(int id)
         {
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var slots = await repository.All<Reservation>()
-                .Where(x => x.HairDresserId == id && x.ReservationDate >= today)
-                .Select(x => new { x.ReservationDate, x.ReservationTime })
-                .ToListAsync();
 
-            return slots.GroupBy(x => x.ReservationDate)
-                .ToDictionary(group => group.Key, group => group.Select(x => x.ReservationTime).ToArray());
+            var hairdresserSlots = await repository.All<Reservation>().Where(x => x.HairDresserId == id).Select(x => new { x.ReservationDate, x.ReservationTime }).ToListAsync();
+
+
+            Dictionary<DateOnly, TimeOnly[]> hairdresserSlotsDic = hairdresserSlots.GroupBy(x => x.ReservationDate).ToDictionary(group => group.Key, group => group.Select(x => x.ReservationTime).ToArray());
+
+            return hairdresserSlotsDic;
         }
 
         public async Task<List<ServiceInReservationCreateDto>> LoadServicesForReservation()
         {
-            return await repository.All<Service>()
+        
+            List<ServiceInReservationCreateDto> Services = await repository.All<Service>()
                 .Select(x => new ServiceInReservationCreateDto
                 {
                     Id = x.Id,
@@ -46,140 +62,123 @@ namespace HairSalon.Services.Core.Reservations
                     Price = x.Price
                 })
                 .ToListAsync();
-        }
 
+            return Services;
+
+        
+        }
         public async Task<List<HairDresserReservationCreateDto>> LoadHairdressersForReservation()
+            
         {
-            return await repository.All<HairDresser>()
+
+          
+
+            List<HairDresserReservationCreateDto> hairDressers= await repository.All<HairDresser>()
                 .Select(x => new HairDresserReservationCreateDto
                 {
                     Name = x.Name,
                     Value = x.Id
                 })
                 .ToListAsync();
-        }
 
-        public async Task<Reservation?> GetReservationById(int id)
-        {
-            return await repository.All<Reservation>()
-                .Include(x => x.HairDresser)
-                .Include(x => x.Services)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return hairDressers;
+
         }
+            
+
 
         public async Task<ReservationResult> CreateReservation(ReservationDtoImport reservationDto, List<int> serviceIds)
         {
-            var now = DateTime.Now;
-            var today = DateOnly.FromDateTime(now);
-            var currentTime = TimeOnly.FromDateTime(now);
 
-            if (reservationDto.ReservationDate is not DateOnly date)
+
+            List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
+            List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+
+            bool areServiceIdsValid =
+                serviceIds.Any() &&
+                serviceIds.All(id => serviceIdsInDb.Contains(id));
+            bool isHairDresserIdIsValid = HairDresserIdsInDb.Contains(reservationDto.HairDresserId);
+            bool isSlotAvailable =!await repository.All<Reservation>().AnyAsync(x => x.ReservationDate == reservationDto.ReservationDate && x.ReservationTime == reservationDto.ReservationTime && x.HairDresserId == reservationDto.HairDresserId);
+            bool isDayOfWeekForReservationValid = !nonWorkingDays.Contains(reservationDto.ReservationDate.DayOfWeek);
+
+            if (areServiceIdsValid  && isHairDresserIdIsValid && isSlotAvailable && isDayOfWeekForReservationValid)
             {
-                return Invalid(nameof(reservationDto.ReservationDate), "Избери дата за резервацията.");
-            }
 
-            if (reservationDto.ReservationTime is not TimeOnly time)
-            {
-                return Invalid(nameof(reservationDto.ReservationTime), "Избери час за резервацията.");
-            }
-
-            if (date < today || (date == today && time <= currentTime))
-            {
-                return Invalid(nameof(reservationDto.ReservationDate), "Избери бъдеща дата и час.");
-            }
-
-            if (NonWorkingDays.Contains(date.DayOfWeek))
-            {
-                return Invalid(nameof(reservationDto.ReservationDate), "Избраният ден е почивен.");
-            }
-
-            if (!ValidSlots.Contains(time))
-            {
-                return Invalid(nameof(reservationDto.ReservationTime), "Избери час от свободните часове в календара.");
-            }
-
-            if (reservationDto.HairDresserId is not int hairDresserId)
-            {
-                return Invalid(nameof(reservationDto.HairDresserId), "Избери фризьор.");
-            }
-
-            if (serviceIds == null || serviceIds.Count == 0)
-            {
-                return Invalid(string.Empty, "Избери поне една услуга.");
-            }
-
-            try
-            {
-                var hairDresser = await repository.All<HairDresser>()
-                    .FirstOrDefaultAsync(x => x.Id == hairDresserId);
-
-                if (hairDresser == null)
+                if (reservationDto.ReservationDate > today ||
+              (reservationDto.ReservationDate == today &&
+               reservationDto.ReservationTime > currentTime))
                 {
-                    return Invalid(nameof(reservationDto.HairDresserId), "Избери валиден фризьор.");
+
+                    bool isSlotValid = validSlots.Contains(reservationDto.ReservationTime);
+
+                    decimal CorrectTotalPricePrice =  await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).Select(x => x.Price).SumAsync();
+
+
+                    if (isSlotValid)
+                    {
+
+                        List<Service> servicesForReservationDb = await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).ToListAsync();
+                        HairDresser? hairDresser = await repository.All<HairDresser>().FirstOrDefaultAsync(x => x.Id == reservationDto.HairDresserId);
+
+                        Reservation reservationForDb = new Reservation
+                        {
+                            ClientName = reservationDto.ClientName,
+                            ClientPhone = reservationDto.ClientPhone,
+                            ReservationDate = reservationDto.ReservationDate,
+                            ReservationTime = reservationDto.ReservationTime,
+                            HairDresser = hairDresser,
+                            TotalPrice = CorrectTotalPricePrice,
+                            Services = servicesForReservationDb
+                        };
+
+                        repository.Add<Reservation>(reservationForDb);
+
+                        try
+                        {
+                            await repository.SaveChangesAsync();
+
+
+                            result.Status = ReservationStatus.Success;
+                            result.Reservation = reservationForDb;
+
+
+                            return (result);
+
+
+                        }
+
+                        catch (Exception)
+                        {
+
+                            result.Status = ReservationStatus.DatabaseError;
+
+
+                            return (result);
+                        }
+
+
+
+
+
+
+                    }
+
                 }
 
-                var selectedIds = serviceIds.Distinct().ToList();
-                var services = await repository.All<Service>()
-                    .Where(x => selectedIds.Contains(x.Id))
-                    .ToListAsync();
-
-                if (services.Count != selectedIds.Count)
-                {
-                    return Invalid(string.Empty, "Избери валидни услуги.");
-                }
-
-                bool isBusy = await repository.All<Reservation>().AnyAsync(x =>
-                    x.HairDresserId == hairDresser.Id &&
-                    x.ReservationDate == date &&
-                    x.ReservationTime == time);
-
-                if (isBusy)
-                {
-                    return Invalid(nameof(reservationDto.ReservationTime), "Този час вече е зает. Избери друг.");
-                }
-
-                var reservation = new Reservation
-                {
-                    ClientName = reservationDto.ClientName,
-                    ClientPhone = reservationDto.ClientPhone,
-                    ReservationDate = date,
-                    ReservationTime = time,
-                    HairDresser = hairDresser,
-                    TotalPrice = services.Sum(x => x.Price),
-                    Services = services
-                };
-
-                repository.Add(reservation);
-                await repository.SaveChangesAsync();
-
-                return new ReservationResult
-                {
-                    Status = ReservationStatus.Success,
-                    Reservation = reservation
-                };
             }
-            catch (DbUpdateException)
-            {
-                return new ReservationResult { Status = ReservationStatus.DatabaseError };
-            }
-            catch (DbException)
-            {
-                return new ReservationResult { Status = ReservationStatus.DatabaseError };
-            }
-            catch (InvalidOperationException exception) when (exception.InnerException is DbException)
-            {
-                return new ReservationResult { Status = ReservationStatus.DatabaseError };
-            }
+
+            result.Status = ReservationStatus.WrongInputDataError;
+
+
+            return result;
+
+
+
+
         }
 
-        private static ReservationResult Invalid(string field, string message)
-        {
-            return new ReservationResult
-            {
-                Status = ReservationStatus.WrongInputDataError,
-                ErrorField = field,
-                ErrorMessage = message
-            };
-        }
     }
 }

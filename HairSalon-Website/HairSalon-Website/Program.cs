@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Wrong or missing connection string!");
 
@@ -14,12 +13,12 @@ builder.Services.AddDbContext<HairSalonDb>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IRepository, Repository>();
-builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<ReservationResult>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

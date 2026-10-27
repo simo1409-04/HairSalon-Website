@@ -1,7 +1,7 @@
 
 @{
     ViewData["Title"] = "Graphite Barber Studio";
-    var errorMessage = TempData["ErrorMessage"];
+    var errorMessage = TempData["ErrorMessage"] ?? TempData["ErrorSaving"];
 }
 
 <main class="graphite-home">

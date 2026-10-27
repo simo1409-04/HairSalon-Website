@@ -1,5 +1,4 @@
-﻿using HairSalon.Data.Models.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static HairSalon.Common.ValidationConstrants.ServiceConstrants;
 
@@ -15,8 +14,6 @@ namespace HairSalon.Data.Models
         public string Name { get; set; } = null!;
 
 
-        [Required(ErrorMessage = "Полът е задължителен")]
-        public Gender Gender { get; set; } 
 
 
        

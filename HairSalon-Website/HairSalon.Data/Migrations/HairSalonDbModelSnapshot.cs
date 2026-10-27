@@ -515,9 +515,6 @@ namespace HairSalon.Data.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -539,7 +536,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 1,
                             Details = "Комбинирана услуга с мъжко подстригване и прецизно оформяне на брада.",
-                            Gender = 0,
                             Name = "Подстригване и оформяне на брада",
                             Price = 20.00m,
                             ServicePhotoExampleUrl = "/images/services/mens-cut-and-beard.png"
@@ -548,7 +544,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 2,
                             Details = "Мъжко подстригване, съобразено с формата на лицето и желания стил.",
-                            Gender = 0,
                             Name = "Мъжко подстригване",
                             Price = 15.00m,
                             ServicePhotoExampleUrl = "/images/services/mens-haircut.png"
@@ -557,7 +552,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 3,
                             Details = "Контуриране, скъсяване и оформяне на брада.",
-                            Gender = 0,
                             Name = "Оформяне на брада",
                             Price = 8.00m,
                             ServicePhotoExampleUrl = "/images/services/beard-trim.png"
@@ -566,7 +560,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 4,
                             Details = "Класическо бръснене с професионална грижа за кожата.",
-                            Gender = 0,
                             Name = "Кралско бръснене",
                             Price = 10.00m,
                             ServicePhotoExampleUrl = "/images/services/royal-shave.png"
@@ -575,7 +568,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 5,
                             Details = "Подстригване за момчета до 12 години.",
-                            Gender = 0,
                             Name = "Детско подстригване до 12 години",
                             Price = 10.00m,
                             ServicePhotoExampleUrl = "/images/services/kids-haircut.png"
@@ -584,7 +576,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 6,
                             Details = "Топла кърпа за освежаване и комфорт.",
-                            Gender = 0,
                             Name = "Топла кърпа",
                             Price = 3.00m,
                             ServicePhotoExampleUrl = "/images/services/hot-towel.png"
@@ -593,7 +584,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 7,
                             Details = "Почистване с кола маска на лице, нос и уши.",
-                            Gender = 0,
                             Name = "Кола маска за лице, нос и уши",
                             Price = 3.00m,
                             ServicePhotoExampleUrl = "/images/services/face-wax.png"
@@ -602,7 +592,6 @@ namespace HairSalon.Data.Migrations
                         {
                             Id = 8,
                             Details = "Прецизно оформяне и почистване на вежди.",
-                            Gender = 0,
                             Name = "Оформяне на вежди",
                             Price = 3.00m,
                             ServicePhotoExampleUrl = "/images/services/eyebrow-shaping.png"

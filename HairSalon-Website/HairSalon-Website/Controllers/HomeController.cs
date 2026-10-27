@@ -1,5 +1,5 @@
-using HairSalon_Website.Data;
-using HairSalon_Website.Data.Models;
+using HairSalon.Data;
+using HairSalon.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -12,11 +12,10 @@ namespace HairSalon_Website.Controllers
         public HomeController(HairSalonDb context)
         {
             this.context = context;
-
         }
+
         public IActionResult Index()
         {
-
             return View();
         }
 

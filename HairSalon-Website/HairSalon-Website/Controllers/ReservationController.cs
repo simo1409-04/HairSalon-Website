@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace HairSalon_Website.Controllers
 {
-    public class ReservationController(HairSalonDb context, IReservationService reservationService) : Controller
+    public class ReservationController(IReservationService reservationService) : Controller
     {
        
 

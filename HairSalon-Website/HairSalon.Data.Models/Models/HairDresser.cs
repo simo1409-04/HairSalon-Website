@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static HairSalon.Common.ValidationConstrants;
+using System.ComponentModel.DataAnnotations;
+using static HairSalon.Common.ValidationConstants;
 
 namespace HairSalon.Data.Models
 {
@@ -10,7 +10,7 @@ namespace HairSalon.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(HairDreeserConstrants.NameMaxLength, ErrorMessage = "Името не трябва да надвишава {1} знака")]
+        [MaxLength(HairDresserConstants.NameMaxLength, ErrorMessage = "Името не трябва да надвишава {1} знака")]
 
         public string Name { get; set; } = null!;
 

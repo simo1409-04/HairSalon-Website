@@ -1,5 +1,7 @@
 using HairSalon.Data;
 using HairSalon.Services.Core.Contracts;
+using HairSalon.Services.Core.Reservations;
+using HairSalon.Services.Core.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<HairSalonDb>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 var app = builder.Build();
 
@@ -24,6 +28,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();

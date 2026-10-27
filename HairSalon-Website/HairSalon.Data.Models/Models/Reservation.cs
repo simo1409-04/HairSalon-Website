@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalon.Common.ValidationConstrants.ReservationConstrants;
+using static HairSalon.Common.ValidationConstants.ReservationConstants;
 
 namespace HairSalon.Data.Models
 {
@@ -9,9 +9,10 @@ namespace HairSalon.Data.Models
 
         [Key]
         public int Id { get; set; }
+
         [Required(ErrorMessage = "Името на клиента е задължително")]
 
-        [MinLength(3,
+        [MinLength(ClientNameMinLength,
             ErrorMessage = "Името трябва да съдържа поне {1} букви")]
 
         [MaxLength(ClientNameMaxLength,
@@ -21,6 +22,9 @@ namespace HairSalon.Data.Models
             ErrorMessage = "Името трябва да съдържа само букви")]
 
         public string ClientName { get; set; } = null!;
+
+
+
         [Required(ErrorMessage = "Телефонът е задължителен")]
         [MinLength(ClientPhoneMinLength, ErrorMessage = "Телефонът трябва да има поне {1} цифри")]
         [MaxLength(ClientPhoneMaxLength, ErrorMessage = "Телефонът не трябва да надвишава {1} цифри")]

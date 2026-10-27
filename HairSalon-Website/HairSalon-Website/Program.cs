@@ -1,4 +1,5 @@
 using HairSalon.Data;
+using HairSalon.Services.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,9 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddDbContext<HairSalonDb>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IRepository, Repository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

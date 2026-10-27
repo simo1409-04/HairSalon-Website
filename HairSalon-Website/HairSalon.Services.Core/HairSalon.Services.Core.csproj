@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HairSalon.Data.Models\HairSalon.Data.Models.csproj" />
     <ProjectReference Include="..\HairSalon.DataTransferObjects\HairSalon.DataTransferObjects.csproj" />
-    <ProjectReference Include="..\HairSalon.Data\HairSalon.Data.csproj" />
   </ItemGroup>
 
 </Project>

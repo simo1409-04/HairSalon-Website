@@ -542,6 +542,7 @@
         }
     });
 
+    updateTotalPrice();
     loadBusySlots();
 })();
 

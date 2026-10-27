@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HairSalon.Data.Models\HairSalon.Data.Models.csproj" />
     <ProjectReference Include="..\HairSalon.DataTransferObjects\HairSalon.DataTransferObjects.csproj" />
   </ItemGroup>

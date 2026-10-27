@@ -1,22 +1,14 @@
-﻿using HairSalon.Data;
+using HairSalon.DataTransferObjects.Service;
+using HairSalon.Services.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using HairSalon.Data.Models;
 
 namespace HairSalon_Website.Controllers
 {
-    public class ServiceController : Controller
+    public class ServiceController(IServiceService serviceService) : Controller
     {
-        private HairSalonDb context;
-
-        public ServiceController(HairSalonDb context)
+        public async Task<IActionResult> Index()
         {
-            this.context = context;
-        }
-        public IActionResult Index()
-        {
-
-            List<Service> services = context.Services.ToList();
-
+            List<ServiceView> services = await serviceService.GetAllServicesAsync();
 
             return View(services);
         }

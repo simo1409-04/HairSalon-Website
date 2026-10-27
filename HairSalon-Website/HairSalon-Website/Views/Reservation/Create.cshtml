@@ -1,9 +1,10 @@
 ﻿
 @using System.Globalization
-@model HairSalon.DataTransferObjects.DTOs_Import.ReservationDtoImport
+@model HairSalon.DataTransferObjects.Reservations.ReservationDtoImport
 
 @{
     ViewData["Title"] = "Запази час";
+    List<int> selectedServiceIds = ViewBag.SelectedServiceIds ?? new List<int>();
 }
 
 @section Styles {
@@ -265,6 +266,7 @@
                                        name="serviceIds"
                                        value="@service.Id"
                                        id="service-@service.Id"
+                                       checked="@(selectedServiceIds.Contains((int)service.Id))"
                                        data-price="@Convert.ToDecimal(service.Price).ToString(CultureInfo.InvariantCulture)" />
 
                                 <label for="service-@service.Id">
@@ -319,13 +321,13 @@
 
     
     @if (Model != null &&
-         Model.ReservationDate != default &&
-         Model.ReservationTime != default)
+         Model.ReservationDate.HasValue &&
+         Model.ReservationTime.HasValue)
     {
         <script>
             window.bookingRestoreSelection = {
-                date: "@Model.ReservationDate.ToString("yyyy-MM-dd")",
-                time: "@Model.ReservationTime.ToString("HH:mm")",
+                date: "@Model.ReservationDate.Value.ToString("yyyy-MM-dd")",
+                time: "@Model.ReservationTime.Value.ToString("HH:mm")",
                 hairdresserId: "@Model.HairDresserId"
             };
         </script>

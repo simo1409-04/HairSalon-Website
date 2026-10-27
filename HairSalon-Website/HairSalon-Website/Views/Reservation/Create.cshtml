@@ -321,13 +321,13 @@
 
     
     @if (Model != null &&
-         Model.ReservationDate.HasValue &&
-         Model.ReservationTime.HasValue)
+         Model.ReservationDate != default &&
+         Model.ReservationTime != default)
     {
         <script>
             window.bookingRestoreSelection = {
-                date: "@Model.ReservationDate.Value.ToString("yyyy-MM-dd")",
-                time: "@Model.ReservationTime.Value.ToString("HH:mm")",
+                date: "@Model.ReservationDate.ToString("yyyy-MM-dd")",
+                time: "@Model.ReservationTime.ToString("HH:mm")",
                 hairdresserId: "@Model.HairDresserId"
             };
         </script>

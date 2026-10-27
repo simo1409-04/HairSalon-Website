@@ -2,7 +2,7 @@ using HairSalon.DataTransferObjects.Service;
 
 namespace HairSalon.Services.Core.Contracts
 {
-    public interface IServiceService
+    public interface IServicesService
     {
         Task<List<ServiceView>> GetAllServicesAsync();
     }

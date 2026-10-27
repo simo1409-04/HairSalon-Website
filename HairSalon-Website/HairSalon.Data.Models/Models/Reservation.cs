@@ -12,7 +12,7 @@ namespace HairSalon.Data.Models
 
         [Required(ErrorMessage = "Името на клиента е задължително")]
 
-        [MinLength(ClientNameMinLength,
+        [MinLength(3,
             ErrorMessage = "Името трябва да съдържа поне {1} букви")]
 
         [MaxLength(ClientNameMaxLength,

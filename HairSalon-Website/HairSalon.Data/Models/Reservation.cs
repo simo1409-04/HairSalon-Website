@@ -1,17 +1,29 @@
-using HairSalon.Data.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalon.Common.ValidationConstants.ReservationConstants;
+using static HairSalon.Data.Common.ValidationConstants.ReservationConstants;
 
-namespace HairSalon.DataTransferObjects.Reservations
+namespace HairSalon.Data.Models
 {
-    public class ReservationDtoImport
+    public class Reservation
     {
-        [MinLength(3, ErrorMessage = "Името трябва да съдържа поне {1} букви")]
-        [MaxLength(ClientNameMaxLength, ErrorMessage = "Името не трябва да надвишава {1} знака")]
-        [RegularExpression(@"^[А-Яа-яA-Za-z]+$", ErrorMessage = "Името трябва да съдържа само букви")]
-        [Required(ErrorMessage = "Името е задължително")]
+
+        [Key]
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Името на клиента е задължително")]
+
+        [MinLength(3,
+            ErrorMessage = "Името трябва да съдържа поне {1} букви")]
+
+        [MaxLength(ClientNameMaxLength,
+            ErrorMessage = "Името не трябва да надвишава {1} знака")]
+
+        [RegularExpression(@"^[А-Яа-яA-Za-z]+$",
+            ErrorMessage = "Името трябва да съдържа само букви")]
+
         public string ClientName { get; set; } = null!;
+
+
 
         [Required(ErrorMessage = "Телефонът е задължителен")]
         [MinLength(ClientPhoneMinLength, ErrorMessage = "Телефонът трябва да има поне {1} цифри")]
@@ -21,14 +33,22 @@ namespace HairSalon.DataTransferObjects.Reservations
         [Required(ErrorMessage = "Датата на резервация е задължителна")]
         public DateOnly ReservationDate { get; set; }
 
+
+
         [Required(ErrorMessage = "Часът на резервация е задължителен")]
         public TimeOnly ReservationTime { get; set; }
 
         [ForeignKey(nameof(HairDresser))]
-        [Required(ErrorMessage = "Моля изберете фризьор!")]
+        [Required(ErrorMessage ="Моля изберете фризьор!")]
         public int HairDresserId { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+        public virtual HairDresser? HairDresser { get; set; }
+
+        public virtual ICollection<Service> Services { get; set; } = new HashSet<Service>();
+
+
+
     }
 }

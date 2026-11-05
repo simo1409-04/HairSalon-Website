@@ -11,8 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HairSalon.Data.Models\HairSalon.Data.Models.csproj" />
-    <ProjectReference Include="..\HairSalon.DataTransferObjects\HairSalon.DataTransferObjects.csproj" />
+    <Compile Remove="Contracts\IRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HairSalon.Data\HairSalon.Data.csproj" />
   </ItemGroup>
 
 </Project>

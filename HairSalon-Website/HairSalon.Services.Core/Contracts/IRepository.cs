@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HairSalon.Services.Core.Contracts
+namespace HairSalon.Data.Contracts
 {
     public interface IRepository
     {
@@ -10,10 +6,6 @@ namespace HairSalon.Services.Core.Contracts
 
         public void Add<T>(T model) where T : class;
 
-
-        public  Task<int> SaveChangesAsync();
-        
-
-
+        public Task<int> SaveChangesAsync();
     }
 }

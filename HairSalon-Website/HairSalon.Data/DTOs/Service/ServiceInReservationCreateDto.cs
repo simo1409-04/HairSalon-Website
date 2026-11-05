@@ -1,4 +1,4 @@
-namespace HairSalon.DataTransferObjects.Service
+namespace HairSalon.Data.DTOs.Service
 {
     public class ServiceInReservationCreateDto
     {

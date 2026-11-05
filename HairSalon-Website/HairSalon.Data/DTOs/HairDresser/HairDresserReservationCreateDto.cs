@@ -1,4 +1,4 @@
-namespace HairSalon.DataTransferObjects.HairDresser
+namespace HairSalon.Data.DTOs.HairDresser
 {
     public class HairDresserReservationCreateDto
     {

@@ -1,4 +1,4 @@
-namespace HairSalon.Common
+namespace HairSalon.Data.Common
 {
     public static class ValidationConstants
     {

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using static HairSalon.Common.ValidationConstants;
+using static HairSalon.Data.Common.ValidationConstants;
 
 namespace HairSalon.Data.Models
 {

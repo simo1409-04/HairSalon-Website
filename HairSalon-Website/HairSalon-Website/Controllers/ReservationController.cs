@@ -1,9 +1,12 @@
 ﻿using HairSalon.Data;
+using HairSalon.Data.DTOs.HairDresser;
+using HairSalon.Data.DTOs.Reservations;
+using HairSalon.Data.DTOs.Service;
 using HairSalon.Data.Models;
-using HairSalon.DataTransferObjects.Reservations;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Reservations.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 

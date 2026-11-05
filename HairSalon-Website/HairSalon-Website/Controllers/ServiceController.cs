@@ -1,5 +1,5 @@
 using HairSalon.Data;
-using HairSalon.DataTransferObjects.Service;
+using HairSalon.Data.DTOs.Service;
 using HairSalon.Services.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static HairSalon.Common.ValidationConstants.ServiceConstants;
+using static HairSalon.Data.Common.ValidationConstants.ServiceConstants;
 
 
 namespace HairSalon.Data.Models

@@ -1,6 +1,6 @@
-using HairSalon.DataTransferObjects.HairDresser;
-using HairSalon.DataTransferObjects.Reservations;
-using HairSalon.DataTransferObjects.Service;
+using HairSalon.Data.DTOs.HairDresser;
+using HairSalon.Data.DTOs.Reservations;
+using HairSalon.Data.DTOs.Service;
 using HairSalon.Services.Core.Reservations;
 
 namespace HairSalon.Services.Core.Contracts

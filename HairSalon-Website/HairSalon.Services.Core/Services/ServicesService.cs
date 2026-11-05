@@ -1,7 +1,8 @@
-using HairSalon.Data.Models;
-using HairSalon.DataTransferObjects.Service;
+using HairSalon.Data.Contracts;
 using HairSalon.Services.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
+using HairSalon.Data.Models;
+using HairSalon.Data.DTOs.Service;
 
 namespace HairSalon.Services.Core.Services
 {

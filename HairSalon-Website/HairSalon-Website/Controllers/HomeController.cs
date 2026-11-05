@@ -7,12 +7,7 @@ namespace HairSalon_Website.Controllers
 {
     public class HomeController : Controller
     {
-        private HairSalonDb context;
-
-        public HomeController(HairSalonDb context)
-        {
-            this.context = context;
-        }
+       
 
         public IActionResult Index()
         {

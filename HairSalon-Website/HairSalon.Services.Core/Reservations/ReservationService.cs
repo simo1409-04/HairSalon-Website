@@ -1,19 +1,18 @@
+using HairSalon.Data.Contracts;
+using HairSalon.Data.DTOs.HairDresser;
+using HairSalon.Data.DTOs.Reservations;
+using HairSalon.Data.DTOs.Service;
 using HairSalon.Data.Models;
-using HairSalon.DataTransferObjects.HairDresser;
-using HairSalon.DataTransferObjects.Reservations;
-using HairSalon.DataTransferObjects.Service;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Extensions.Logging;
 
 
 
 namespace HairSalon.Services.Core.Reservations
 {
-    public  class ReservationService(IRepository repository, ReservationResult result) : IReservationService
+    public  class ReservationService(IRepository repository, ReservationResult result, ILogger<ReservationService> logger) : IReservationService
     {
         private List<TimeOnly> validSlots = new List<TimeOnly>
 {

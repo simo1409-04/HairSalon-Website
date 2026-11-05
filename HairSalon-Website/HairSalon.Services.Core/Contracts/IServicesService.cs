@@ -1,4 +1,4 @@
-using HairSalon.DataTransferObjects.Service;
+using HairSalon.Data.DTOs.Service;
 
 namespace HairSalon.Services.Core.Contracts
 {

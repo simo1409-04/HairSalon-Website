@@ -1,4 +1,5 @@
 using HairSalon.Data;
+using HairSalon.Data.Contracts;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Services;

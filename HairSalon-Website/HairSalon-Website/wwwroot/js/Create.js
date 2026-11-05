@@ -66,12 +66,31 @@
     let validationNotificationTimer;
     let validationNotificationHideTimer;
 
-    const restoreSelection = window.bookingRestoreSelection ?? null;
-    let shouldRestoreSelection = Boolean(restoreSelection);
+    const serverSelection = window.bookingRestoreSelection ?? null;
+    const restoreSelection = {
+        hairdresserId: String(serverSelection?.hairdresserId || selectedHairdresserInput.value || ""),
+        date: normalizeDate(serverSelection?.date || selectedDateInput.value),
+        time: normalizeTime(serverSelection?.time || selectedTimeInput.value)
+    };
+    let shouldRestoreSelection = Boolean(restoreSelection.hairdresserId && restoreSelection.date);
 
-    if (shouldRestoreSelection) {
-        hairdresserSelect.value = String(restoreSelection.hairdresserId);
+    if ([...hairdresserSelect.options].some(option => option.value === restoreSelection.hairdresserId)) {
+        hairdresserSelect.value = restoreSelection.hairdresserId;
+    } else {
+        shouldRestoreSelection = false;
     }
+
+    if (serverSelection?.serviceIds) {
+        const selectedServiceIds = new Set(serverSelection.serviceIds.map(String));
+
+        serviceCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectedServiceIds.has(checkbox.value);
+        });
+    }
+
+    const originalEditSelection = form.dataset.bookingMode === "edit"
+        ? { ...restoreSelection }
+        : null;
 
     const monthFormatter = new Intl.DateTimeFormat("bg-BG", {
         month: "long",
@@ -104,12 +123,17 @@
         return new Date(year, month - 1, day);
     }
 
+    function normalizeDate(value) {
+        const text = String(value ?? "").trim();
+        return /^\d{4}-\d{2}-\d{2}/.test(text) ? text.slice(0, 10) : text;
+    }
+
     function isNonWorkingDay(dateKey) {
         return nonWorkingWeekDays.has(dateFromKey(dateKey).getDay());
     }
 
     function normalizeTime(value) {
-        return String(value).slice(0, 5);
+        return String(value ?? "").slice(0, 5);
     }
 
     function isPastDate(year, month, day) {
@@ -131,7 +155,12 @@
         const busyTimes = getBusyTimes(dateKey);
 
         return slots.filter(slot =>
-            !busyTimes.includes(slot) &&
+            (!busyTimes.includes(slot) || (
+                originalEditSelection !== null &&
+                hairdresserSelect.value === originalEditSelection.hairdresserId &&
+                dateKey === originalEditSelection.date &&
+                slot === originalEditSelection.time
+            )) &&
             !isPastSlot(dateKey, slot)
         );
     }
@@ -345,13 +374,15 @@
 
             const payload = await response.json();
 
+            if (hairdresserSelect.value !== hairdresserId) {
+                return;
+            }
+
             busySlotsByDate = normalizeBusySlots(payload);
 
             renderCalendar();
             setCalendarStatus("Избери свободен ден и удобен час.");
 
-            // Добавена логика:
-            // Само при върнат модел, след нормалното AJAX зареждане.
             if (
                 shouldRestoreSelection &&
                 hairdresserId === String(restoreSelection.hairdresserId) &&
@@ -360,13 +391,16 @@
                 shouldRestoreSelection = false;
 
                 const restoredDate = restoreSelection.date;
-                const restoredTime = normalizeTime(restoreSelection.time);
+                const restoredTime = restoreSelection.time;
                 const parsedDate = dateFromKey(restoredDate);
 
                 if (
+                    /^\d{4}-\d{2}-\d{2}$/.test(restoredDate) &&
                     !Number.isNaN(parsedDate.getTime()) &&
+                    toDateKey(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()) === restoredDate &&
                     parsedDate >= today &&
-                    getAvailableSlots(restoredDate).includes(restoredTime)
+                    !isNonWorkingDay(restoredDate) &&
+                    getAvailableSlots(restoredDate).length > 0
                 ) {
                     displayedMonth = new Date(
                         parsedDate.getFullYear(),
@@ -375,16 +409,16 @@
                     );
 
                     selectedDate = restoredDate;
-                    selectedTime = restoredTime;
+                    selectedTime = getAvailableSlots(restoredDate).includes(restoredTime)
+                        ? restoredTime
+                        : "";
 
                     selectedDateInput.value = restoredDate;
-                    selectedTimeInput.value = restoredTime;
+                    selectedTimeInput.value = selectedTime;
 
                     renderCalendar();
                     renderTimeSlots();
                     updateContinueButton();
-
-                    showDetailsStep();
                 }
             }
         } catch {
@@ -449,7 +483,10 @@
         });
     }
 
-    hairdresserSelect.addEventListener("change", loadBusySlots);
+    hairdresserSelect.addEventListener("change", () => {
+        shouldRestoreSelection = false;
+        loadBusySlots();
+    });
 
     previousMonthButton.addEventListener("click", () => {
         displayedMonth = new Date(

@@ -43,7 +43,7 @@ namespace HairSalon_Website.Controllers
         public async Task<IActionResult> Create(ReservationDtoImport reservationDto, List<int> serviceIds)
         {
             ViewBag.Services = await reservationService.LoadServicesForReservation();
-
+            ViewBag.SelectedServiceIds = serviceIds;
 
             ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
 

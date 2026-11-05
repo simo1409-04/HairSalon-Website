@@ -1,21 +1,19 @@
 ﻿using HairSalon.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HairSalon.Data
 {
-    public class HairSalonDb:DbContext
+    public class HairSalonDb(DbContextOptions<HairSalonDb> options) : IdentityDbContext<ApplicationUser>(options)
     {
+       
 
         public DbSet<HairDresser> HairDressers { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
 
-        public HairSalonDb(DbContextOptions<HairSalonDb> options):base(options)
-
-        {
-
-        }
+  
 
 
 

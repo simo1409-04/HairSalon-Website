@@ -4,14 +4,36 @@ using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Wrong or missing connection string!");
 
 builder.Services.AddDbContext<HairSalonDb>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services
+    .AddDefaultIdentity<ApplicationUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireUppercase = true; 
+
+        options.Password.RequireLowercase = true; 
+
+        options.Password.RequireDigit = true; 
+
+        options.Password.RequireNonAlphanumeric = true; 
+
+        options.Password.RequiredLength = 6; 
+
+        options.Password.RequiredUniqueChars = 1;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<HairSalonDb>();
 
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IServicesService, ServicesService>();
@@ -31,6 +53,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 
@@ -41,5 +64,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapRazorPages();
 
 app.Run();
+
+
+

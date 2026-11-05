@@ -83,10 +83,94 @@ namespace HairSalon_Website.Controllers
 
         }
 
-       
 
-       
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> All()
+        {
+
+            List<HairdresserViewModel> hairdressers = await reservationService.ReadAllHairDressersWithTheirReservations();
+
+            return View(hairdressers);
+        }
+
         
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> Edit(int Id)
+        {
+
+
+            ReservationDtoImport reservation = await reservationService.FindReservationWithIdForEdit(Id);
+
+
+            ViewBag.Services = await reservationService.LoadServicesForReservation();
+            ViewBag.SelectedServiceIds = await reservationService.GetServicesIdsForReservation(Id);
+
+            ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
+
+            if (reservation!=null)
+            {
+
+
+                return View(reservation);
+
+            }
+
+            return RedirectToAction("All");
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditConfirm(int id, ReservationDtoImport reservationDto, List<int> serviceIds)
+        {
+
+            reservationDto.Id = id;
+
+            ViewBag.Services = await reservationService.LoadServicesForReservation();
+            ViewBag.SelectedServiceIds = serviceIds;
+
+            ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
+
+            if (!ModelState.IsValid)
+            {
+
+
+                return View("Edit", reservationDto);
+
+            }
+
+
+
+            ReservationResult result = await reservationService.EditReservation(id,reservationDto, serviceIds);
+
+
+
+            if (result.Status == ReservationStatus.WrongInputDataError)
+            {
+                ModelState.AddModelError(string.Empty, "Провери избраните услуги, фризьор, дата и час. Часът трябва да е свободен и в бъдеще.");
+                return View("Edit", reservationDto);
+
+            }
+
+            if (result.Status == ReservationStatus.Success)
+            {
+                TempData["SucsessEdit"] = "Reservation was sucsessfully edited!";
+
+                return RedirectToAction("All");
+
+            }
+
+
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Резервацията не беше записана. Опитай отново.");
+                return View("Edit", reservationDto);
+            }
+
+
+        }
 
     }
 }

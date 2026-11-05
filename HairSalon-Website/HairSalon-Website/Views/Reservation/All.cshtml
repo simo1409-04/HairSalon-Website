@@ -1,0 +1,186 @@
+﻿@using System.Globalization
+@using System.Linq
+@model List<HairSalon.Data.DTOs.HairDresser.HairdresserViewModel>
+
+@{
+    ViewData["Title"] = "График на екипа";
+
+    var hairdressers = Model.OrderBy(h => h.Id).ToList();
+    var bg = CultureInfo.GetCultureInfo("bg-BG");
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-reservation.css"
+          asp-append-version="true" />
+}
+
+<section class="team-schedule" id="team-schedule">
+    <div class="team-schedule__inner">
+        <header class="team-schedule__heading">
+            <div>
+                <p class="team-schedule__eyebrow">Graphite Barber Studio · Персонал</p>
+                <h1>График на екипа</h1>
+                <p>Резервациите на всички фризьори на едно място.</p>
+            </div>
+
+            <div class="team-schedule__today">
+                <strong id="schedule-today-total">0</strong>
+                <span>резервации днес</span>
+            </div>
+        </header>
+
+        @if (hairdressers.Count == 0)
+        {
+            <p class="team-schedule__empty">Няма добавени фризьори.</p>
+        }
+        else
+        {
+            <div class="schedule-toolbar">
+                <button id="schedule-previous"
+                        type="button"
+                        aria-label="Предишен месец">‹</button>
+
+                <h2 id="schedule-month" aria-live="polite"></h2>
+
+                <button id="schedule-next"
+                        type="button"
+                        aria-label="Следващ месец">›</button>
+
+                <button id="schedule-today"
+                        type="button"
+                        class="schedule-toolbar__today">Днес</button>
+            </div>
+
+            <nav class="schedule-jump" aria-label="Фризьори">
+                @foreach (var hairdresser in hairdressers)
+                {
+                    <a href="#hairdresser-@hairdresser.Id">
+                        @hairdresser.Name
+                    </a>
+                }
+            </nav>
+
+            <div class="schedule-grid">
+                @foreach (var hairdresser in hairdressers)
+                {
+                    <section class="schedule-person"
+                             id="hairdresser-@hairdresser.Id"
+                             data-person-name="@hairdresser.Name">
+
+                        <header class="schedule-person__heading">
+                            <div>
+                                <span>Фризьор</span>
+                                <h3>@hairdresser.Name</h3>
+                            </div>
+
+                            <p>
+                                <strong data-person-today>0</strong>
+                                <span>днес</span>
+                            </p>
+                        </header>
+
+                        <div class="schedule-weekdays" aria-hidden="true">
+                            <span>Пн</span>
+                            <span>Вт</span>
+                            <span>Ср</span>
+                            <span>Чт</span>
+                            <span>Пт</span>
+                            <span>Сб</span>
+                            <span>Нд</span>
+                        </div>
+
+                        <div class="schedule-days"
+                             role="group"
+                             aria-label="Календар на @hairdresser.Name">
+                        </div>
+
+                        <template class="schedule-reservations">
+                            @foreach (var reservation in hairdresser.Reservations
+                                .OrderBy(r => r.ReservationDate)
+                                .ThenBy(r => r.ReservationTime))
+                            {
+                                <article class="booking-card"
+                                         data-date="@(reservation.ReservationDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))"
+                                         data-time="@(reservation.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture))">
+
+                                    <div class="booking-card__heading">
+                                        <time>
+                                            @reservation.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture)
+                                        </time>
+                                        <strong>@reservation.ClientName</strong>
+                                    </div>
+
+                                    @if (reservation.Services.Any())
+                                    {
+                                        <ul class="booking-card__services">
+                                            @foreach (var service in reservation.Services)
+                                            {
+                                                <li>
+                                                    <span>@service.Name</span>
+                                                    <span>@(service.Price.ToString("0.00", bg)) €</span>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+
+                                    <div class="booking-card__total">
+                                        <span>Общо</span>
+                                        <strong>@(reservation.TotalPrice.ToString("0.00", bg)) €</strong>
+                                    </div>
+
+                                    <div class="booking-card__actions">
+                                        <a asp-controller="Reservation"
+                                           asp-action="Edit"
+                                           asp-route-id="@reservation.Id">Редактирай</a>
+
+                                        <a asp-controller="Reservation"
+                                           asp-action="Delete"
+                                           asp-route-id="@reservation.Id">Изтрий</a>
+                                    </div>
+
+                                </article>
+                            }
+                        </template>
+                    </section>
+                }
+            </div>
+
+            <div class="schedule-legend" aria-label="Брой резервации за ден">
+                <span><i class="legend-color legend-color--zero"></i> 0</span>
+                <span><i class="legend-color legend-color--low"></i> 1–3</span>
+                <span><i class="legend-color legend-color--medium"></i> 4–6</span>
+                <span><i class="legend-color legend-color--high"></i> 7–9</span>
+                <span><i class="legend-color legend-color--full"></i> 10+</span>
+            </div>
+
+            <p class="team-schedule__hint">
+                Докосни ден за резервациите му. Задръж го за кратък преглед.
+            </p>
+        }
+    </div>
+
+    <aside class="day-sheet"
+           id="day-sheet"
+           aria-labelledby="day-sheet-title"
+           hidden>
+        <div class="day-sheet__heading">
+            <div>
+                <p id="day-sheet-person"></p>
+                <h2 id="day-sheet-title"></h2>
+                <span id="day-sheet-count"></span>
+            </div>
+
+            <button id="day-sheet-close"
+                    type="button"
+                    aria-label="Затвори резервациите">×</button>
+        </div>
+
+        <div class="day-sheet__list" id="day-sheet-list"></div>
+    </aside>
+</section>
+
+@section Scripts {
+    <script src="~/js/admin-reservations.js"
+            asp-append-version="true"></script>
+}

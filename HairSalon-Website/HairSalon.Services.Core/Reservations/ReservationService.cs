@@ -83,9 +83,10 @@ namespace HairSalon.Services.Core.Reservations
             return hairDressers;
 
         }
-            
 
 
+
+       
         public async Task<ReservationResult> CreateReservation(ReservationDtoImport reservationDto, List<int> serviceIds)
         {
 
@@ -178,6 +179,183 @@ namespace HairSalon.Services.Core.Reservations
 
 
         }
+
+
+        public async Task<List<HairdresserViewModel>> ReadAllHairDressersWithTheirReservations()
+        {
+
+            List<HairdresserViewModel> hairdressers = await repository.All<HairDresser>().Select(h => new HairdresserViewModel
+            {
+                Name=h.Name,
+                Id=h.Id,
+                Reservations = h.Reservations.Select(r=>new ReservationViewModel
+                {
+                    Id =r.Id,
+
+                    ClientName= r.ClientName,
+                    ClientPhone=r.ClientPhone,
+                    ReservationDate=r.ReservationDate,
+                    ReservationTime=r.ReservationTime,
+                    TotalPrice= r.TotalPrice,
+                    HairDresserId = h.Id,
+                    Services = r.Services.Select(s => new ServiceViewModelForReservationView{
+                    Name=s.Name,
+                    Price=s.Price
+                    
+                    }).ToList()
+                    
+                }).ToList()
+
+
+            }).OrderBy(x=>x.Id).ToListAsync();
+
+            return hairdressers;
+
+        }
+
+
+        public async Task<ReservationDtoImport> FindReservationWithIdForEdit(int id)
+        {
+
+            Reservation reservation = await repository.All<Reservation>().FirstOrDefaultAsync(x => x.Id == id);
+            ReservationDtoImport reservationForEdit = new ReservationDtoImport();
+            if (reservation!=null)
+            {
+                reservationForEdit.ClientName = reservation.ClientName;
+                reservationForEdit.ClientPhone = reservation.ClientPhone;
+                reservationForEdit.Id = reservation.Id;
+                reservationForEdit.ReservationDate = reservation.ReservationDate;
+                reservationForEdit.ReservationTime = reservation.ReservationTime;
+                reservationForEdit.TotalPrice = reservation.TotalPrice;
+                reservationForEdit.HairDresserId = reservation.HairDresserId;
+
+            }
+
+            return reservationForEdit;
+
+        }
+        public async Task<List<int>> GetServicesIdsForReservation(int reservationId)
+        {
+            Reservation reservation = await repository.All<Reservation>().Include(x => x.Services).FirstOrDefaultAsync(x => x.Id == reservationId);
+
+            List<int> serviceIds = new List<int>();
+
+            if(reservation!=null)
+            {
+                serviceIds = reservation.Services.Select(x => x.Id).ToList();
+
+            }
+
+            return serviceIds;
+        }
+
+        
+
+      public async Task<ReservationResult> EditReservation(int id, ReservationDtoImport reservationDto, List<int> serviceIds)
+
+
+        {
+
+
+            List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
+            List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+
+            bool areServiceIdsValid =
+                serviceIds.Any() &&
+                serviceIds.All(id => serviceIdsInDb.Contains(id));
+            bool isHairDresserIdIsValid = HairDresserIdsInDb.Contains(reservationDto.HairDresserId);
+            bool isSlotAvailable = !await repository.All<Reservation>().AnyAsync(x => (x.ReservationDate == reservationDto.ReservationDate && x.ReservationTime == reservationDto.ReservationTime && x.HairDresserId == reservationDto.HairDresserId)&& x.Id!=id);
+            bool isDayOfWeekForReservationValid = !nonWorkingDays.Contains(reservationDto.ReservationDate.DayOfWeek);
+            bool DoesReservationIdForEditValid = await repository.All<Reservation>().AnyAsync(x => x.Id == id);
+
+            if (areServiceIdsValid && isHairDresserIdIsValid && isSlotAvailable && isDayOfWeekForReservationValid&& DoesReservationIdForEditValid)
+            {
+
+                if (reservationDto.ReservationDate > today ||
+              (reservationDto.ReservationDate == today &&
+               reservationDto.ReservationTime > currentTime))
+                {
+
+                    bool isSlotValid = validSlots.Contains(reservationDto.ReservationTime);
+
+                    decimal CorrectTotalPricePrice = await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).Select(x => x.Price).SumAsync();
+
+
+                    if (isSlotValid)
+                    {
+
+                        List<Service> servicesForReservationDb = await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).ToListAsync();
+                        HairDresser? hairDresser = await repository.All<HairDresser>().FirstOrDefaultAsync(x => x.Id == reservationDto.HairDresserId);
+
+                        Reservation? reservationForDb = await repository.All<Reservation>()
+                            .Include(x => x.Services)
+                            .FirstOrDefaultAsync(x => x.Id == id);
+
+                        if (reservationForDb is null)
+                        {
+                            result.Status = ReservationStatus.WrongInputDataError;
+                            return result;
+                        }
+
+
+                        reservationForDb.ClientName = reservationDto.ClientName;
+                        reservationForDb.ClientPhone = reservationDto.ClientPhone;
+                        reservationForDb.ReservationDate = reservationDto.ReservationDate;
+                        reservationForDb.ReservationTime = reservationDto.ReservationTime;
+                        reservationForDb.HairDresser = hairDresser;
+                        reservationForDb.TotalPrice = CorrectTotalPricePrice;
+                        reservationForDb.Services = servicesForReservationDb;
+                        
+
+                        
+
+                        try
+                        {
+                            await repository.SaveChangesAsync();
+
+
+                            result.Status = ReservationStatus.Success;
+
+
+                            return (result);
+
+
+                        }
+
+                        catch (Exception exception)
+                        {
+                            logger.LogError(exception, "Could not edit reservation {ReservationId}", id);
+
+                            result.Status = ReservationStatus.DatabaseError;
+
+
+                            return (result);
+                        }
+
+
+
+
+
+
+                    }
+
+                }
+
+            }
+
+            result.Status = ReservationStatus.WrongInputDataError;
+
+
+            return result;
+
+
+
+
+        }
+
 
     }
 }

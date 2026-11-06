@@ -89,9 +89,27 @@ namespace HairSalon_Website.Controllers
         public async Task<IActionResult> All()
         {
 
-            List<HairdresserViewModel> hairdressers = await reservationService.ReadAllHairDressersWithTheirReservations();
+            List<HairdresserViewModel> hairdressers = await reservationService.ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth();
 
             return View(hairdressers);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> GetHairdresserReservations(int id,  DateOnly date)
+        {
+
+            List<ReservationViewModel> ReservationsForHairDresser = await reservationService.GetHairdresserReservations(id, date);
+
+            if(ReservationsForHairDresser == null)
+            {
+
+                TempData["ErrorMessage"] = "There was an error with finding the reservations!";
+                return RedirectToAction("All");
+            }
+
+            return Json(ReservationsForHairDresser);
         }
 
         
@@ -171,6 +189,8 @@ namespace HairSalon_Website.Controllers
 
 
         }
+
+
 
     }
 }

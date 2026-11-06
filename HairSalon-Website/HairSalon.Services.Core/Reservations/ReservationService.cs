@@ -181,35 +181,27 @@ namespace HairSalon.Services.Core.Reservations
         }
 
 
-        public async Task<List<HairdresserViewModel>> ReadAllHairDressersWithTheirReservations()
+        public async Task<List<HairdresserViewModel>> ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth()
         {
 
-            List<HairdresserViewModel> hairdressers = await repository.All<HairDresser>().Select(h => new HairdresserViewModel
-            {
-                Name=h.Name,
-                Id=h.Id,
-                Reservations = h.Reservations.Select(r=>new ReservationViewModel
+
+
+            var reservationsPerHairdresser = await repository.All<HairDresser>()
+                .Select(x => new 
                 {
-                    Id =r.Id,
-
-                    ClientName= r.ClientName,
-                    ClientPhone=r.ClientPhone,
-                    ReservationDate=r.ReservationDate,
-                    ReservationTime=r.ReservationTime,
-                    TotalPrice= r.TotalPrice,
-                    HairDresserId = h.Id,
-                    Services = r.Services.Select(s => new ServiceViewModelForReservationView{
-                    Name=s.Name,
-                    Price=s.Price
-                    
-                    }).ToList()
-                    
-                }).ToList()
+                    Id = x.Id,
+                    Name = x.Name,
+                    Reservations = x.Reservations.Select(x => x.ReservationDate).ToList()
+                }).ToListAsync();
 
 
-            }).OrderBy(x=>x.Id).ToListAsync();
-
-            return hairdressers;
+            List<HairdresserViewModel> reservationsPerDayOfTheMounth = reservationsPerHairdresser.Select(x => new HairdresserViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                ReservationsCountPerDay = x.Reservations.GroupBy(r => r).ToDictionary(x => x.Key, x => x.Count())
+            }).ToList();
+            return reservationsPerDayOfTheMounth;
 
         }
 
@@ -356,6 +348,43 @@ namespace HairSalon.Services.Core.Reservations
 
         }
 
+        public async Task<List<ReservationViewModel>> GetHairdresserReservations(int HairDresserId, DateOnly date)
+        {
+
+
+            List<ReservationViewModel> hairdresserReservations = await repository.All<Reservation>().Where(x => x.HairDresserId == HairDresserId).Where(r => r.ReservationDate == date).Select(r => new ReservationViewModel
+            {
+                Id = r.Id,
+
+                ClientName = r.ClientName,
+
+                ClientPhone = r.ClientPhone,
+
+                ReservationDate = r.ReservationDate,
+
+                ReservationTime = r.ReservationTime,
+
+
+                TotalPrice = r.TotalPrice,
+
+                Services = r.Services.Select(s => new ServiceViewModelForReservationView
+                {
+                    Name = s.Name,
+                    Price = s.Price
+                }).ToList()
+            }).ToListAsync();
+
+
+
+            return hairdresserReservations;
+
+
+
+
+
+
+
+        }
 
     }
 }

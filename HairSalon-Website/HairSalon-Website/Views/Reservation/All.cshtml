@@ -1,27 +1,41 @@
 ﻿@using System.Globalization
 @using System.Linq
+@using System.Text.Json
 @model List<HairSalon.Data.DTOs.HairDresser.HairdresserViewModel>
 
 @{
     ViewData["Title"] = "График на екипа";
-
     var hairdressers = Model.OrderBy(h => h.Id).ToList();
-    var bg = CultureInfo.GetCultureInfo("bg-BG");
 }
 
 @section Styles {
     <link rel="stylesheet"
           href="~/css/admin-reservation.css"
           asp-append-version="true" />
+
+    <style>
+        .booking-card__phone {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: .85rem;
+        }
+    </style>
 }
 
-<section class="team-schedule" id="team-schedule">
+<section class="team-schedule"
+         id="team-schedule"
+         data-reservations-url="@Url.Action("GetHairdresserReservations", "Reservation")"
+         data-edit-url="@Url.Action("Edit", "Reservation")"
+         data-delete-url="@Url.Content("~/Reservation/Delete")">
+
     <div class="team-schedule__inner">
         <header class="team-schedule__heading">
             <div>
-                <p class="team-schedule__eyebrow">Graphite Barber Studio · Персонал</p>
+                <p class="team-schedule__eyebrow">
+                    Graphite Barber Studio · Персонал
+                </p>
                 <h1>График на екипа</h1>
-                <p>Резервациите на всички фризьори на едно място.</p>
+                <p>Брой резервации за всеки фризьор по дни.</p>
             </div>
 
             <div class="team-schedule__today">
@@ -64,9 +78,18 @@
             <div class="schedule-grid">
                 @foreach (var hairdresser in hairdressers)
                 {
+                    var countsJson = JsonSerializer.Serialize(
+                        hairdresser.ReservationsCountPerDay.ToDictionary(
+                            entry => entry.Key.ToString(
+                                "yyyy-MM-dd",
+                                CultureInfo.InvariantCulture),
+                            entry => entry.Value));
+
                     <section class="schedule-person"
                              id="hairdresser-@hairdresser.Id"
-                             data-person-name="@hairdresser.Name">
+                             data-hairdresser-id="@hairdresser.Id"
+                             data-person-name="@hairdresser.Name"
+                             data-counts="@countsJson">
 
                         <header class="schedule-person__heading">
                             <div>
@@ -94,54 +117,6 @@
                              role="group"
                              aria-label="Календар на @hairdresser.Name">
                         </div>
-
-                        <template class="schedule-reservations">
-                            @foreach (var reservation in hairdresser.Reservations
-                                .OrderBy(r => r.ReservationDate)
-                                .ThenBy(r => r.ReservationTime))
-                            {
-                                <article class="booking-card"
-                                         data-date="@(reservation.ReservationDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))"
-                                         data-time="@(reservation.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture))">
-
-                                    <div class="booking-card__heading">
-                                        <time>
-                                            @reservation.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture)
-                                        </time>
-                                        <strong>@reservation.ClientName</strong>
-                                    </div>
-
-                                    @if (reservation.Services.Any())
-                                    {
-                                        <ul class="booking-card__services">
-                                            @foreach (var service in reservation.Services)
-                                            {
-                                                <li>
-                                                    <span>@service.Name</span>
-                                                    <span>@(service.Price.ToString("0.00", bg)) €</span>
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-
-                                    <div class="booking-card__total">
-                                        <span>Общо</span>
-                                        <strong>@(reservation.TotalPrice.ToString("0.00", bg)) €</strong>
-                                    </div>
-
-                                    <div class="booking-card__actions">
-                                        <a asp-controller="Reservation"
-                                           asp-action="Edit"
-                                           asp-route-id="@reservation.Id">Редактирай</a>
-
-                                        <a asp-controller="Reservation"
-                                           asp-action="Delete"
-                                           asp-route-id="@reservation.Id">Изтрий</a>
-                                    </div>
-
-                                </article>
-                            }
-                        </template>
                     </section>
                 }
             </div>
@@ -155,7 +130,7 @@
             </div>
 
             <p class="team-schedule__hint">
-                Докосни ден за резервациите му. Задръж го за кратък преглед.
+                Кликни ден за резервациите. На телефон задръж за кратък преглед.
             </p>
         }
     </div>
@@ -176,7 +151,9 @@
                     aria-label="Затвори резервациите">×</button>
         </div>
 
-        <div class="day-sheet__list" id="day-sheet-list"></div>
+        <div class="day-sheet__list"
+             id="day-sheet-list"
+             aria-live="polite"></div>
     </aside>
 </section>
 

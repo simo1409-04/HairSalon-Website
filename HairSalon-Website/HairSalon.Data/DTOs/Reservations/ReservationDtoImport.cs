@@ -9,9 +9,9 @@ namespace HairSalon.Data.DTOs.Reservations
     {
 
         public int Id { get; set; }
-        [MinLength(3, ErrorMessage = "Името трябва да съдържа поне {1} букви")]
+        [MinLength(3, ErrorMessage = "Името трябва да съдържа поне {1} знака")]
         [MaxLength(ClientNameMaxLength, ErrorMessage = "Името не трябва да надвишава {1} знака")]
-        [RegularExpression(@"^[А-Яа-яA-Za-z]+$", ErrorMessage = "Името трябва да съдържа само букви")]
+        [RegularExpression(@"^[А-Яа-яA-Za-z]+(?: +[А-Яа-яA-Za-z]+)*$", ErrorMessage = "Името може да съдържа само букви и интервали между думите")]
         [Required(ErrorMessage = "Името е задължително")]
         public string ClientName { get; set; } = null!;
 

@@ -13,7 +13,7 @@ namespace HairSalon.Data.DTOs.HairDresser
 
         public int Id { get; set; }
 
-     public   ICollection<ReservationViewModel> Reservations { get; set; } = new HashSet<ReservationViewModel>();
+        public Dictionary<DateOnly, int> ReservationsCountPerDay { get; set; } = new Dictionary<DateOnly, int>();
 
 
     }

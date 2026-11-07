@@ -1,0 +1,25 @@
+@{
+    var messages = new[]
+    {
+        new { Key = "ErrorMessage", Kind = "error" },
+        new { Key = "ErrorSaving", Kind = "error" },
+        new { Key = "SucsessEdit", Kind = "success" },
+        new { Key = "SucsessMessage", Kind = "success" }
+    };
+}
+
+<div class="site-notifications">
+    @foreach (var item in messages)
+    {
+        var message = TempData[item.Key]?.ToString();
+        if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="site-notification site-notification--@item.Kind"
+                 data-tempdata-notification
+                 role="@(item.Kind == "error" ? "alert" : "status")">
+                <span class="site-notification__icon" aria-hidden="true">@(item.Kind == "error" ? "!" : "✓")</span>
+                <p class="site-notification__message">@message</p>
+            </div>
+        }
+    }
+</div>

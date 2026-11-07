@@ -6,6 +6,7 @@
     ViewData["Title"] = "Запази час";
     List<int> selectedServiceIds = ViewBag.SelectedServiceIds;
     
+        Layout = "~/Views/Shared/_Layout - Admin.cshtml";
 
 
 }
@@ -327,18 +328,6 @@
     <partial name="_ValidationScriptsPartial" />
 
     
-    @if (Context.Request.HasFormContentType && Model != null)
-    {
-        <script>
-            window.bookingRestoreSelection = {
-                date: "@(Model.ReservationDate == default ? "" : Model.ReservationDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))",
-                time: "@(Model.ReservationTime == default ? "" : Model.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture))",
-                hairdresserId: "@Model.HairDresserId",
-                serviceIds: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(selectedServiceIds))
-            };
-        </script>
-    }
-
     <script src="~/js/Create.js"
             asp-append-version="true"></script>
 }

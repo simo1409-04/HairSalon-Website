@@ -2,3 +2,10 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+document.querySelectorAll("[data-tempdata-notification]").forEach((notification) => {
+    window.setTimeout(() => {
+        notification.classList.add("site-notification--hide");
+        window.setTimeout(() => notification.remove(), 400);
+    }, 5000);
+});

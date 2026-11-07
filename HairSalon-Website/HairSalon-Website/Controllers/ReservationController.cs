@@ -61,8 +61,7 @@ namespace HairSalon_Website.Controllers
 
             if(result.Status== ReservationStatus.WrongInputDataError)
             {
-
-
+                ModelState.AddModelError(string.Empty, "Провери избраните услуги, фризьор, дата и час. Възможно е часът вече да е зает.");
                 return View(reservationDto);
 
             }
@@ -77,7 +76,7 @@ namespace HairSalon_Website.Controllers
 
             else
             {
-                @TempData["ErrorSaving"] = "Coud not save the reservation, please try again!";
+                @TempData["ErrorSaving"] = "Резервацията не можа да бъде запазена. Опитай отново.";
                 return RedirectToAction("Index", "Home");
             }
 
@@ -105,7 +104,7 @@ namespace HairSalon_Website.Controllers
             if(ReservationsForHairDresser == null)
             {
 
-                TempData["ErrorMessage"] = "There was an error with finding the reservations!";
+                TempData["ErrorMessage"] = "Не успяхме да намерим резервациите. Опитай отново.";
                 return RedirectToAction("All");
             }
 
@@ -190,6 +189,94 @@ namespace HairSalon_Website.Controllers
 
         }
 
+
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> AdminCreateReservation()
+        {
+            ViewBag.Services = await reservationService.LoadServicesForReservation();
+
+
+            ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
+
+
+
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> AdminCreateReservationConfirm(ReservationDtoImport reservationDto, List<int> serviceIds)
+        {
+
+            ViewBag.Services = await reservationService.LoadServicesForReservation();
+            ViewBag.SelectedServiceIds = serviceIds;
+
+            ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
+
+            if (!ModelState.IsValid)
+            {
+
+
+                return View("AdminCreateReservation",reservationDto);
+
+            }
+
+            ReservationResult result = await reservationService.CreateReservation(reservationDto, serviceIds);
+
+
+
+            if (result.Status == ReservationStatus.WrongInputDataError)
+            {
+                ModelState.AddModelError(string.Empty, "Провери избраните услуги, фризьор, дата и час. Възможно е часът вече да е зает.");
+                return View("AdminCreateReservation", reservationDto);
+
+            }
+
+            if (result.Status == ReservationStatus.Success)
+            {
+
+                return View(result.Reservation);
+
+            }
+
+
+            else
+            {
+                @TempData["ErrorSaving"] = "Резервацията не можа да бъде запазена. Опитай отново.";
+                return RedirectToAction("All");
+            }
+
+        }
+
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+
+
+            bool isDeletedReservation = await reservationService.Delete(id);
+
+            if(isDeletedReservation)
+            {
+
+                TempData["SucsessMessage"] = "Резервацията беше изтрита успешно.";
+                return RedirectToAction("All");
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Резервацията не беше изтрита. Опитай отново.";
+                return RedirectToAction("All");
+            }
+
+        }
 
 
     }

@@ -1,0 +1,145 @@
+﻿
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Graphite Barber Studio</title>
+
+    <script type="importmap"></script>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/HairSalon_Website.styles.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+    <partial name="_TempDataNotifications" />
+
+    <header class="site-header">
+        <nav class="site-navigation">
+
+            <button class="menu-toggle"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mainMenu"
+                    aria-controls="mainMenu"
+                    aria-expanded="false"
+                    aria-label="Отвори меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="site-logo">
+                GRAPHITE <span>BARBER STUDIO</span>
+            </div>
+
+            <div class="collapse site-menu" id="mainMenu">
+                <ul>
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="IndexAdmin">
+                            Начало(изглед за клиенти)
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Service"
+                           asp-action="Index">
+                            Услуги(изглед за клиенти)
+                        </a>
+                    </li>
+
+                     <li>
+                        <a asp-controller="Reservation"
+                           asp-action="Create">
+                            Запази час(изглед за клиенти)
+                        </a>
+                    </li>
+
+                   
+                </ul>
+
+                <partial name="Layout__LoginPartial_Client" />
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer__content">
+
+            <div class="site-footer__brand">
+                <p class="site-footer__logo">
+                    GRAPHITE <span>BARBER STUDIO</span>
+                </p>
+
+                <p>Класическо отношение. Модерен стил.</p>
+            </div>
+
+            <div class="site-footer__contacts">
+                <p class="site-footer__title">Контакти</p>
+
+                <a href="tel:+359880000000">
+                    +359 88 000 0000
+                </a>
+
+                <a href="mailto:hello@graphitebarber.bg">
+                    hello@graphitebarber.bg
+                </a>
+
+                <p>гр. София, България</p>
+            </div>
+
+            <div class="site-footer__hours">
+                <p class="site-footer__title">
+                    Работно време
+                </p>
+
+                <p>
+                    Сряда – Неделя
+                    <br />
+                    10:00 – 19:45
+                </p>
+
+                <p>
+                    Понеделник и вторник
+                    <br />
+                    Почивни дни
+                </p>
+            </div>
+
+        </div>
+
+        <div class="site-footer__bottom">
+            <p>
+                © @DateTime.Now.Year Graphite Barber Studio
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -6,27 +6,20 @@
 @{
     ViewData["Title"] = "График на екипа";
     var hairdressers = Model.OrderBy(h => h.Id).ToList();
+    Layout = "~/Views/Shared/_Layout - Admin.cshtml";
 }
 
 @section Styles {
     <link rel="stylesheet"
           href="~/css/admin-reservation.css"
           asp-append-version="true" />
-
-    <style>
-        .booking-card__phone {
-            margin: 8px 0 0;
-            color: var(--muted);
-            font-size: .85rem;
-        }
-    </style>
 }
 
 <section class="team-schedule"
          id="team-schedule"
          data-reservations-url="@Url.Action("GetHairdresserReservations", "Reservation")"
          data-edit-url="@Url.Action("Edit", "Reservation")"
-         data-delete-url="@Url.Content("~/Reservation/Delete")">
+         data-delete-url="@Url.Action("Delete", "Reservation")">
 
     <div class="team-schedule__inner">
         <header class="team-schedule__heading">
@@ -38,9 +31,14 @@
                 <p>Брой резервации за всеки фризьор по дни.</p>
             </div>
 
-            <div class="team-schedule__today">
-                <strong id="schedule-today-total">0</strong>
-                <span>резервации днес</span>
+            <div class="team-schedule__quick-actions">
+                <div class="team-schedule__today">
+                    <strong id="schedule-today-total">0</strong>
+                    <span>резервации днес</span>
+                </div>
+
+                <a class="team-schedule__create"
+                   href="@Url.Action("AdminCreateReservation", "Reservation")">Направи резервация</a>
             </div>
         </header>
 

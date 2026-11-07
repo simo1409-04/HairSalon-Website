@@ -11,11 +11,14 @@
     <link rel="stylesheet"
           href="~/css/create.css"
           asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/css/reservation-result.css"
+          asp-append-version="true" />
 }
 
 <main class="reservation-page">
     <div class="reservation-shell">
-        <section class="reservation-heading" aria-labelledby="reservation-title">
+        <section class="reservation-heading" id="reservation-heading" aria-labelledby="reservation-title">
             <p class="reservation-kicker">Graphite Barber Studio</p>
             <h1 id="reservation-title">Запази своя <em>час.</em></h1>
             <p>
@@ -28,7 +31,9 @@
               asp-action="Create"
               method="post"
               class="reservation-form"
-              id="reservation-form">
+              id="reservation-form"
+              data-booking-mode="create"
+              data-server-errors="@(Context.Request.HasFormContentType && !ViewData.ModelState.IsValid ? "true" : "false")">
 
             <div class="form-validation-notification"
                  id="form-validation-notification"
@@ -307,10 +312,75 @@
                         ← Назад
                     </button>
 
-                    <button type="submit"
+                    <button type="button"
                             id="complete-reservation"
                             class="reservation-button reservation-button--primary">
                         Завърши резервация <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="reservation-result-card reservation-confirmation"
+                     id="confirmation-step"
+                     aria-labelledby="confirmation-title"
+                     hidden>
+                <p class="reservation-result-kicker">Graphite Barber Studio</p>
+
+                <h1 id="confirmation-title">Провери <em>резервацията.</em></h1>
+
+                <p class="reservation-result-intro">
+                    Ако данните са верни, потвърди запазването на часа.
+                </p>
+
+                <div class="reservation-result-details">
+                    <div class="reservation-result-detail">
+                        <span>Име</span>
+                        <strong id="confirmation-name"></strong>
+                    </div>
+
+                    <div class="reservation-result-detail">
+                        <span>Телефон</span>
+                        <strong id="confirmation-phone"></strong>
+                    </div>
+
+                    <div class="reservation-result-detail">
+                        <span>Фризьор</span>
+                        <strong id="confirmation-hairdresser"></strong>
+                    </div>
+
+                    <div class="reservation-result-detail">
+                        <span>Дата</span>
+                        <strong id="confirmation-date"></strong>
+                    </div>
+
+                    <div class="reservation-result-detail">
+                        <span>Час</span>
+                        <strong id="confirmation-time"></strong>
+                    </div>
+                </div>
+
+                <section class="reservation-result-services"
+                         aria-labelledby="confirmation-services-title">
+                    <h2 id="confirmation-services-title">Избрани услуги</h2>
+                    <ul id="confirmation-services"></ul>
+                </section>
+
+                <div class="reservation-result-total">
+                    <span>Обща цена</span>
+                    <strong id="confirmation-total"></strong>
+                </div>
+
+                <div class="reservation-result-actions">
+                    <button type="button"
+                            class="result-button result-button--secondary"
+                            id="back-to-details">
+                        ← Промени данните
+                    </button>
+
+                    <button type="submit"
+                            class="result-button result-button--primary"
+                            id="confirm-reservation">
+                        Потвърди резервация <span aria-hidden="true">→</span>
                     </button>
                 </div>
             </section>
@@ -322,18 +392,6 @@
     <partial name="_ValidationScriptsPartial" />
 
     
-    @if (Context.Request.HasFormContentType && Model != null)
-    {
-        <script>
-            window.bookingRestoreSelection = {
-                date: "@(Model.ReservationDate == default ? "" : Model.ReservationDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))",
-                time: "@(Model.ReservationTime == default ? "" : Model.ReservationTime.ToString("HH:mm", CultureInfo.InvariantCulture))",
-                hairdresserId: "@Model.HairDresserId",
-                serviceIds: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(selectedServiceIds))
-            };
-        </script>
-    }
-
     <script src="~/js/Create.js"
             asp-append-version="true"></script>
 }

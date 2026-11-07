@@ -61,6 +61,13 @@
     color: var(--muted);
 }
 
+.team-schedule__quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
 .team-schedule__today {
     display: flex;
     flex-direction: column;
@@ -79,6 +86,31 @@
     .team-schedule__today span {
         font-size: .83rem;
     }
+
+.team-schedule__create {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    background: var(--copper);
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.team-schedule__create:hover,
+.team-schedule__create:focus-visible {
+    background: var(--ink);
+    color: white;
+}
+
+.team-schedule__create:focus-visible {
+    outline: 2px solid var(--copper);
+    outline-offset: 2px;
+}
 
 .team-schedule__empty {
     padding: 28px;
@@ -286,6 +318,15 @@
     opacity: .7;
 }
 
+.schedule-day--inactive:not(:disabled) {
+    color: #5d5853;
+    cursor: pointer;
+}
+
+.schedule-day--inactive:not(:disabled):hover {
+    box-shadow: inset 0 0 0 2px var(--copper);
+}
+
 .schedule-day--today:not(:disabled) {
     box-shadow: inset 0 0 0 2px var(--copper);
 }
@@ -423,6 +464,12 @@
     gap: 12px;
 }
 
+.booking-card__phone {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: .85rem;
+}
+
     .booking-card__heading time {
         padding: 6px 8px;
         border-radius: 8px;
@@ -459,19 +506,25 @@
     margin-top: 14px;
 }
 
-.booking-card__actions a {
+.booking-card__actions a,
+.booking-card__actions button {
     flex: 1;
     padding: 9px 12px;
     border: 1px solid var(--line);
     border-radius: 8px;
+    background: transparent;
     color: var(--ink);
+    font: inherit;
     font-weight: 700;
     text-align: center;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .booking-card__actions a:hover,
-.booking-card__actions a:focus-visible {
+.booking-card__actions a:focus-visible,
+.booking-card__actions button:hover,
+.booking-card__actions button:focus-visible {
     border-color: var(--copper);
     color: var(--copper);
 }
@@ -490,6 +543,10 @@
     .team-schedule__heading {
         align-items: start;
         flex-direction: column;
+    }
+
+    .team-schedule__quick-actions {
+        width: 100%;
     }
 
     .team-schedule__today {

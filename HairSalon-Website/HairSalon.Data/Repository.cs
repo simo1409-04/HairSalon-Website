@@ -13,6 +13,14 @@ public class Repository(HairSalonDb context) : IRepository
     {
         context.Set<T>().Add(model);
     }
+    public void Remove<T>(T model) where T : class
+    {
+        context.Set<T>().Remove(model);
+    }
+    public void RemoveRange<T>(ICollection<T> models) where T : class
+    {
+        context.Set<T>().RemoveRange(models);
+    }
 
     public async Task<int> SaveChangesAsync()
     {

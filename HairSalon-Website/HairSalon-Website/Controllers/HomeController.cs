@@ -11,7 +11,22 @@ namespace HairSalon_Website.Controllers
 
         public IActionResult Index()
         {
-            return View();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("All", "Reservation");
+            }
+
+
+            return View("Index");
+        }
+        public IActionResult IndexAdmin()
+        {
+
+        
+
+            
+            return View("Index");
         }
 
         public IActionResult Privacy()

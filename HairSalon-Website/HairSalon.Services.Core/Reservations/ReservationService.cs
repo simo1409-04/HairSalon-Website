@@ -1,3 +1,4 @@
+using HairSalon.Data;
 using HairSalon.Data.Contracts;
 using HairSalon.Data.DTOs.HairDresser;
 using HairSalon.Data.DTOs.Reservations;
@@ -183,6 +184,7 @@ namespace HairSalon.Services.Core.Reservations
 
         public async Task<List<HairdresserViewModel>> ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth()
         {
+            await RemoveOldReservations();
 
 
 
@@ -191,21 +193,44 @@ namespace HairSalon.Services.Core.Reservations
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Reservations = x.Reservations.Select(x => x.ReservationDate).ToList()
+                    ReservationDates = x.Reservations.GroupBy(rD => rD.ReservationDate).Select(group => new {Date=group.Key, Count=group.Count()}).ToList()
                 }).ToListAsync();
+
+
+
 
 
             List<HairdresserViewModel> reservationsPerDayOfTheMounth = reservationsPerHairdresser.Select(x => new HairdresserViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
-                ReservationsCountPerDay = x.Reservations.GroupBy(r => r).ToDictionary(x => x.Key, x => x.Count())
+                ReservationsCountPerDay = x.ReservationDates.ToDictionary(x => x.Date, x => x.Count)
             }).ToList();
+
             return reservationsPerDayOfTheMounth;
 
         }
 
 
+
+
+        public async Task RemoveOldReservations()
+        {
+
+            DateOnly todayDate = DateOnly.FromDateTime(DateTime.Today);
+
+            DateOnly theDate30DaysBeforeToday = todayDate.AddDays(-30);
+
+
+            
+                await repository.All<Reservation>()
+                .Where(x => x.ReservationDate < theDate30DaysBeforeToday)
+                .ExecuteDeleteAsync();
+            
+
+
+                
+        }
         public async Task<ReservationDtoImport> FindReservationWithIdForEdit(int id)
         {
 
@@ -385,6 +410,40 @@ namespace HairSalon.Services.Core.Reservations
 
 
         }
+
+
+        public async Task<bool> Delete(int reservationId)
+        {
+
+
+            Reservation? reservation = await repository.All<Reservation>().FirstOrDefaultAsync(r => r.Id == reservationId);
+
+
+            if(reservation==null)
+            {
+                return false;
+            }
+
+            repository.Remove<Reservation>(reservation);
+
+            try
+            {
+                await repository.SaveChangesAsync();
+                return true;
+
+            }
+
+            catch(Exception ex)
+            {
+                return false;
+
+            }
+
+
+        }
+
+
+
 
     }
 }

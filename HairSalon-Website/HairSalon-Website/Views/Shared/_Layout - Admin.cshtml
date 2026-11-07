@@ -25,6 +25,8 @@
 </head>
 
 <body>
+    <partial name="_TempDataNotifications" />
+
     <header class="site-header">
         <nav class="site-navigation">
 
@@ -48,27 +50,40 @@
                 <ul>
                     <li>
                         <a asp-controller="Home"
-                           asp-action="Index">
-                            Начало
+                           asp-action="IndexAdmin">
+                            Начало(изглед за клиенти)
                         </a>
                     </li>
 
                     <li>
                         <a asp-controller="Service"
                            asp-action="Index">
-                            Услуги
+                            Услуги(изглед за клиенти)
+                        </a>
+                    </li>
+
+                     <li>
+                        <a asp-controller="Reservation"
+                           asp-action="Create">
+                            Запази час(изглед за клиенти)
                         </a>
                     </li>
 
                     <li>
                         <a asp-controller="Reservation"
-                           asp-action="Create">
-                            Запази час
+                           asp-action="All">
+                            Резервации(админ)
+                        </a>
+                    </li>
+                     <li>
+                        <a asp-controller="Reservation"
+                           asp-action="All">
+                            upravlenie na akaunti
                         </a>
                     </li>
                 </ul>
 
-                <partial name="_LoginPartial" />
+                <partial name="Layout__LoginPartial_Client" />
             </div>
         </nav>
     </header>

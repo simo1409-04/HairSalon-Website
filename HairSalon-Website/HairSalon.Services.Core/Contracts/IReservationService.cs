@@ -20,5 +20,10 @@ namespace HairSalon.Services.Core.Contracts
 
         public Task<List<ReservationViewModel>> GetHairdresserReservations(int HairDresserId, DateOnly date);
 
+        public Task RemoveOldReservations();
+
+
+        public Task<bool> Delete(int reservationId);
+
     }
 }

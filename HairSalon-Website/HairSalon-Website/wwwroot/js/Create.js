@@ -1,594 +1,483 @@
-﻿
 (() => {
+    const form = document.getElementById("reservation-form");
     const calendarRoot = document.getElementById("booking-calendar");
 
-    if (!calendarRoot) {
-        return;
-    }
+    if (!form || !calendarRoot) return;
 
+    const isCreate = form.dataset.bookingMode === "create";
     const slots = [
-        "10:00",
-        "10:50",
-        "11:40",
-        "12:30",
-        "14:00",
-        "14:50",
-        "15:40",
-        "16:30",
-        "17:20",
-        "18:10",
-        "19:00"
+        "10:00", "10:50", "11:40", "12:30", "14:00", "14:50",
+        "15:40", "16:30", "17:20", "18:10", "19:00"
     ];
 
-    const nonWorkingWeekDays = new Set([1, 2]);
-
-    const form = document.getElementById("reservation-form");
-    const submitButton = document.getElementById("complete-reservation");
-    const validationNotification = document.getElementById("form-validation-notification");
     const hairdresserSelect = document.getElementById("hairdresser-select");
-
-    const selectedHairdresserInput = document.getElementById("selected-hairdresser-id");
-    const selectedDateInput = document.getElementById("selected-reservation-date");
-    const selectedTimeInput = document.getElementById("selected-reservation-time");
-
+    const hairdresserInput = document.getElementById("selected-hairdresser-id");
+    const dateInput = document.getElementById("selected-reservation-date");
+    const timeInput = document.getElementById("selected-reservation-time");
     const calendarStep = document.getElementById("calendar-step");
     const detailsStep = document.getElementById("details-step");
-
+    const confirmationStep = document.getElementById("confirmation-step");
+    const heading = document.getElementById("reservation-heading");
     const monthTitle = document.getElementById("calendar-month-title");
     const calendarDays = document.getElementById("calendar-days");
     const previousMonthButton = document.getElementById("previous-month");
     const nextMonthButton = document.getElementById("next-month");
-
     const timeSlots = document.getElementById("time-slots");
-    const selectedDateLabel = document.getElementById("selected-date-label");
+    const dateLabel = document.getElementById("selected-date-label");
     const calendarStatus = document.getElementById("calendar-status");
-
     const continueButton = document.getElementById("continue-to-details");
-    const backButton = document.getElementById("back-to-calendar");
-    const changeBookingButton = document.getElementById("change-booking");
-
-    const calendarSelectionError = document.getElementById("calendar-selection-error");
-    const bookingSummary = document.getElementById("booking-summary");
-
-    const totalPriceElement = document.getElementById("total-price");
+    const selectionError = document.getElementById("calendar-selection-error");
     const servicesError = document.getElementById("services-error");
     const serviceCheckboxes = document.querySelectorAll("input[name='serviceIds']");
+    const totalPrice = document.getElementById("total-price");
+    const notification = document.getElementById("form-validation-notification");
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     let displayedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
     let selectedDate = "";
     let selectedTime = "";
-    let busySlotsByDate = {};
-    let validationNotificationTimer;
-    let validationNotificationHideTimer;
+    let busySlots = {};
+    let confirmationReady = false;
+    let notificationTimer;
+    let hideNotificationTimer;
 
-    const serverSelection = window.bookingRestoreSelection ?? null;
-    const restoreSelection = {
-        hairdresserId: String(serverSelection?.hairdresserId || selectedHairdresserInput.value || ""),
-        date: normalizeDate(serverSelection?.date || selectedDateInput.value),
-        time: normalizeTime(serverSelection?.time || selectedTimeInput.value)
+    // Скритите полета пазят избора при редакция и след неуспешно изпращане.
+    const savedSelection = {
+        hairdresserId: hairdresserInput.value,
+        date: dateInput.value.slice(0, 10),
+        time: timeInput.value.slice(0, 5)
     };
-    let shouldRestoreSelection = Boolean(restoreSelection.hairdresserId && restoreSelection.date);
+    const originalEditSelection = isCreate ? null : savedSelection;
+    let restoreAfterLoad = null;
 
-    if ([...hairdresserSelect.options].some(option => option.value === restoreSelection.hairdresserId)) {
-        hairdresserSelect.value = restoreSelection.hairdresserId;
-    } else {
-        shouldRestoreSelection = false;
+    if ([...hairdresserSelect.options].some(option => option.value === savedSelection.hairdresserId)) {
+        hairdresserSelect.value = savedSelection.hairdresserId;
+        restoreAfterLoad = savedSelection;
     }
 
-    if (serverSelection?.serviceIds) {
-        const selectedServiceIds = new Set(serverSelection.serviceIds.map(String));
-
-        serviceCheckboxes.forEach(checkbox => {
-            checkbox.checked = selectedServiceIds.has(checkbox.value);
-        });
-    }
-
-    const originalEditSelection = form.dataset.bookingMode === "edit"
-        ? { ...restoreSelection }
-        : null;
-
-    const monthFormatter = new Intl.DateTimeFormat("bg-BG", {
-        month: "long",
-        year: "numeric"
+    const monthFormat = new Intl.DateTimeFormat("bg-BG", {
+        month: "long", year: "numeric"
+    });
+    const dateFormat = new Intl.DateTimeFormat("bg-BG", {
+        weekday: "long", day: "numeric", month: "long", year: "numeric"
+    });
+    const priceFormat = new Intl.NumberFormat("bg-BG", {
+        minimumFractionDigits: 2, maximumFractionDigits: 2
     });
 
-    const dateFormatter = new Intl.DateTimeFormat("bg-BG", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-    });
-
-    const priceFormatter = new Intl.NumberFormat("bg-BG", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-
-    function pad(value) {
-        return String(value).padStart(2, "0");
+    function pad(number) {
+        return String(number).padStart(2, "0");
     }
 
-    function toDateKey(year, month, day) {
-        return `${year}-${pad(month + 1)}-${pad(day)}`;
+    function dateKey(date) {
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
     }
 
-    function dateFromKey(dateKey) {
-        const [year, month, day] = dateKey.split("-").map(Number);
-
+    function dateFromKey(key) {
+        const [year, month, day] = key.split("-").map(Number);
         return new Date(year, month - 1, day);
     }
 
-    function normalizeDate(value) {
-        const text = String(value ?? "").trim();
-        return /^\d{4}-\d{2}-\d{2}/.test(text) ? text.slice(0, 10) : text;
+    function isClosedDay(date) {
+        return date.getDay() === 1 || date.getDay() === 2;
     }
 
-    function isNonWorkingDay(dateKey) {
-        return nonWorkingWeekDays.has(dateFromKey(dateKey).getDay());
+    function isPastSlot(key, time) {
+        const [hour, minute] = time.split(":").map(Number);
+        const slotDate = dateFromKey(key);
+        slotDate.setHours(hour, minute);
+        return slotDate <= new Date();
     }
 
-    function normalizeTime(value) {
-        return String(value ?? "").slice(0, 5);
-    }
+    function availableSlots(key) {
+        if (isClosedDay(dateFromKey(key))) return [];
 
-    function isPastDate(year, month, day) {
-        const date = new Date(year, month, day);
-        date.setHours(0, 0, 0, 0);
+        return slots.filter(time => {
+            if (isPastSlot(key, time)) return false;
+            if (!busySlots[key]?.includes(time)) return true;
 
-        return date < today;
-    }
-
-    function getBusyTimes(dateKey) {
-        return busySlotsByDate[dateKey] ?? [];
-    }
-
-    function getAvailableSlots(dateKey) {
-        if (isNonWorkingDay(dateKey)) {
-            return [];
-        }
-
-        const busyTimes = getBusyTimes(dateKey);
-
-        return slots.filter(slot =>
-            (!busyTimes.includes(slot) || (
-                originalEditSelection !== null &&
+            // При редакция текущият час на резервацията остава достъпен.
+            return originalEditSelection !== null &&
                 hairdresserSelect.value === originalEditSelection.hairdresserId &&
-                dateKey === originalEditSelection.date &&
-                slot === originalEditSelection.time
-            )) &&
-            !isPastSlot(dateKey, slot)
-        );
+                key === originalEditSelection.date &&
+                time === originalEditSelection.time;
+        });
     }
 
-    function setCalendarStatus(message) {
-        calendarStatus.textContent = message;
+    // Календар и свободни часове.
+    function chooseDate(key) {
+        selectedDate = key;
+        selectedTime = "";
+        dateInput.value = key;
+        timeInput.value = "";
+        selectionError.hidden = true;
+        renderCalendar();
+        renderTimeSlots();
+        continueButton.disabled = true;
     }
 
-    function updateContinueButton() {
-        continueButton.disabled = !(selectedDate && selectedTime);
+    function chooseTime(time) {
+        selectedTime = time;
+        timeInput.value = time;
+        selectionError.hidden = true;
+        renderTimeSlots();
+        continueButton.disabled = false;
     }
 
     function renderCalendar() {
         const year = displayedMonth.getFullYear();
         const month = displayedMonth.getMonth();
-
-        monthTitle.textContent = monthFormatter.format(displayedMonth);
-        calendarDays.innerHTML = "";
-
-        previousMonthButton.disabled = displayedMonth <= currentMonth;
-
-        const firstDay = new Date(year, month, 1);
-        const firstDayIndex = (firstDay.getDay() + 6) % 7;
+        const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        for (let index = 0; index < firstDayIndex; index++) {
-            const emptyCell = document.createElement("span");
-            emptyCell.className = "calendar-day--empty";
-            emptyCell.setAttribute("aria-hidden", "true");
+        monthTitle.textContent = monthFormat.format(displayedMonth);
+        previousMonthButton.disabled =
+            displayedMonth <= new Date(today.getFullYear(), today.getMonth(), 1);
+        calendarDays.replaceChildren();
 
-            calendarDays.appendChild(emptyCell);
+        for (let index = 0; index < firstWeekday; index++) {
+            const empty = document.createElement("span");
+            empty.className = "calendar-day--empty";
+            empty.setAttribute("aria-hidden", "true");
+            calendarDays.appendChild(empty);
         }
 
         for (let day = 1; day <= daysInMonth; day++) {
-            const dateKey = toDateKey(year, month, day);
-            const isPast = isPastDate(year, month, day);
-            const isNonWorking = isNonWorkingDay(dateKey);
-            const availableSlots = isPast ? [] : getAvailableSlots(dateKey);
+            const date = new Date(year, month, day);
+            const key = dateKey(date);
+            const freeTimes = availableSlots(key);
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "calendar-day";
+            button.textContent = day;
 
-            const dayButton = document.createElement("button");
-            dayButton.type = "button";
-            dayButton.className = "calendar-day";
-            dayButton.textContent = day;
-
-            if (isPast) {
-                dayButton.classList.add("calendar-day--past");
-                dayButton.disabled = true;
-                dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – минала дата`);
-            } else if (isNonWorking) {
-                dayButton.classList.add("calendar-day--past");
-                dayButton.disabled = true;
-                dayButton.title = "Почивен ден";
-                dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – почивен ден`);
-            } else if (availableSlots.length === 0) {
-                dayButton.classList.add("calendar-day--full");
-                dayButton.disabled = true;
-                dayButton.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – няма свободни часове`);
+            let description;
+            if (date < today) {
+                button.classList.add("calendar-day--past");
+                description = "минала дата";
+                button.disabled = true;
+            } else if (isClosedDay(date)) {
+                button.classList.add("calendar-day--past");
+                button.title = "Почивен ден";
+                description = "почивен ден";
+                button.disabled = true;
+            } else if (freeTimes.length === 0) {
+                button.classList.add("calendar-day--full");
+                description = "няма свободни часове";
+                button.disabled = true;
             } else {
-                dayButton.classList.add("calendar-day--available");
-                dayButton.setAttribute(
-                    "aria-label",
-                    `${day}. ${month + 1}. ${year} – ${availableSlots.length} свободни часа`
-                );
-
-                dayButton.addEventListener("click", () => {
-                    selectedDate = dateKey;
-                    selectedTime = "";
-
-                    selectedDateInput.value = selectedDate;
-                    selectedTimeInput.value = "";
-
-                    calendarSelectionError.hidden = true;
-
-                    renderCalendar();
-                    renderTimeSlots();
-                    updateContinueButton();
-                });
+                button.classList.add("calendar-day--available");
+                description = `${freeTimes.length} свободни часа`;
+                button.addEventListener("click", () => chooseDate(key));
             }
 
-            if (selectedDate === dateKey) {
-                dayButton.classList.add("calendar-day--selected");
-                dayButton.setAttribute("aria-pressed", "true");
-            } else {
-                dayButton.setAttribute("aria-pressed", "false");
-            }
-
-            calendarDays.appendChild(dayButton);
+            button.setAttribute("aria-label", `${day}. ${month + 1}. ${year} – ${description}`);
+            button.setAttribute("aria-pressed", String(selectedDate === key));
+            if (selectedDate === key) button.classList.add("calendar-day--selected");
+            calendarDays.appendChild(button);
         }
     }
 
     function renderTimeSlots() {
-        timeSlots.innerHTML = "";
+        timeSlots.replaceChildren();
 
         if (!selectedDate) {
-            selectedDateLabel.textContent = "След това ще видиш свободните часове.";
+            dateLabel.textContent = "След това ще видиш свободните часове.";
             return;
         }
 
-        const selectedDateObject = dateFromKey(selectedDate);
-        selectedDateLabel.textContent = dateFormatter.format(selectedDateObject);
+        dateLabel.textContent = dateFormat.format(dateFromKey(selectedDate));
+        const freeTimes = availableSlots(selectedDate);
 
-        const availableSlots = getAvailableSlots(selectedDate);
-
-        if (availableSlots.length === 0) {
-            timeSlots.innerHTML = `
-                <p class="time-slots__empty">
-                    За този ден вече няма свободни часове.
-                </p>`;
-
+        if (freeTimes.length === 0) {
+            const message = document.createElement("p");
+            message.className = "time-slots__empty";
+            message.textContent = "За този ден вече няма свободни часове.";
+            timeSlots.appendChild(message);
             return;
         }
 
-        availableSlots.forEach(slot => {
-            const slotButton = document.createElement("button");
-            slotButton.type = "button";
-            slotButton.className = "time-slot";
-            slotButton.textContent = slot;
-
-            if (slot === selectedTime) {
-                slotButton.classList.add("time-slot--selected");
-                slotButton.setAttribute("aria-pressed", "true");
-            } else {
-                slotButton.setAttribute("aria-pressed", "false");
-            }
-
-            slotButton.addEventListener("click", () => {
-                selectedTime = slot;
-                selectedTimeInput.value = slot;
-
-                calendarSelectionError.hidden = true;
-
-                renderTimeSlots();
-                updateContinueButton();
-            });
-
-            timeSlots.appendChild(slotButton);
-        });
+        for (const time of freeTimes) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "time-slot";
+            button.textContent = time;
+            button.setAttribute("aria-pressed", String(selectedTime === time));
+            if (selectedTime === time) button.classList.add("time-slot--selected");
+            button.addEventListener("click", () => chooseTime(time));
+            timeSlots.appendChild(button);
+        }
     }
 
-    function normalizeBusySlots(payload) {
-        const normalized = {};
+    function restoreSelection(saved) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(saved.date)) return;
+        const date = dateFromKey(saved.date);
+        if (dateKey(date) !== saved.date || date < today || availableSlots(saved.date).length === 0) return;
 
-        if (Array.isArray(payload)) {
-            payload.forEach(item => {
-                const date = item.reservationDate ?? item.ReservationDate;
-                const time = item.reservationTime ?? item.ReservationTime;
+        displayedMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        selectedDate = saved.date;
+        selectedTime = availableSlots(saved.date).includes(saved.time) ? saved.time : "";
+        dateInput.value = selectedDate;
+        timeInput.value = selectedTime;
+        continueButton.disabled = !selectedTime;
+        renderCalendar();
+        renderTimeSlots();
 
-                if (!date || !time) {
-                    return;
-                }
-
-                if (!normalized[date]) {
-                    normalized[date] = [];
-                }
-
-                normalized[date].push(normalizeTime(time));
-            });
-
-            return normalized;
+        if (isCreate && form.dataset.serverErrors === "true" && selectedTime) {
+            showDetails();
         }
-
-        Object.entries(payload ?? {}).forEach(([date, times]) => {
-            normalized[date] = (times ?? []).map(normalizeTime);
-        });
-
-        return normalized;
     }
 
     async function loadBusySlots() {
         const hairdresserId = hairdresserSelect.value;
-
-        selectedHairdresserInput.value = hairdresserId;
+        hairdresserInput.value = hairdresserId;
         selectedDate = "";
         selectedTime = "";
-
-        selectedDateInput.value = "";
-        selectedTimeInput.value = "";
-
-        timeSlots.innerHTML = "";
-        selectedDateLabel.textContent = "След това ще видиш свободните часове.";
-
-        calendarSelectionError.hidden = true;
+        dateInput.value = "";
+        timeInput.value = "";
         continueButton.disabled = true;
+        selectionError.hidden = true;
+        calendarDays.replaceChildren();
+        renderTimeSlots();
 
         if (!hairdresserId) {
-            busySlotsByDate = {};
+            busySlots = {};
             renderCalendar();
-            setCalendarStatus("Избери фризьор, за да видиш графика.");
+            calendarStatus.textContent = "Избери фризьор, за да видиш графика.";
             return;
         }
 
-        setCalendarStatus("Зареждаме актуалния график...");
+        calendarStatus.textContent = "Зареждаме актуалния график...";
 
         try {
-            const url = new URL(
-                calendarRoot.dataset.busySlotsUrl,
-                window.location.origin
-            );
-
+            const url = new URL(calendarRoot.dataset.busySlotsUrl, window.location.origin);
             url.searchParams.set("id", hairdresserId);
+            const response = await fetch(url, { headers: { Accept: "application/json" } });
+            if (!response.ok) throw new Error("Неуспешно зареждане на графика.");
 
-            const response = await fetch(url, {
-                headers: {
-                    Accept: "application/json"
-                }
-            });
+            const data = await response.json();
+            if (hairdresserSelect.value !== hairdresserId) return;
 
-            if (!response.ok) {
-                throw new Error("Неуспешно зареждане на графика.");
+            busySlots = {};
+            for (const [date, times] of Object.entries(data)) {
+                busySlots[date] = times.map(time => time.slice(0, 5));
             }
-
-            const payload = await response.json();
-
-            if (hairdresserSelect.value !== hairdresserId) {
-                return;
-            }
-
-            busySlotsByDate = normalizeBusySlots(payload);
 
             renderCalendar();
-            setCalendarStatus("Избери свободен ден и удобен час.");
+            calendarStatus.textContent = "Избери свободен ден и удобен час.";
 
-            if (
-                shouldRestoreSelection &&
-                hairdresserId === String(restoreSelection.hairdresserId) &&
-                hairdresserSelect.value === hairdresserId
-            ) {
-                shouldRestoreSelection = false;
-
-                const restoredDate = restoreSelection.date;
-                const restoredTime = restoreSelection.time;
-                const parsedDate = dateFromKey(restoredDate);
-
-                if (
-                    /^\d{4}-\d{2}-\d{2}$/.test(restoredDate) &&
-                    !Number.isNaN(parsedDate.getTime()) &&
-                    toDateKey(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()) === restoredDate &&
-                    parsedDate >= today &&
-                    !isNonWorkingDay(restoredDate) &&
-                    getAvailableSlots(restoredDate).length > 0
-                ) {
-                    displayedMonth = new Date(
-                        parsedDate.getFullYear(),
-                        parsedDate.getMonth(),
-                        1
-                    );
-
-                    selectedDate = restoredDate;
-                    selectedTime = getAvailableSlots(restoredDate).includes(restoredTime)
-                        ? restoredTime
-                        : "";
-
-                    selectedDateInput.value = restoredDate;
-                    selectedTimeInput.value = selectedTime;
-
-                    renderCalendar();
-                    renderTimeSlots();
-                    updateContinueButton();
-                }
+            if (restoreAfterLoad?.hairdresserId === hairdresserId) {
+                const saved = restoreAfterLoad;
+                restoreAfterLoad = null;
+                restoreSelection(saved);
             }
         } catch {
-            busySlotsByDate = {};
-
+            if (hairdresserSelect.value !== hairdresserId) return;
+            busySlots = {};
             renderCalendar();
-            setCalendarStatus("Графикът не може да бъде зареден. Опитай отново.");
+            calendarStatus.textContent = "Графикът не може да бъде зареден. Опитай отново.";
         }
+    }
+
+    // Преминаване между календара, данните и потвърждението.
+    function endTime(start) {
+        const [hour, minute] = start.split(":").map(Number);
+        const end = new Date(2000, 0, 1, hour, minute + 45);
+        return `${pad(end.getHours())}:${pad(end.getMinutes())}`;
+    }
+
+    function hasValidSelection() {
+        return hairdresserSelect.value && selectedDate && selectedTime &&
+            availableSlots(selectedDate).includes(selectedTime);
+    }
+
+    function showSelectionError() {
+        showCalendar();
+        selectionError.textContent = "Моля, избери фризьор, дата и свободен час.";
+        selectionError.hidden = false;
+    }
+
+    function leaveConfirmation() {
+        if (!isCreate) return;
+        confirmationReady = false;
+        confirmationStep.hidden = true;
+        heading.hidden = false;
+        form.classList.remove("reservation-form--confirmation");
+    }
+
+    function showCalendar() {
+        leaveConfirmation();
+        detailsStep.hidden = true;
+        calendarStep.hidden = false;
+        calendarStep.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function showDetails() {
+        if (!hasValidSelection()) {
+            showSelectionError();
+            return;
+        }
+
+        leaveConfirmation();
+        const hairdresserName = hairdresserSelect.selectedOptions[0].textContent.trim();
+        const date = dateFormat.format(dateFromKey(selectedDate));
+        document.getElementById("booking-summary").textContent =
+            `${hairdresserName} · ${date} · ${selectedTime} – ${endTime(selectedTime)}`;
+
+        calendarStep.hidden = true;
+        detailsStep.hidden = false;
+        detailsStep.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function selectedServices() {
+        return [...serviceCheckboxes].filter(checkbox => checkbox.checked);
     }
 
     function updateTotalPrice() {
         let total = 0;
-
-        serviceCheckboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                total += Number(checkbox.dataset.price ?? 0);
-            }
-        });
-
-        totalPriceElement.textContent = `${priceFormatter.format(total)} eur.`;
+        for (const checkbox of selectedServices()) {
+            total += Number(checkbox.dataset.price);
+        }
+        totalPrice.textContent = `${priceFormat.format(total)} eur.`;
     }
 
-    function showDetailsStep() {
-        if (!selectedDate || !selectedTime || !hairdresserSelect.value) {
-            calendarSelectionError.textContent = "Моля, избери фризьор, дата и свободен час.";
-            calendarSelectionError.hidden = false;
+    function fieldsAreValid() {
+        if (window.jQuery?.validator) {
+            return window.jQuery(form).validate().form();
+        }
+        return form.checkValidity();
+    }
 
+    function showValidationNotification() {
+        clearTimeout(notificationTimer);
+        clearTimeout(hideNotificationTimer);
+        notification.hidden = false;
+        requestAnimationFrame(() => {
+            notification.classList.add("form-validation-notification--visible");
+        });
+        notificationTimer = setTimeout(() => {
+            notification.classList.remove("form-validation-notification--visible");
+            hideNotificationTimer = setTimeout(() => {
+                notification.hidden = true;
+            }, 350);
+        }, 10000);
+    }
+
+    function showConfirmation() {
+        if (!hasValidSelection()) {
+            showSelectionError();
             return;
         }
 
-        const hairdresserName =
-            hairdresserSelect.options[hairdresserSelect.selectedIndex].text;
+        const services = selectedServices();
+        const validFields = fieldsAreValid();
+        servicesError.textContent = services.length ? "" : "Моля, избери поне една услуга.";
+        if (!validFields) showValidationNotification();
+        if (!validFields || services.length === 0) return;
 
-        const date = dateFormatter.format(dateFromKey(selectedDate));
+        document.getElementById("confirmation-name").textContent =
+            form.elements.namedItem("ClientName").value.trim();
+        document.getElementById("confirmation-phone").textContent =
+            form.elements.namedItem("ClientPhone").value.trim();
+        document.getElementById("confirmation-hairdresser").textContent =
+            hairdresserSelect.selectedOptions[0].textContent.trim();
+        document.getElementById("confirmation-date").textContent =
+            dateFormat.format(dateFromKey(selectedDate));
+        document.getElementById("confirmation-time").textContent =
+            `${selectedTime} – ${endTime(selectedTime)}`;
 
-        bookingSummary.textContent =
-            `${hairdresserName} · ${date} · ${selectedTime} – ${getEndTime(selectedTime)}`;
+        const servicesList = document.getElementById("confirmation-services");
+        servicesList.replaceChildren();
+        for (const checkbox of services) {
+            const item = document.createElement("li");
+            const name = document.createElement("span");
+            const price = document.createElement("strong");
+            name.textContent = checkbox.nextElementSibling
+                .querySelector(".service-option__name").textContent.trim();
+            price.textContent = `${priceFormat.format(Number(checkbox.dataset.price))} eur.`;
+            item.append(name, price);
+            servicesList.appendChild(item);
+        }
+        document.getElementById("confirmation-total").textContent = totalPrice.textContent;
 
+        const serverError = form.querySelector(".reservation-validation-summary");
+        if (serverError) serverError.hidden = true;
+
+        confirmationReady = true;
         calendarStep.hidden = true;
-        detailsStep.hidden = false;
-
-        detailsStep.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-    }
-
-    function getEndTime(startTime) {
-        const [hour, minute] = startTime.split(":").map(Number);
-        const end = new Date(2000, 0, 1, hour, minute + 45);
-
-        return `${pad(end.getHours())}:${pad(end.getMinutes())}`;
-    }
-
-    function showCalendarStep() {
         detailsStep.hidden = true;
-        calendarStep.hidden = false;
-
-        calendarStep.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+        heading.hidden = true;
+        form.classList.add("reservation-form--confirmation");
+        confirmationStep.hidden = false;
+        confirmationStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    // Действия на потребителя.
     hairdresserSelect.addEventListener("change", () => {
-        shouldRestoreSelection = false;
+        restoreAfterLoad = null;
         loadBusySlots();
     });
 
     previousMonthButton.addEventListener("click", () => {
-        displayedMonth = new Date(
-            displayedMonth.getFullYear(),
-            displayedMonth.getMonth() - 1,
-            1
-        );
-
+        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() - 1, 1);
         renderCalendar();
     });
-
     nextMonthButton.addEventListener("click", () => {
-        displayedMonth = new Date(
-            displayedMonth.getFullYear(),
-            displayedMonth.getMonth() + 1,
-            1
-        );
-
+        displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() + 1, 1);
         renderCalendar();
     });
 
-    continueButton.addEventListener("click", showDetailsStep);
-    backButton.addEventListener("click", showCalendarStep);
-    changeBookingButton.addEventListener("click", showCalendarStep);
+    continueButton.addEventListener("click", showDetails);
+    document.getElementById("back-to-calendar").addEventListener("click", showCalendar);
+    document.getElementById("change-booking").addEventListener("click", showCalendar);
 
-    serviceCheckboxes.forEach(checkbox => {
+    for (const checkbox of serviceCheckboxes) {
         checkbox.addEventListener("change", () => {
             servicesError.textContent = "";
             updateTotalPrice();
         });
-    });
+    }
 
-    submitButton.addEventListener("click", () => {
-        const validator = window.jQuery && window.jQuery.validator
-            ? window.jQuery(form).validate()
-            : null;
-
-        const isFormValid = validator
-            ? validator.form()
-            : form.checkValidity();
-
-        if (isFormValid) {
-            return;
-        }
-
-        clearTimeout(validationNotificationTimer);
-        clearTimeout(validationNotificationHideTimer);
-
-        validationNotification.hidden = false;
-
-        requestAnimationFrame(() => {
-            validationNotification.classList.add(
-                "form-validation-notification--visible"
-            );
+    if (isCreate) {
+        document.getElementById("complete-reservation")
+            .addEventListener("click", showConfirmation);
+        document.getElementById("back-to-details")
+            .addEventListener("click", showDetails);
+    } else {
+        document.getElementById("complete-reservation").addEventListener("click", () => {
+            if (!fieldsAreValid()) showValidationNotification();
         });
-
-        validationNotificationTimer = setTimeout(() => {
-            validationNotification.classList.remove(
-                "form-validation-notification--visible"
-            );
-
-            validationNotificationHideTimer = setTimeout(() => {
-                validationNotification.hidden = true;
-            }, 350);
-        }, 10000);
-    });
+    }
 
     form.addEventListener("submit", event => {
-        const hasService = [...serviceCheckboxes].some(
-            checkbox => checkbox.checked
-        );
-
-        if (!selectedDate || !selectedTime || !hairdresserSelect.value) {
+        if (isCreate && !confirmationReady) {
             event.preventDefault();
-
-            showCalendarStep();
-
-            calendarSelectionError.textContent =
-                "Моля, избери фризьор, дата и свободен час.";
-
-            calendarSelectionError.hidden = false;
-
+            showConfirmation();
             return;
         }
 
-        if (!hasService) {
+        if (!hasValidSelection()) {
             event.preventDefault();
+            showSelectionError();
+            return;
+        }
 
+        if (selectedServices().length === 0) {
+            event.preventDefault();
+            if (isCreate) showDetails();
             servicesError.textContent = "Моля, избери поне една услуга.";
+            return;
+        }
+
+        if (!fieldsAreValid()) {
+            event.preventDefault();
+            if (isCreate) showDetails();
+            showValidationNotification();
         }
     });
 
     updateTotalPrice();
     loadBusySlots();
 })();
-
-function isPastSlot(dateKey, slot) {
-    const [year, month, day] = dateKey.split("-").map(Number);
-    const [hour, minute] = slot.split(":").map(Number);
-
-    const slotDateTime = new Date(year, month - 1, day, hour, minute);
-    const now = new Date();
-
-    return slotDateTime <= now;
-}

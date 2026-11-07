@@ -11,7 +11,7 @@ namespace HairSalon.Services.Core.Services
         public async Task<List<ServiceView>> GetAllServicesAsync()
         {
             List<ServiceView> services = await repository.All<Service>()
-                .Select(x => new ServiceView { Name = x.Name, Details = x.Details, Price = x.Price, ServicePhotoExampleUrl = x.ServicePhotoExampleUrl })
+                .Select(x => new ServiceView { Name = x.Name, Details = x.Details, Price = x.Price })
                 .ToListAsync();
 
             return services;

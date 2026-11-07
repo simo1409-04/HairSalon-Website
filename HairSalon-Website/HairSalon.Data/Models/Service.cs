@@ -23,9 +23,6 @@ namespace HairSalon.Data.Models
         public decimal Price { get; set; }
 
 
-        [Required(ErrorMessage = "Снимката на услугата е задължителна")]
-        [MaxLength(ServicePhotoExampleUrlMaxLength, ErrorMessage = "URL адресът на снимката не трябва да надвишава {1} знака")]
-        public string ServicePhotoExampleUrl { get; set; } = null!;
 
 
         [MaxLength(DetailsMaxLength, ErrorMessage = "Описанието не трябва да надвишава {1} знака")]

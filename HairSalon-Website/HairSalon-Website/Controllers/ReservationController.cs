@@ -174,7 +174,7 @@ namespace HairSalon_Website.Controllers
 
             if (result.Status == ReservationStatus.Success)
             {
-                TempData["SucsessEdit"] = "Reservation was sucsessfully edited!";
+                TempData["SucsessEdit"] = "Резервацията беше редактирана успешно.";
 
                 return RedirectToAction("All");
 

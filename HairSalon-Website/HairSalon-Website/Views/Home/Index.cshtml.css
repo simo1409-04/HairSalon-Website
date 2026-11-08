@@ -23,14 +23,14 @@
     min-height: min(800px, calc(100vh - 76px));
     align-items: center;
     overflow: hidden;
-    background: #121212 url('/images/home/graphite-barber-hero.png') center / cover no-repeat;
+    background: #121212 url('/images/home/graphite-studio-and-logo.jpg') center / cover no-repeat;
 }
 
 .graphite-hero__shade {
     position: absolute;
     z-index: -1;
     inset: 0;
-    background: linear-gradient( 90deg, rgba(10, 10, 10, .94) 0%, rgba(10, 10, 10, .78) 37%, rgba(10, 10, 10, .15) 76%, rgba(10, 10, 10, .24) 100% );
+    background: linear-gradient(90deg, rgba(10, 10, 10, .94) 0%, rgba(10, 10, 10, .82) 30%, rgba(10, 10, 10, .06) 65%, rgba(10, 10, 10, .08) 100%);
 }
 
 .graphite-hero__content {
@@ -267,10 +267,6 @@
 }
 
 .graphite-gallery__heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 30px;
     margin-bottom: 46px;
 }
 
@@ -278,74 +274,32 @@
     color: #fffaf3;
 }
 
-.graphite-gallery__heading > p {
-    max-width: 250px;
-    margin: 0 0 7px;
-    color: #bcb4ab;
-    font-size: .94rem;
-    line-height: 1.6;
-}
-
 .graphite-gallery__grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
 }
 
 .gallery-card {
-    position: relative;
     min-width: 0;
     aspect-ratio: 3 / 4;
     margin: 0;
     overflow: hidden;
-    outline: 0;
     background: #272422;
-    cursor: pointer;
 }
 
-    .gallery-card:nth-child(2),
-    .gallery-card:nth-child(5) {
-        transform: translateY(42px);
-    }
-
     .gallery-card img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform .45s ease, filter .45s ease;
     }
 
-    .gallery-card figcaption {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 28px 20px 19px;
-        background: linear-gradient(transparent, rgba(0, 0, 0, .82));
-        color: #fffaf3;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 1.28rem;
-        opacity: 0;
-        transform: translateY(7px);
-        transition: opacity .25s ease, transform .25s ease;
+@media (min-width: 768px) and (max-width: 1100px) {
+    .graphite-gallery__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-
-    .gallery-card:hover img,
-    .gallery-card:focus img {
-        filter: brightness(.78);
-        transform: scale(1.045);
-    }
-
-    .gallery-card:hover figcaption,
-    .gallery-card:focus figcaption {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .gallery-card:focus-visible {
-        outline: 3px solid var(--copper);
-        outline-offset: 3px;
-    }
+}
 
 @media (max-width: 767.98px) {
     .graphite-shell {
@@ -353,16 +307,17 @@
     }
 
     .graphite-hero {
-        min-height: 670px;
-        background-position: 61% center;
+        min-height: 0;
+        background-position: center bottom;
+        background-size: 100% auto;
     }
 
     .graphite-hero__shade {
-        background: linear-gradient( 90deg, rgba(10, 10, 10, .92) 0%, rgba(10, 10, 10, .63) 100% );
+        background: none;
     }
 
     .graphite-hero__content {
-        padding-block: 90px;
+        padding: 76px 0 calc(56vw + 40px);
     }
 
     .graphite-hero h1 {
@@ -394,28 +349,17 @@
     }
 
     .graphite-gallery__heading {
-        display: block;
         margin-bottom: 30px;
     }
-
-        .graphite-gallery__heading > p {
-            margin-top: 19px;
-        }
 
     .graphite-gallery__grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
     }
 
-    .gallery-card:nth-child(2),
-    .gallery-card:nth-child(5) {
-        transform: translateY(0);
-    }
-
-    .gallery-card figcaption {
-        padding: 23px 14px 14px;
-        font-size: 1rem;
-        opacity: 1;
-        transform: none;
+    .gallery-card:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc((100% - 10px) / 2);
     }
 }

@@ -1,9 +1,16 @@
 using HairSalon.Data.DTOs.Service;
+using HairSalon.Data.Models;
 
 namespace HairSalon.Services.Core.Contracts
 {
     public interface IServicesService
     {
-        Task<List<ServiceView>> GetAllServicesAsync();
+       public Task<List<ServiceView>> GetAllServices();
+        public  Task CreateService(ServiceView service);
+
+        public Task<ServiceView> EditService(int id);
+
+        public Task<Service> EditAndSaveService(int id, ServiceView model);
+
     }
 }

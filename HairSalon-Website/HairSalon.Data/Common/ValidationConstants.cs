@@ -20,8 +20,8 @@ namespace HairSalon.Data.Common
         {
             public const int DurationInMinutesMin = 6;
             public const int DurationInMinutesMax = 480;
-            public const string PriceMin = "0.01";
-            public const string PriceMax = "10000.00";
+            public const decimal PriceMin = 0.01m;
+            public const decimal PriceMax = 10000.00m;
             public const int ServicePhotoExampleUrlMaxLength = 100;
             public const int DetailsMaxLength = 2000;
         }

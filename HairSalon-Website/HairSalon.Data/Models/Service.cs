@@ -18,7 +18,7 @@ namespace HairSalon.Data.Models
 
        
         [Required(ErrorMessage = "Цената е задължителна")]
-        [Range(typeof(decimal), nameof(PriceMin), nameof(PriceMax), ErrorMessage = "Цената трябва да бъде между {1} и {1} лв.")]
+        [Range(typeof(decimal), "0.01", "10000.00", ParseLimitsInInvariantCulture = true, ErrorMessage = "Цената трябва да бъде между {1} и {2} евро.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 

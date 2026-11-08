@@ -1,18 +1,21 @@
 using HairSalon.Data;
 using HairSalon.Data.Models;
+using HairSalon.Services.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace HairSalon_Website.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IServicesService servicesService) : Controller
     {
        
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
-            if (User.Identity.IsAuthenticated)
+            ViewBag.Services = await servicesService.GetAllServices();
+
+            if (User.IsInRole("Admin"))
             {
                 return RedirectToAction("All", "Reservation");
             }
@@ -20,19 +23,20 @@ namespace HairSalon_Website.Controllers
 
             return View("Index");
         }
-        public IActionResult IndexAdmin()
+        public async Task<IActionResult> IndexAdmin()
         {
+            ViewBag.Services = await servicesService.GetAllServices();
 
-        
 
-            
+
+
+
             return View("Index");
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+       
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

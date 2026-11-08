@@ -1,8 +1,8 @@
 using HairSalon.Data.Contracts;
+using HairSalon.Data.DTOs.Service;
+using HairSalon.Data.Models;
 using HairSalon.Services.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
-using HairSalon.Data.Models;
-using HairSalon.Data.DTOs.Service;
 
 namespace HairSalon.Services.Core.Services
 {
@@ -62,6 +62,42 @@ namespace HairSalon.Services.Core.Services
             await repository.SaveChangesAsync();
 
             return ServiceForEditInDb;
+
+
+        }
+
+        public async Task<bool> DeleteService(int id)
+        {
+            Service? ServiceForEditInDb = await repository.All<Service>().FirstOrDefaultAsync(x => x.Id == id);
+
+            bool isDeleted = false;
+
+            if(ServiceForEditInDb==null)
+            {
+
+                return isDeleted;
+
+            }
+
+            try
+            {
+                repository.Remove<Service>(ServiceForEditInDb);
+
+                await repository.SaveChangesAsync();
+                isDeleted = true;
+                return isDeleted;
+
+            }
+
+
+
+
+            catch (Exception ex)
+            {
+                return isDeleted;
+
+            }
+
 
 
         }

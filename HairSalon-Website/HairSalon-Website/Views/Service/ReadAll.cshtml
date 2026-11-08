@@ -51,11 +51,16 @@
                                    asp-action="Edit"
                                    asp-route-id="@service.Id">Редактирай</a>
 
-                                <a class="service-admin__delete"
-                                   asp-controller="Service"
-                                   asp-action="Delete"
-                                   asp-route-id="@service.Id"
-                                   onclick="return window.confirm('Сигурен ли си, че искаш да изтриеш тази услуга?');">Изтрий</a>
+                                <form class="service-admin__delete-form"
+                                      asp-controller="Service"
+                                      asp-action="Delete"
+                                      asp-route-id="@service.Id"
+                                      method="post"
+                                      onsubmit="return window.confirm('Сигурен ли си, че искаш да изтриеш тази услуга?');">
+
+
+                                    <button class="service-admin__delete" type="submit">Изтрий</button>
+                                </form>
                             </div>
                         </div>
                     </details>

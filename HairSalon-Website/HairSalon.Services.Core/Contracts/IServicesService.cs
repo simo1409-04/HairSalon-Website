@@ -11,6 +11,8 @@ namespace HairSalon.Services.Core.Contracts
         public Task<ServiceView> EditService(int id);
 
         public Task<Service> EditAndSaveService(int id, ServiceView model);
+        public  Task<bool> DeleteService(int id);
+
 
     }
 }

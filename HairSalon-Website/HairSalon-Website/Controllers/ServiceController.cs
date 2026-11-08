@@ -90,7 +90,33 @@ namespace HairSalon_Website.Controllers
             }
 
 
-            TempData["SucsessServiceAdded"] = "Услугата беше добавена успешно!";
+            TempData["SucsessEditetService"] = "Услугата беше редактирана успешно!";
+
+            return RedirectToAction("ReadAll");
+
+
+        }
+      
+      
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+
+
+            bool isDeleted = await servicesService.DeleteService(id);
+
+
+            if(!isDeleted)
+            {
+                TempData["ErrorServiceNotFound"] = "Услугата не беше намерена!";
+
+
+                return RedirectToAction("ReadAll");
+            }
+
+
+            TempData["SucsessDeleteService"] = "Услугата беше изтрита успешно!";
 
             return RedirectToAction("ReadAll");
 

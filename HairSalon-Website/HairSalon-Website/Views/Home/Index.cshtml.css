@@ -288,7 +288,7 @@
     background: #272422;
 }
 
-    .gallery-card img {
+    .gallery-card ::deep img {
         display: block;
         width: 100%;
         height: 100%;

@@ -7,13 +7,12 @@ using HairSalon.Data.Models;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 
 
 namespace HairSalon.Services.Core.Reservations
 {
-    public  class ReservationService(IRepository repository, ReservationResult result, ILogger<ReservationService> logger) : IReservationService
+    public  class ReservationService(IRepository repository, ReservationResult result) : IReservationService
     {
         private List<TimeOnly> validSlots = new List<TimeOnly>
 {
@@ -342,10 +341,8 @@ namespace HairSalon.Services.Core.Reservations
 
                         }
 
-                        catch (Exception exception)
+                        catch (Exception)
                         {
-                            logger.LogError(exception, "Could not edit reservation {ReservationId}", id);
-
                             result.Status = ReservationStatus.DatabaseError;
 
 

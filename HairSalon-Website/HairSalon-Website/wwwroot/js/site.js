@@ -4,8 +4,9 @@
 // Write your JavaScript code.
 
 document.querySelectorAll("[data-tempdata-notification]").forEach((notification) => {
+    const duration = Number(notification.dataset.tempdataDuration) || 5000;
     window.setTimeout(() => {
         notification.classList.add("site-notification--hide");
         window.setTimeout(() => notification.remove(), 400);
-    }, 5000);
+    }, duration);
 });

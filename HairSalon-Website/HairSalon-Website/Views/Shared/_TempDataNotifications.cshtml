@@ -1,10 +1,12 @@
 @{
     var messages = new[]
     {
-        new { Key = "ErrorMessage", Kind = "error" },
-        new { Key = "ErrorSaving", Kind = "error" },
-        new { Key = "SucsessEdit", Kind = "success" },
-        new { Key = "SucsessMessage", Kind = "success" }
+        new { Key = "ErrorMessage", Kind = "error", DurationMs = 5000 },
+        new { Key = "ErrorSaving", Kind = "error", DurationMs = 5000 },
+        new { Key = "SucsessEdit", Kind = "success", DurationMs = 5000 },
+        new { Key = "SucsessMessage", Kind = "success", DurationMs = 5000 },
+        new { Key = "ErrorService", Kind = "error", DurationMs = 12000 },
+        new { Key = "SucsessServiceAdded", Kind = "success", DurationMs = 12000 }
     };
 }
 
@@ -16,6 +18,7 @@
         {
             <div class="site-notification site-notification--@item.Kind"
                  data-tempdata-notification
+                 data-tempdata-duration="@item.DurationMs"
                  role="@(item.Kind == "error" ? "alert" : "status")">
                 <span class="site-notification__icon" aria-hidden="true">@(item.Kind == "error" ? "!" : "✓")</span>
                 <p class="site-notification__message">@message</p>

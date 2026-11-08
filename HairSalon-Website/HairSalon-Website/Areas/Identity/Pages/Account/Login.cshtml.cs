@@ -87,7 +87,17 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl = Url.Content("/Reservation/All");
+
+        returnUrl = Url.Content("/Home/Index");
+
+
+        if (User.IsInRole("Admin"))
+        {
+            returnUrl = Url.Content("/Reservation/All");
+
+        }
+
+      
 
         if (ModelState.IsValid)
         {

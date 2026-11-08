@@ -65,6 +65,7 @@
 
 .graphite-hero h1,
 .graphite-intro h2,
+.graphite-services h2,
 .graphite-gallery h2 {
     margin: 0;
     font-family: Georgia, "Times New Roman", serif;
@@ -81,7 +82,8 @@
 }
 
     .graphite-hero h1 em,
-    .graphite-intro h2 em {
+    .graphite-intro h2 em,
+    .graphite-services h2 em {
         color: var(--copper);
         font-weight: inherit;
     }
@@ -146,6 +148,7 @@
 }
 
 .graphite-intro h2,
+.graphite-services h2,
 .graphite-gallery h2 {
     font-size: clamp(2.8rem, 5.7vw, 5.5rem);
     line-height: .93;
@@ -161,6 +164,100 @@
     color: #625c56;
     font-size: 1.04rem;
     line-height: 1.8;
+}
+
+.graphite-services {
+    padding-block: clamp(76px, 9vw, 130px);
+    background: #e9e1d7;
+}
+
+.graphite-services__grid {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: clamp(36px, 7vw, 110px);
+    align-items: start;
+}
+
+.graphite-services h2 {
+    max-width: 500px;
+}
+
+.graphite-services__heading > p:last-child {
+    max-width: 340px;
+    margin: 24px 0 0;
+    color: #625c56;
+    line-height: 1.7;
+}
+
+.graphite-services__list {
+    border-top: 1px solid #cbbdb0;
+}
+
+.graphite-service {
+    border-bottom: 1px solid #cbbdb0;
+}
+
+.graphite-service__summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 32px;
+    gap: 16px;
+    align-items: center;
+    min-height: 86px;
+    padding-block: 18px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.graphite-service__summary::-webkit-details-marker {
+    display: none;
+}
+
+.graphite-service__summary:focus-visible {
+    outline: 2px solid var(--copper);
+    outline-offset: 4px;
+}
+
+.graphite-service__name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    line-height: 1.2;
+}
+
+.graphite-service__price {
+    color: #845438;
+    font-size: .86rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.graphite-service__icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #bfa993;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: transform .2s ease, background .2s ease;
+}
+
+.graphite-service[open] .graphite-service__icon {
+    background: #d9c5b2;
+    transform: rotate(45deg);
+}
+
+.graphite-service__details {
+    max-width: 540px;
+    margin: 0;
+    padding: 0 48px 24px 0;
+    color: #625c56;
+    line-height: 1.7;
+}
+
+.graphite-services__empty {
+    margin: 20px 0;
+    color: #625c56;
 }
 
 .graphite-gallery {
@@ -280,6 +377,20 @@
     .graphite-intro__grid {
         grid-template-columns: 1fr;
         gap: 22px;
+    }
+
+    .graphite-services__grid {
+        grid-template-columns: 1fr;
+        gap: 34px;
+    }
+
+    .graphite-service__summary {
+        gap: 10px;
+        min-height: 76px;
+    }
+
+    .graphite-service__details {
+        padding-right: 0;
     }
 
     .graphite-gallery__heading {

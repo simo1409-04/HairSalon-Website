@@ -1,9 +1,10 @@
-
+@using System.Globalization
 @{
     ViewData["Title"] = "Graphite Barber Studio";
+    List<ServiceView> services = ViewBag.Services as List<ServiceView> ?? new List<ServiceView>();
 }
 
-<main class="graphite-home">
+<div class="graphite-home">
 
     <section class="graphite-hero" aria-labelledby="hero-title">
         <div class="graphite-hero__shade" aria-hidden="true"></div>
@@ -34,6 +35,41 @@
                     Тук всяка прическа се изгражда спрямо формата, косата и начина,
                     по който искаш да се чувстваш, когато излезеш от стола.
                 </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="graphite-services" id="services" aria-labelledby="services-title">
+        <div class="graphite-shell graphite-services__grid">
+            <div class="graphite-services__heading">
+                <p class="graphite-kicker graphite-kicker--dark">Услуги и цени</p>
+                <h2 id="services-title">Грижа до последния <em>детайл.</em></h2>
+                <p>Избери услуга, за да прочетеш повече за нея.</p>
+            </div>
+
+            <div class="graphite-services__list">
+                @if (services.Count == 0)
+                {
+                    <p class="graphite-services__empty">В момента няма добавени услуги.</p>
+                }
+                else
+                {
+                    @foreach (var service in services)
+                    {
+                        <details class="graphite-service">
+                            <summary class="graphite-service__summary">
+                                <span class="graphite-service__name">@service.Name</span>
+                                <span class="graphite-service__price">@service.Price.ToString("0.00", CultureInfo.GetCultureInfo("bg-BG")) eur.</span>
+                                <span class="graphite-service__icon" aria-hidden="true">+</span>
+                            </summary>
+                            <p class="graphite-service__details">
+                                @(string.IsNullOrWhiteSpace(service.Details)
+                                    ? "Подробности за услугата ще добавим скоро."
+                                    : service.Details)
+                            </p>
+                        </details>
+                    }
+                }
             </div>
         </div>
     </section>
@@ -76,4 +112,4 @@
             </div>
         </div>
     </section>
-</main>
+</div>

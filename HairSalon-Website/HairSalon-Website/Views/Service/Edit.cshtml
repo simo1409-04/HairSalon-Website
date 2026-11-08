@@ -1,0 +1,51 @@
+@model ServiceView
+@{
+    ViewData["Title"] = "Редактирай услуга";
+}
+
+<section class="service-create" aria-labelledby="service-edit-title">
+    <div class="service-create__inner">
+        <header class="service-create__header">
+            <p class="service-create__eyebrow">Graphite Barber Studio · Администратор</p>
+            <h1 id="service-edit-title">Редактирай <em>услуга.</em></h1>
+            <p>Промени данните за услугата и запази промените.</p>
+        </header>
+
+        <form asp-controller="Service"
+              asp-action="EditConfirm"
+              asp-route-id="@Model.Id"
+              method="post"
+              class="service-create__form">
+
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="service-create__summary"></div>
+
+            <div class="service-create__field">
+                <label asp-for="Name">Име на услугата</label>
+                <input asp-for="Name" class="service-create__input" />
+                <span asp-validation-for="Name" class="service-create__error"></span>
+            </div>
+
+            <div class="service-create__field">
+                <label asp-for="Price">Цена (eur.)</label>
+                <input asp-for="Price" type="number" step="1" min="1" class="service-create__input" inputmode="numeric" />
+                <span asp-validation-for="Price" class="service-create__error"></span>
+            </div>
+
+            <div class="service-create__field">
+                <label asp-for="Details">Описание <span class="service-create__optional">(по желание)</span></label>
+                <textarea asp-for="Details" rows="5" class="service-create__input service-create__textarea"></textarea>
+                <span asp-validation-for="Details" class="service-create__error"></span>
+            </div>
+
+            <div class="service-create__actions">
+                <a class="service-create__back" asp-controller="Service" asp-action="ReadAll">← Назад към услугите</a>
+                <button class="service-create__submit" type="submit">Запази промените</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

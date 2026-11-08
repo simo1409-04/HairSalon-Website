@@ -1,0 +1,193 @@
+.service-create {
+    --create-ink: #211e1b;
+    --create-muted: #6d655e;
+    --create-copper: #a8633e;
+    min-height: 100%;
+    padding: clamp(44px, 7vw, 88px) 0;
+    background: #f4efe7;
+    color: var(--create-ink);
+}
+
+.service-create__inner {
+    width: min(100% - 36px, 760px);
+    margin-inline: auto;
+}
+
+.service-create__header {
+    margin-bottom: 32px;
+}
+
+.service-create__eyebrow {
+    margin: 0 0 12px;
+    color: var(--create-copper);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+.service-create h1 {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.service-create h1 em {
+    color: var(--create-copper);
+    font-weight: inherit;
+}
+
+.service-create__header > p:last-child {
+    margin: 16px 0 0;
+    color: var(--create-muted);
+    line-height: 1.65;
+}
+
+.service-create ::deep .service-create__form {
+    padding: clamp(24px, 5vw, 44px);
+    border: 1px solid #dfd5ca;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(49, 37, 28, .06);
+}
+
+.service-create ::deep .service-create__summary.validation-summary-valid {
+    display: none;
+}
+
+.service-create ::deep .service-create__summary.validation-summary-errors {
+    margin-bottom: 24px;
+    padding: 14px 18px;
+    border-left: 4px solid #ad4545;
+    background: #fff2f2;
+    color: #8f3030;
+}
+
+.service-create ::deep .service-create__summary ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.service-create__field + .service-create__field {
+    margin-top: 24px;
+}
+
+.service-create__field ::deep label {
+    display: block;
+    margin-bottom: 9px;
+    font-weight: 700;
+}
+
+.service-create ::deep .service-create__optional {
+    color: var(--create-muted);
+    font-size: .86rem;
+    font-weight: 400;
+}
+
+.service-create ::deep .service-create__input {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 15px;
+    border: 1px solid #cfc4b8;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--create-ink);
+    font: inherit;
+}
+
+.service-create ::deep .service-create__input:focus {
+    border-color: var(--create-copper);
+    outline: 2px solid rgba(168, 99, 62, .18);
+}
+
+.service-create ::deep .service-create__input.input-validation-error {
+    border-color: #ad4545;
+}
+
+.service-create ::deep .service-create__textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.service-create ::deep .service-create__error.field-validation-error {
+    display: block;
+    margin-top: 7px;
+    color: #a23b3b;
+    font-size: .86rem;
+}
+
+.service-create__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 34px;
+    padding-top: 26px;
+    border-top: 1px solid #e6ded6;
+}
+
+.service-create ::deep .service-create__back,
+.service-create__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    box-sizing: border-box;
+    min-height: 56px;
+    padding: 14px 22px;
+    border: 1px solid var(--create-ink);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.service-create ::deep .service-create__back {
+    border-color: #cbb09a;
+    background: #f1e6da;
+    color: var(--create-ink);
+}
+
+.service-create ::deep .service-create__back:hover {
+    border-color: var(--create-copper);
+    background: #e9d5c2;
+    color: var(--create-ink);
+    box-shadow: 0 8px 18px rgba(49, 37, 28, .1);
+    transform: translateY(-2px);
+}
+
+.service-create__submit {
+    background: var(--create-ink);
+    color: #fff;
+}
+
+.service-create__submit:hover {
+    border-color: var(--create-copper);
+    background: var(--create-copper);
+    box-shadow: 0 8px 18px rgba(49, 37, 28, .14);
+    transform: translateY(-2px);
+}
+
+.service-create ::deep .service-create__back:focus-visible,
+.service-create__submit:focus-visible {
+    outline: 3px solid var(--create-copper);
+    outline-offset: 3px;
+}
+
+@media (max-width: 540px) {
+    .service-create__actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .service-create ::deep .service-create__back,
+    .service-create__submit {
+        width: 100%;
+    }
+}

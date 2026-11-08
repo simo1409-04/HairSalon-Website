@@ -1,0 +1,66 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using System.Globalization
+@model List<HairSalon.Data.DTOs.Service.ServiceView>
+
+@{
+    ViewData["Title"] = "Управление на услуги";
+}
+
+<section class="service-admin" aria-labelledby="service-admin-title">
+    <div class="service-admin__inner">
+        <header class="service-admin__header">
+            <div>
+                <p class="service-admin__eyebrow">Graphite Barber Studio · Администратор</p>
+                <h1 id="service-admin-title">Услуги</h1>
+                <p class="service-admin__intro">Натисни услуга, за да видиш описанието и действията за нея.</p>
+            </div>
+
+            <a class="service-admin__add" asp-controller="Service" asp-action="Create">
+                + Добави услуга
+            </a>
+        </header>
+
+        <div class="service-admin__list">
+            @if (Model == null || Model.Count == 0)
+            {
+                <p class="service-admin__empty">Все още няма добавени услуги.</p>
+            }
+            else
+            {
+                @foreach (var service in Model)
+                {
+                    <details class="service-admin__item">
+                        <summary class="service-admin__summary">
+                            <span class="service-admin__name">@service.Name</span>
+                            <span class="service-admin__price">@(service.Price.ToString("0.00", CultureInfo.GetCultureInfo("bg-BG"))) eur.</span>
+                            <span class="service-admin__toggle" aria-hidden="true">+</span>
+                        </summary>
+
+                        <div class="service-admin__body">
+                            <p class="service-admin__details">
+                                @(string.IsNullOrWhiteSpace(service.Details)
+                                    ? "Няма добавено описание за тази услуга."
+                                    : service.Details)
+                            </p>
+
+                            <div class="service-admin__actions">
+                                <a class="service-admin__edit"
+                                   asp-controller="Service"
+                                   asp-action="Edit"
+                                   asp-route-id="@service.Id">Редактирай</a>
+
+                                <a class="service-admin__delete"
+                                   asp-controller="Service"
+                                   asp-action="Delete"
+                                   asp-route-id="@service.Id"
+                                   onclick="return window.confirm('Сигурен ли си, че искаш да изтриеш тази услуга?');">Изтрий</a>
+                            </div>
+                        </div>
+                    </details>
+                }
+            }
+        </div>
+    </div>
+</section>

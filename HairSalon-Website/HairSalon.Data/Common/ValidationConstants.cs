@@ -6,6 +6,10 @@ namespace HairSalon.Data.Common
         {
             public const int NameMinLength = 3;
             public const int NameMaxLength = 50;
+            public const int AcademicCertificateUrlMaxLength = 200;
+            public const int ProfilePictureUrlMaxLength = 200;
+            public const int DetailsMaxLength = 250;
+
         }
 
         public static class ReservationConstants

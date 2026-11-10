@@ -5,6 +5,7 @@ using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using HairSalon.Services.Core.Hairdressers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ReservationResult>();
+builder.Services.AddScoped<IHairdresserService, HairdresserService>();
 
 var app = builder.Build();
 

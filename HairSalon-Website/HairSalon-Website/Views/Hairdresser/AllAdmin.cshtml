@@ -1,0 +1,148 @@
+@model List<HairSalon.Data.DTOs.HairDresser.HairdresserDto>
+
+@{
+    ViewData["Title"] = "Екип (Admin)";
+}
+
+<div class="graphite-team graphite-team--admin">
+    <div class="graphite-team__admin-toolbar">
+        <div class="graphite-team__shell graphite-team__admin-toolbar-inner">
+            <span>Управление на екипа</span>
+            <a class="graphite-team__add" asp-controller="Hairdresser" asp-action="Add">Добави фризьор <span aria-hidden="true">＋</span></a>
+        </div>
+    </div>
+
+    <section class="graphite-team__content" aria-labelledby="team-list-title">
+        <div class="graphite-team__shell">
+            <div class="graphite-team__section-heading">
+                <div>
+                    <p class="graphite-team__eyebrow graphite-team__eyebrow--dark">Нашият екип</p>
+                    <h2 id="team-list-title">Всички фризьори.</h2>
+                </div>
+                <p>Избери профил, който искаш да редактираш или изтриеш.</p>
+            </div>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="graphite-team__empty">
+                    <span class="graphite-team__empty-mark" aria-hidden="true">G.</span>
+                    <p>Все още няма добавени фризьори.</p>
+                </div>
+            }
+            else
+            {
+                <div class="graphite-team__grid">
+                    @for (var index = 0; index < Model.Count; index++)
+                    {
+                        var hairdresser = Model[index];
+
+                        <article class="graphite-team__card">
+                            <div class="graphite-team__portrait">
+                                @if (!string.IsNullOrWhiteSpace(hairdresser.ProfilePictureUrl))
+                                {
+                                    <img src="@hairdresser.ProfilePictureUrl"
+                                         alt="Портрет на @hairdresser.Name"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <span class="graphite-team__portrait-placeholder" aria-hidden="true">G.</span>
+                                }
+                                <span class="graphite-team__card-number" aria-hidden="true">@((index + 1).ToString("D2"))</span>
+                            </div>
+
+                            <div class="graphite-team__card-body">
+                                <p class="graphite-team__card-label">Graphite Barber Studio</p>
+                                <h3>@hairdresser.Name</h3>
+
+                                @if (!string.IsNullOrWhiteSpace(hairdresser.AdditionalInformation))
+                                {
+                                    <p class="graphite-team__bio">@hairdresser.AdditionalInformation</p>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(hairdresser.AcademicCertificateUrl))
+                                {
+                                    <button class="graphite-team__certificate"
+                                            type="button"
+                                            data-certificate-src="@hairdresser.AcademicCertificateUrl"
+                                            data-certificate-name="@hairdresser.Name"
+                                            aria-haspopup="dialog"
+                                            aria-controls="certificate-dialog"
+                                            aria-label="Виж тестов сертификат за @hairdresser.Name">
+                                        <span class="graphite-team__certificate-preview">
+                                            <img src="@hairdresser.AcademicCertificateUrl"
+                                                 alt="Тестов сертификат за @hairdresser.Name"
+                                                 loading="lazy" />
+                                            <span class="graphite-team__certificate-badge">Тестов образец</span>
+                                        </span>
+                                        <span class="graphite-team__certificate-caption">
+                                            <span>Виж тестов сертификат</span>
+                                            <span class="graphite-team__certificate-arrow" aria-hidden="true">⤢</span>
+                                        </span>
+                                    </button>
+                                }
+
+                                <div class="graphite-team__admin-actions">
+                                    <a class="graphite-team__edit"
+                                       asp-controller="Hairdresser"
+                                       asp-action="Edit"
+                                       asp-route-id="@hairdresser.Id">Редактирай</a>
+                                    <form asp-controller="Hairdresser"
+                                          asp-action="Delete"
+                                          asp-route-id="@hairdresser.Id"
+                                          method="post"
+                                          onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този фризьор?');">
+                                        <button class="graphite-team__delete" type="submit">Изтрий</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<dialog id="certificate-dialog"
+        class="graphite-team__certificate-dialog"
+        aria-labelledby="certificate-dialog-title">
+    <div class="graphite-team__certificate-dialog-panel">
+        <div class="graphite-team__certificate-dialog-header">
+            <h2 id="certificate-dialog-title" class="graphite-team__certificate-dialog-title">Тестов сертификат</h2>
+            <button type="button"
+                    class="graphite-team__certificate-dialog-close"
+                    aria-label="Затвори сертификата">×</button>
+        </div>
+        <img class="graphite-team__certificate-dialog-image" alt="" />
+    </div>
+</dialog>
+
+@section Scripts {
+    <script>
+        (() => {
+            const dialog = document.getElementById('certificate-dialog');
+            const title = document.getElementById('certificate-dialog-title');
+            const image = dialog.querySelector('.graphite-team__certificate-dialog-image');
+            const closeButton = dialog.querySelector('.graphite-team__certificate-dialog-close');
+            let trigger;
+
+            document.querySelectorAll('.graphite-team__certificate').forEach(button => {
+                button.addEventListener('click', () => {
+                    trigger = button;
+                    const name = button.dataset.certificateName;
+                    title.textContent = `Тестов сертификат за ${name}`;
+                    image.src = button.dataset.certificateSrc;
+                    image.alt = `Тестов сертификат за ${name}`;
+                    dialog.showModal();
+                });
+            });
+
+            closeButton.addEventListener('click', () => dialog.close());
+            dialog.addEventListener('click', event => {
+                if (event.target === dialog) dialog.close();
+            });
+            dialog.addEventListener('close', () => trigger?.focus());
+        })();
+    </script>
+}

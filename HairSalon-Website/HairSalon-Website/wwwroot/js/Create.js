@@ -11,6 +11,9 @@
     ];
 
     const hairdresserSelect = document.getElementById("hairdresser-select");
+    const hairdresserStep = document.getElementById("hairdresser-step");
+    const hairdresserChoices = document.querySelectorAll("input[name='hairdresserChoice']");
+    const hairdresserChoiceStatus = document.getElementById("hairdresser-choice-status");
     const hairdresserInput = document.getElementById("selected-hairdresser-id");
     const dateInput = document.getElementById("selected-reservation-date");
     const timeInput = document.getElementById("selected-reservation-time");
@@ -246,7 +249,7 @@
             busySlots = {};
             renderCalendar();
             calendarStatus.textContent = "Избери фризьор, за да видиш графика.";
-            return;
+            return false;
         }
 
         calendarStatus.textContent = "Зареждаме актуалния график...";
@@ -258,7 +261,7 @@
             if (!response.ok) throw new Error("Неуспешно зареждане на графика.");
 
             const data = await response.json();
-            if (hairdresserSelect.value !== hairdresserId) return;
+            if (hairdresserSelect.value !== hairdresserId) return false;
 
             busySlots = {};
             for (const [date, times] of Object.entries(data)) {
@@ -273,11 +276,13 @@
                 restoreAfterLoad = null;
                 restoreSelection(saved);
             }
+            return true;
         } catch {
-            if (hairdresserSelect.value !== hairdresserId) return;
+            if (hairdresserSelect.value !== hairdresserId) return false;
             busySlots = {};
             renderCalendar();
             calendarStatus.textContent = "Графикът не може да бъде зареден. Опитай отново.";
+            return false;
         }
     }
 
@@ -294,6 +299,13 @@
     }
 
     function showSelectionError() {
+        if (hairdresserStep && !hairdresserSelect.value) {
+            hairdresserStep.hidden = false;
+            calendarStep.hidden = true;
+            hairdresserChoiceStatus.textContent = "Моля, избери фризьор.";
+            hairdresserStep.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        }
         showCalendar();
         selectionError.textContent = "Моля, избери фризьор, дата и свободен час.";
         selectionError.hidden = false;
@@ -310,6 +322,7 @@
     function showCalendar() {
         leaveConfirmation();
         detailsStep.hidden = true;
+        if (hairdresserStep) hairdresserStep.hidden = true;
         calendarStep.hidden = false;
         calendarStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -327,6 +340,7 @@
             `${hairdresserName} · ${date} · ${selectedTime} – ${endTime(selectedTime)}`;
 
         calendarStep.hidden = true;
+        if (hairdresserStep) hairdresserStep.hidden = true;
         detailsStep.hidden = false;
         detailsStep.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -415,10 +429,44 @@
     }
 
     // Действия на потребителя.
-    hairdresserSelect.addEventListener("change", () => {
-        restoreAfterLoad = null;
-        loadBusySlots();
-    });
+    if (hairdresserStep) {
+        for (const choice of hairdresserChoices) {
+            choice.addEventListener("click", async () => {
+                hairdresserSelect.value = choice.value;
+                restoreAfterLoad = null;
+                hairdresserChoiceStatus.textContent = "Зареждаме свободните часове...";
+
+                const loaded = await loadBusySlots();
+                if (!loaded) {
+                    if (hairdresserSelect.value === choice.value) {
+                        hairdresserChoiceStatus.textContent = calendarStatus.textContent;
+                    }
+                    return;
+                }
+
+                hairdresserChoiceStatus.textContent = "";
+                hairdresserStep.hidden = true;
+                calendarStep.hidden = false;
+                calendarStep.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+
+        document.getElementById("change-hairdresser").addEventListener("click", () => {
+            calendarStep.hidden = true;
+            hairdresserStep.hidden = false;
+            hairdresserStep.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        for (const image of hairdresserStep.querySelectorAll(".hairdresser-choice__photo img")) {
+            image.addEventListener("error", () => { image.hidden = true; });
+            if (image.complete && image.naturalWidth === 0) image.hidden = true;
+        }
+    } else {
+        hairdresserSelect.addEventListener("change", () => {
+            restoreAfterLoad = null;
+            loadBusySlots();
+        });
+    }
 
     previousMonthButton.addEventListener("click", () => {
         displayedMonth = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() - 1, 1);
@@ -479,5 +527,21 @@
     });
 
     updateTotalPrice();
-    loadBusySlots();
+    if (hairdresserStep) {
+        calendarStep.hidden = true;
+        if (hairdresserSelect.value) {
+            hairdresserChoiceStatus.textContent = "Зареждаме свободните часове...";
+            loadBusySlots().then(loaded => {
+                if (!loaded) {
+                    hairdresserChoiceStatus.textContent = calendarStatus.textContent;
+                    return;
+                }
+                hairdresserChoiceStatus.textContent = "";
+                hairdresserStep.hidden = true;
+                if (detailsStep.hidden) calendarStep.hidden = false;
+            });
+        }
+    } else {
+        loadBusySlots();
+    }
 })();

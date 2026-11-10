@@ -1,0 +1,91 @@
+@model HairSalon.Data.DTOs.HairDresser.HairDresserInputModel
+
+@{
+    ViewData["Title"] = "Добави фризьор";
+}
+
+<section class="hairdresser-add" aria-labelledby="hairdresser-add-title">
+    <div class="hairdresser-add__inner">
+        <header class="hairdresser-add__header">
+            <h1 id="hairdresser-add-title">Добави фризьор</h1>
+            <p>Попълни данните и избери снимка за профила и сертификата.</p>
+        </header>
+
+        <form asp-controller="Hairdresser"
+              asp-action="AddConfirm"
+              method="post"
+              enctype="multipart/form-data"
+              class="hairdresser-add__form">
+            <div asp-validation-summary="ModelOnly" class="hairdresser-add__summary"></div>
+
+            <div class="hairdresser-add__field">
+                <label asp-for="Name">Име</label>
+                <input asp-for="Name" class="hairdresser-add__input" autocomplete="name" />
+                <span asp-validation-for="Name" class="hairdresser-add__error"></span>
+            </div>
+
+            <div class="hairdresser-add__field">
+                <label asp-for="AdditionalInformation">Допълнителна информация <span class="hairdresser-add__optional">(по желание)</span></label>
+                <textarea asp-for="AdditionalInformation" class="hairdresser-add__input hairdresser-add__textarea" rows="5"></textarea>
+                <span asp-validation-for="AdditionalInformation" class="hairdresser-add__error"></span>
+            </div>
+
+            <div class="hairdresser-add__uploads">
+                <div class="hairdresser-add__field">
+                    <label asp-for="ProfilePicture">Профилна снимка</label>
+                    <input asp-for="ProfilePicture" type="file" accept="image/jpeg,image/png" class="hairdresser-add__file" />
+                    <p class="hairdresser-add__hint">JPG или PNG</p>
+                    <span asp-validation-for="ProfilePicture" class="hairdresser-add__error"></span>
+                    <div class="hairdresser-add__preview" id="profile-preview" hidden>
+                        <img alt="Преглед на профилната снимка" />
+                    </div>
+                </div>
+
+                <div class="hairdresser-add__field">
+                    <label asp-for="AcademicCertificate">Снимка на сертификата</label>
+                    <input asp-for="AcademicCertificate" type="file" accept="image/jpeg,image/png" class="hairdresser-add__file" />
+                    <p class="hairdresser-add__hint">JPG или PNG</p>
+                    <span asp-validation-for="AcademicCertificate" class="hairdresser-add__error"></span>
+                    <div class="hairdresser-add__preview" id="certificate-preview" hidden>
+                        <img alt="Преглед на сертификата" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="hairdresser-add__actions">
+                <a class="hairdresser-add__back" asp-controller="Reservation" asp-action="All">← Назад</a>
+                <button class="hairdresser-add__submit" type="submit">Добави фризьор</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function showImagePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const image = preview.querySelector("img");
+            let imageUrl;
+
+            input.addEventListener("change", () => {
+                if (imageUrl) URL.revokeObjectURL(imageUrl);
+
+                const file = input.files[0];
+                if (!file || !file.type.startsWith("image/")) {
+                    image.removeAttribute("src");
+                    preview.hidden = true;
+                    return;
+                }
+
+                imageUrl = URL.createObjectURL(file);
+                image.src = imageUrl;
+                preview.hidden = false;
+            });
+        }
+
+        showImagePreview("ProfilePicture", "profile-preview");
+        showImagePreview("AcademicCertificate", "certificate-preview");
+    </script>
+}

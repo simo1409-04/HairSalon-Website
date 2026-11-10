@@ -64,12 +64,59 @@
                    asp-format="{0:HH:mm}"
                    id="selected-reservation-time" />
 
-            <section class="booking-step booking-step--calendar"
-                     id="calendar-step"
-                     aria-labelledby="calendar-step-title">
-
+            <section class="booking-step booking-step--hairdressers"
+                     id="hairdresser-step"
+                     aria-labelledby="hairdresser-step-title">
                 <div class="booking-step__heading">
                     <span class="booking-step__number">01</span>
+
+                    <div>
+                        <p class="reservation-kicker reservation-kicker--dark">Стъпка 1 от 4</p>
+                        <h2 id="hairdresser-step-title">Избери фризьор</h2>
+                    </div>
+                </div>
+
+                <div class="hairdresser-choices">
+                    @foreach (var hairDresser in ViewBag.HairDressers)
+                    {
+                        <div class="hairdresser-choice">
+                            <input type="radio"
+                                   name="hairdresserChoice"
+                                   id="hairdresser-choice-@hairDresser.Value"
+                                   value="@hairDresser.Value"
+                                   checked="@(Model?.HairDresserId == (int)hairDresser.Value)" />
+
+                            <label for="hairdresser-choice-@hairDresser.Value">
+                                <span class="hairdresser-choice__photo">
+                                    <span class="hairdresser-choice__placeholder" aria-hidden="true">✂</span>
+                                    @if (!string.IsNullOrWhiteSpace(hairDresser.ProfilePictureUrl))
+                                    {
+                                        <img src="@hairDresser.ProfilePictureUrl"
+                                             alt=""
+                                             loading="lazy" />
+                                    }
+                                </span>
+                                <span class="hairdresser-choice__name">@hairDresser.Name</span>
+                                <span class="hairdresser-choice__role">Фризьор</span>
+                                <span class="hairdresser-choice__button">Резервирай</span>
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <p class="hairdresser-choice-status"
+                   id="hairdresser-choice-status"
+                   role="status"
+                   aria-live="polite"></p>
+            </section>
+
+            <section class="booking-step booking-step--calendar"
+                     id="calendar-step"
+                     aria-labelledby="calendar-step-title"
+                     hidden>
+
+                <div class="booking-step__heading">
+                    <span class="booking-step__number">02</span>
 
                     <div>
                         <p class="reservation-kicker reservation-kicker--dark">
@@ -81,13 +128,12 @@
                     </div>
                 </div>
 
-                <div class="hairdresser-picker">
-                    <label for="hairdresser-select">
-                        Избери фризьор
-                    </label>
-
+                <div class="hairdresser-picker" hidden>
                     <select id="hairdresser-select"
-                            class="reservation-select">
+                            class="reservation-select"
+                            aria-label="Избран фризьор"
+                            tabindex="-1">
+                        <option value="">Избери фризьор</option>
                         @foreach (var hairDresser in ViewBag.HairDressers)
                         {
                             <option value="@hairDresser.Value">
@@ -96,6 +142,10 @@
                         }
                     </select>
                 </div>
+
+                <button type="button"
+                        class="hairdresser-change"
+                        id="change-hairdresser">← Промени фризьора</button>
 
                 <div class="calendar-layout"
                      id="booking-calendar"
@@ -205,7 +255,7 @@
                      hidden>
 
                 <div class="booking-step__heading">
-                    <span class="booking-step__number">02</span>
+                    <span class="booking-step__number">03</span>
 
                     <div>
                         <p class="reservation-kicker reservation-kicker--dark">

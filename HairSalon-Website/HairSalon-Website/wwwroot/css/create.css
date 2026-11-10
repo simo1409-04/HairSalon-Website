@@ -152,6 +152,10 @@
     padding: clamp(24px, 5vw, 52px);
 }
 
+.booking-step[hidden] {
+    display: none;
+}
+
 .booking-step--details {
     border-top: 1px solid var(--line);
 }
@@ -182,6 +186,129 @@
 
 .booking-step__heading .reservation-kicker {
     margin-bottom: 5px;
+}
+
+.hairdresser-choices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.hairdresser-choice {
+    min-width: 0;
+}
+
+.hairdresser-choice input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.hairdresser-choice label {
+    display: flex;
+    min-height: 260px;
+    align-items: center;
+    flex-direction: column;
+    padding: 25px 16px 22px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: #fffdfa;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.hairdresser-choice label:hover,
+.hairdresser-choice input:checked + label {
+    border-color: var(--copper);
+    box-shadow: 0 12px 28px rgba(47, 36, 28, .1);
+    transform: translateY(-2px);
+}
+
+.hairdresser-choice input:focus-visible + label {
+    outline: 3px solid var(--copper);
+    outline-offset: 3px;
+}
+
+.hairdresser-choice__photo {
+    position: relative;
+    display: grid;
+    width: 116px;
+    height: 116px;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #e9e3db;
+}
+
+.hairdresser-choice__placeholder {
+    color: var(--copper-dark);
+    font-size: 2.2rem;
+}
+
+.hairdresser-choice__photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+}
+
+.hairdresser-choice__photo img[hidden] {
+    display: none;
+}
+
+.hairdresser-choice__name {
+    margin-top: 15px;
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.hairdresser-choice__role {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: .82rem;
+}
+
+.hairdresser-choice__button {
+    display: inline-flex;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    padding: 0 21px;
+    border-radius: 8px;
+    background: var(--copper);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.hairdresser-choice-status {
+    min-height: 1.5em;
+    margin: 18px 0 0;
+    color: var(--copper-dark);
+    text-align: center;
+}
+
+.hairdresser-change {
+    margin: 0 0 22px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--copper-dark);
+    cursor: pointer;
+    font: inherit;
+    font-size: .87rem;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .hairdresser-picker {
@@ -685,6 +812,10 @@
     }
 
 @media (max-width: 760px) {
+    .hairdresser-choices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .calendar-layout,
     .reservation-fields,
     .services-grid {
@@ -710,6 +841,29 @@
 }
 
 @media (max-width: 470px) {
+    .hairdresser-choices {
+        gap: 10px;
+    }
+
+    .hairdresser-choice label {
+        min-height: 225px;
+        padding: 18px 8px;
+    }
+
+    .hairdresser-choice__photo {
+        width: 90px;
+        height: 90px;
+    }
+
+    .hairdresser-choice__name {
+        font-size: 1.15rem;
+    }
+
+    .hairdresser-choice__button {
+        padding-inline: 13px;
+        font-size: .67rem;
+    }
+
     .reservation-page {
         padding-block: 28px;
     }

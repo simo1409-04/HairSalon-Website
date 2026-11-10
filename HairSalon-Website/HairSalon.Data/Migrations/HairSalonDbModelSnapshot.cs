@@ -97,10 +97,13 @@ namespace HairSalon.Data.Migrations
 
                     b.Property<string>("AcademicCertificateUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("AdditionalInformation")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -109,10 +112,8 @@ namespace HairSalon.Data.Migrations
 
                     b.Property<string>("ProfilePictureUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("YearsOfExperiance")
-                        .HasColumnType("int");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -125,8 +126,7 @@ namespace HairSalon.Data.Migrations
                             AcademicCertificateUrl = "/images/aleksandar-dimitrov/certificate.png",
                             AdditionalInformation = "Специализира в мъжко подстригване, оформяне на брада и класически барбер стил.",
                             Name = "Александър Димитров",
-                            ProfilePictureUrl = "/images/aleksandar-dimitrov/profile-picture.png",
-                            YearsOfExperiance = 7
+                            ProfilePictureUrl = "/images/aleksandar-dimitrov/profile-picture.png"
                         },
                         new
                         {
@@ -134,8 +134,7 @@ namespace HairSalon.Data.Migrations
                             AcademicCertificateUrl = "/images/viktoria-petrova/certificate.png",
                             AdditionalInformation = "Специализира в боядисване, балеаж, кичури и съвременни дамски прически.",
                             Name = "Виктория Петрова",
-                            ProfilePictureUrl = "/images/viktoria-petrova/profile-picture.png",
-                            YearsOfExperiance = 9
+                            ProfilePictureUrl = "/images/viktoria-petrova/profile-picture.png"
                         },
                         new
                         {
@@ -143,8 +142,7 @@ namespace HairSalon.Data.Migrations
                             AcademicCertificateUrl = "/images/martin-ivanov/certificate.png",
                             AdditionalInformation = "Работи с модерни мъжки и унисекс прически, оформяне и ежедневен стайлинг.",
                             Name = "Мартин Иванов",
-                            ProfilePictureUrl = "/images/martin-ivanov/profile-picture.png",
-                            YearsOfExperiance = 4
+                            ProfilePictureUrl = "/images/martin-ivanov/profile-picture.png"
                         });
                 });
 

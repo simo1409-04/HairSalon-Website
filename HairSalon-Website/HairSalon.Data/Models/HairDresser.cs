@@ -15,16 +15,21 @@ namespace HairSalon.Data.Models
         public string Name { get; set; } = null!;
 
 
-        public int? YearsOfExperiance { get; set; }
 
         [Required]
+        [MaxLength(HairDresserConstants.AcademicCertificateUrlMaxLength)]
+
         public string AcademicCertificateUrl { get; set; } = null!;
 
         [Required]
+        [MaxLength(HairDresserConstants.ProfilePictureUrlMaxLength)]
 
         public string ProfilePictureUrl { get; set; } = null!;
 
-        public string? AdditionalInformation { get; set; }
+        [MaxLength(HairDresserConstants.DetailsMaxLength)]
+        [Required]
+
+        public string AdditionalInformation { get; set; }
 
         public virtual ICollection<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
 

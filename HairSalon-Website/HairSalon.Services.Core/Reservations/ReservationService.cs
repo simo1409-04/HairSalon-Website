@@ -75,6 +75,7 @@ namespace HairSalon.Services.Core.Reservations
             List<HairDresserReservationCreateDto> hairDressers= await repository.All<HairDresser>()
                 .Select(x => new HairDresserReservationCreateDto
                 {
+                    ProfilePictureUrl= x.ProfilePictureUrl,
                     Name = x.Name,
                     Value = x.Id
                 })

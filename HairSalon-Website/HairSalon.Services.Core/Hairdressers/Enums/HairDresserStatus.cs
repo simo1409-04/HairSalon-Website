@@ -9,7 +9,8 @@ namespace HairSalon.Services.Core.Hairdressers.Enums
     {
         Success,
         WrongFormatError,
-        DatabaseError
+        DatabaseError,
+        FileNotCompletlyCreated
 
     }
 }

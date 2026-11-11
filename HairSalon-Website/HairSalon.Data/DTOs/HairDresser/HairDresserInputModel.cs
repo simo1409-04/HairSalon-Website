@@ -11,6 +11,7 @@ namespace HairSalon.Data.DTOs.HairDresser
     {
 
 
+
         [Required(ErrorMessage = "Името е задължително")]
         [MaxLength(HairDresserConstants.NameMaxLength,
             ErrorMessage = "Името не трябва да надвишава {1} знака")]

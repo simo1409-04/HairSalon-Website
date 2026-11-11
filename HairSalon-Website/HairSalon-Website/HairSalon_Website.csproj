@@ -40,6 +40,7 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\images\Hairdressers\" />
+	  <Folder Include="wwwroot\images\mini-gallery\" />
 	</ItemGroup>
 
 </Project>

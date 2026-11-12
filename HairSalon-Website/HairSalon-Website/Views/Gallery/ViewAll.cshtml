@@ -1,5 +1,141 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@model List<string>
+
 @{
+    ViewData["Title"] = "Галерия";
+    List<string> homeGalleryUrls = (ViewBag.HomeGallery as List<string> ?? new List<string>()).Take(5).ToList();
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/gallery.css"
+          asp-append-version="true" />
+}
+
+<div class="gb-gallery">
+    <section id="our-work" class="gb-gallery-collection">
+        <div class="gb-gallery-shell">
+            @if (Model != null && Model.Any())
+            {
+                <div class="gb-photo-grid" id="gb-photo-grid">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        string imageUrl = Model[i];
+
+                        <article class="gb-photo-card">
+                            <button type="button"
+                                    class="gb-photo-card__open"
+                                    data-gallery-open
+                                    data-image-url="@imageUrl"
+                                    data-image-index="@i"
+                                    aria-label="Отвори снимка @(i + 1)">
+                                <img src="@imageUrl"
+                                     alt="Прическа от Graphite Barber Studio"
+                                     loading="lazy"
+                                     decoding="async" />
+                                <span class="gb-photo-card__shade"></span>
+                                <span class="gb-photo-card__number">
+                                    @((i + 1).ToString("00")) / @Model.Count.ToString("00")
+                                </span>
+                                <span class="gb-photo-card__expand">↗</span>
+                                <span class="gb-photo-card__info">
+                                    <span class="gb-photo-card__label">GRAPHITE BARBER STUDIO</span>
+                                </span>
+                            </button>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="gb-gallery-empty">
+                    <h3>Галерията е празна</h3>
+                </div>
+            }
+        </div>
+    </section>
+
+
+    @if (homeGalleryUrls.Any())
+    {
+        <section class="gb-gallery-collection gb-home-gallery">
+            <div class="gb-gallery-shell">
+                <div class="gb-home-gallery__heading">
+                    <p class="gb-eyebrow gb-eyebrow--copper">HOME GALLERY</p>
+                    <h2>Още снимки</h2>
+                </div>
+
+                <div class="gb-photo-grid" id="gb-home-photo-grid">
+                    @for (int i = 0; i < homeGalleryUrls.Count; i++)
+                    {
+                        string imageUrl = homeGalleryUrls[i];
+
+                        <article class="gb-photo-card">
+                            <button type="button"
+                                    class="gb-photo-card__open"
+                                    data-gallery-open
+                                    data-image-url="@imageUrl"
+                                    aria-label="Отвори снимка от Home Gallery @(i + 1)">
+                                <img src="@imageUrl"
+                                     alt="Снимка от Home Gallery"
+                                     loading="lazy"
+                                     decoding="async" />
+                                <span class="gb-photo-card__shade"></span>
+                                <span class="gb-photo-card__expand">↗</span>
+                            </button>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+    <section class="gb-gallery-cta">
+        <div class="gb-gallery-shell gb-gallery-cta__inner">
+            <p class="gb-eyebrow">ТВОЯТ СЛЕДВАЩ СТИЛ</p>
+            <h2>Хареса си <em>визия?</em></h2>
+            <p class="gb-gallery-cta__description">
+                Запази удобен час и остави останалото на нас.
+            </p>
+            <a asp-controller="Reservation"
+               asp-action="Create"
+               class="gb-gallery-cta__button">
+                Запази своя час
+                <span aria-hidden="true">↗</span>
+            </a>
+            <span class="gb-gallery-cta__signature">GRAPHITE BARBER STUDIO</span>
+        </div>
+    </section>
+
+    <div class="gb-lightbox"
+         id="gb-lightbox"
+         role="dialog"
+         aria-modal="true"
+         aria-label="Преглед на снимка"
+         tabindex="-1"
+         hidden>
+        <div class="gb-lightbox__backdrop" data-lightbox-close></div>
+        <div class="gb-lightbox__top">
+            <span class="gb-lightbox__brand">GRAPHITE / GALLERY</span>
+            <button type="button"
+                    class="gb-lightbox__close"
+                    data-lightbox-close
+                    aria-label="Затвори">&times;</button>
+        </div>
+        <div class="gb-lightbox__stage">
+            <button type="button" class="gb-lightbox__arrow" id="gb-lightbox-prev">&#8592;</button>
+            <div class="gb-lightbox__image-wrap">
+                <img id="gb-lightbox-image" alt="Снимка от галерията" />
+            </div>
+            <button type="button" class="gb-lightbox__arrow" id="gb-lightbox-next">&#8594;</button>
+        </div>
+        <div class="gb-lightbox__bottom">
+            <h3>Graphite Barber Studio</h3>
+            <span id="gb-lightbox-counter"></span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/gallery.js"
+            asp-append-version="true"
+            defer></script>
 }

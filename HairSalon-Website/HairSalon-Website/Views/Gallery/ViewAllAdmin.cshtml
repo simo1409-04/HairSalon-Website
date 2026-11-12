@@ -1,0 +1,115 @@
+@model List<string>
+
+
+@{
+    List<string> urlsForHomeGallery = ViewBag.HomeGallery as List<string> ?? new List<string>();
+}
+@{
+    ViewData["Title"] = "Управление на галерията";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/gallery.css"
+          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/gallery-admin.css" asp-append-version="true" />
+}
+
+<div class="gb-gallery">
+    <section class="gb-gallery-collection">
+        <div class="gb-gallery-shell">
+            <div class="gb-collection-heading">
+                <div>
+                    <p class="gb-eyebrow gb-eyebrow--copper">АДМИНИСТРАЦИЯ</p>
+                    <h1>Управление на <em>галерията.</em></h1>
+                </div>
+
+                <a asp-controller="Gallery"
+                   asp-action="AddPhoto"
+                   class="gb-gallery-admin__add">
+                    Добави нова снимка
+                </a>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="gb-gallery-toolbar">
+                    <span class="gb-gallery-counter">@Model.Count снимки</span>
+                </div>
+
+                <div class="gb-photo-grid gb-photo-grid--admin">
+                    @foreach (var imageUrl in Model)
+                    {
+                        <article class="gb-photo-card gb-photo-card--admin">
+                            <img src="@imageUrl"
+                                 alt="Снимка от галерията"
+                                 loading="lazy"
+                                 decoding="async" />
+
+                            <form asp-controller="Gallery"
+                                  asp-action="Delete"
+                                  asp-route-id="@System.IO.Path.GetFileName(imageUrl)"
+                                  method="post"
+                                  class="gb-gallery-admin__delete-form" onsubmit="return confirm('Сигурни ли сте, че искате да изтриете снимката?');">
+                                
+                                <button type="submit" class="gb-gallery-admin__delete">
+                                    Изтрий
+                                </button>
+                            </form>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="gb-gallery-empty">
+                    <h2>Галерията е празна</h2>
+                    <p>Добави снимка, за да се покаже тук.</p>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="gb-gallery-admin__home-section">
+        <div class="gb-gallery-shell">
+            <div class="gb-gallery-admin__home-heading">
+                <div>
+                    <p class="gb-eyebrow gb-eyebrow--copper">НАЧАЛНА СТРАНИЦА</p>
+                    <h2>Home Mini Gallery</h2>
+                    
+                </div>
+                <a asp-controller="Gallery" asp-action="AddPhotoToHomeGallery" class="gb-gallery-admin__add">Добави снимка</a>
+                <span class="gb-gallery-counter">@urlsForHomeGallery.Count снимки</span>
+            </div>
+
+            @if (urlsForHomeGallery.Any())
+            {
+                <div class="gb-gallery-admin__home-grid">
+                    @foreach (var imageUrl in urlsForHomeGallery)
+                    {
+                        <article class="gb-gallery-admin__home-card">
+                            <img src="@imageUrl"
+                                 alt="Снимка от мини галерията на началната страница"
+                                 loading="lazy"
+                                 decoding="async" />
+                            <form asp-controller="Gallery"
+                                  asp-action="DeleteFromHomeGallery"
+                                  asp-route-id="@System.IO.Path.GetFileName(imageUrl)"
+                                  method="post"
+                                  class="gb-gallery-admin__delete-form"
+                                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете снимката?');">
+                                <button type="submit" class="gb-gallery-admin__delete">Изтрий</button>
+                            </form>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="gb-gallery-empty">
+                    <p>Няма снимки в Home Mini Gallery.</p>
+                </div>
+            }
+        </div>
+    </section>
+</div>

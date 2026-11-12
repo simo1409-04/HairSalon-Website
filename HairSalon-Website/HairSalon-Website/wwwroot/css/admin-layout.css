@@ -140,6 +140,29 @@
     margin: 0;
 }
 
+.admin-layout .menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #705b40;
+    border-radius: 12px;
+    background: #211d18;
+    cursor: pointer;
+}
+
+.admin-layout .menu-toggle span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: #c6a36a;
+}
+
 @media (max-width: 900px) {
     .admin-layout .site-navigation {
         padding: 12px 16px;

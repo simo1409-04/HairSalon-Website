@@ -113,7 +113,7 @@ namespace HairSalon.Services.Core.Hairdressers
             var hairdresser = new HairDresser
             {
                 Name = model.Name,
-                AdditionalInformation = model.AdditionalInformation,
+                AdditionalInformation = model.AdditionalInformation ?? string.Empty,
 
                 ProfilePictureUrl =
                     $"/images/Hairdressers/profile-pictures/{profileFileName}",
@@ -191,7 +191,7 @@ AdditionalInformation=x.AdditionalInformation
 
             if (isProfilePictureForEdit)
             {
-                fileExtension = Path.GetExtension(model.ProfilePicture!.FileName);
+                fileExtension = Path.GetExtension(model.ProfilePicture!.FileName).ToLowerInvariant();
 
                 bool profileFormatIsValid =
                     fileExtension == ".png" ||
@@ -206,7 +206,7 @@ AdditionalInformation=x.AdditionalInformation
 
             if (isCertificatePictureForEdit)
             {
-                fileExtension = Path.GetExtension(model.AcademicCertificate!.FileName);
+                fileExtension = Path.GetExtension(model.AcademicCertificate!.FileName).ToLowerInvariant();
 
                 bool certificateFormatIsValid =
                     fileExtension == ".png" ||
@@ -221,7 +221,7 @@ AdditionalInformation=x.AdditionalInformation
 
             if (isProfilePictureForEdit)
             {
-                fileExtension = Path.GetExtension(model.ProfilePicture!.FileName);
+                fileExtension = Path.GetExtension(model.ProfilePicture!.FileName).ToLowerInvariant();
                 newFileNameProfilePicture = $"{Guid.NewGuid():N}{fileExtension}";
 
                 fullFilePathForProfilePicture = Path.Combine(
@@ -229,6 +229,7 @@ AdditionalInformation=x.AdditionalInformation
 
                 try
                 {
+                    Directory.CreateDirectory(profilePictureRootFolderPath);
                     using (var file = File.Create(fullFilePathForProfilePicture))
                     {
                         await model.ProfilePicture.CopyToAsync(file);
@@ -247,7 +248,7 @@ AdditionalInformation=x.AdditionalInformation
 
             if (isCertificatePictureForEdit)
             {
-                fileExtension = Path.GetExtension(model.AcademicCertificate!.FileName);
+                fileExtension = Path.GetExtension(model.AcademicCertificate!.FileName).ToLowerInvariant();
                 newFileNameCertificatePicture = $"{Guid.NewGuid():N}{fileExtension}";
 
                 string fullFilePathForCertificatePicture = Path.Combine(
@@ -255,6 +256,7 @@ AdditionalInformation=x.AdditionalInformation
 
                 try
                 {
+                    Directory.CreateDirectory(certificatePictureRootFolderPath);
                     using (var file = File.Create(fullFilePathForCertificatePicture))
                     {
                         await model.AcademicCertificate.CopyToAsync(file);
@@ -286,7 +288,7 @@ AdditionalInformation=x.AdditionalInformation
                 : hairDresserForDb.AcademicCertificateUrl;
 
             hairDresserForDb.Name = model.Name;
-            hairDresserForDb.AdditionalInformation = model.AdditionalInformation;
+            hairDresserForDb.AdditionalInformation = model.AdditionalInformation ?? string.Empty;
             hairDresserForDb.ProfilePictureUrl = profilePictureUrlForDb;
             hairDresserForDb.AcademicCertificateUrl = certificatePictureUrlForDb;
 

@@ -1,3 +1,14 @@
 @{
-    Layout = "/Views/Shared/_Layout.cshtml";
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "/Views/Shared/_Layout - Admin.cshtml";
+    }
+    else if (User.Identity?.IsAuthenticated == true)
+    {
+        Layout = "/Views/Shared/_Layout - Hairdressers.cshtml";
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
 }

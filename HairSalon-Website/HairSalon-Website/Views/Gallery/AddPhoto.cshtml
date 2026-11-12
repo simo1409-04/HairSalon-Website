@@ -1,0 +1,94 @@
+@model HairSalon.Data.DTOs.Gallery.GalleryDto
+
+@{
+    ViewData["Title"] = "Добави снимка";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/gallery-upload.css"
+          asp-append-version="true" />
+}
+
+<section class="gallery-upload" aria-labelledby="gallery-upload-title">
+    <div class="gallery-upload__inner">
+        <header class="gallery-upload__header">
+            <p class="gallery-upload__eyebrow">GRAPHITE / GALLERY</p>
+            <h1 id="gallery-upload-title">Добави снимка</h1>
+            <p>Избери изображение във формат JPG, JPEG или PNG.</p>
+        </header>
+
+        <form asp-controller="Gallery"
+              asp-action="AddPhotoConfirm"
+              method="post"
+              enctype="multipart/form-data"
+              class="gallery-upload__form">
+            <div asp-validation-summary="ModelOnly" class="gallery-upload__summary"></div>
+
+            <label class="gallery-upload__dropzone" for="photo">
+                <input asp-for="photo"
+                       id="photo"
+                       type="file"
+                       accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                       required
+                       aria-describedby="photo-hint photo-error" />
+
+                <span class="gallery-upload__icon" aria-hidden="true">＋</span>
+                <span class="gallery-upload__prompt">Кликни тук, за да добавиш снимка</span>
+                <span class="gallery-upload__hint" id="photo-hint">Допустими формати: JPG, JPEG и PNG</span>
+                <span class="gallery-upload__filename" id="photo-filename" aria-live="polite"></span>
+            </label>
+            <span asp-validation-for="photo" id="photo-error" class="gallery-upload__error"></span>
+
+            <button class="gallery-upload__submit" type="submit">Качи снимката</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const input = document.getElementById("photo");
+            const form = input?.form;
+            const filename = document.getElementById("photo-filename");
+            const error = document.getElementById("photo-error");
+            const allowedExtensions = new Set(["jpg", "jpeg", "png"]);
+            const allowedTypes = new Set(["image/jpeg", "image/png"]);
+
+            if (!input || !form) return;
+
+            const isAllowed = (file) => {
+                const extension = file.name.split(".").pop()?.toLowerCase();
+                const typeIsKnown = !file.type || allowedTypes.has(file.type.toLowerCase());
+                return allowedExtensions.has(extension) && typeIsKnown;
+            };
+
+            input.addEventListener("change", () => {
+                const file = input.files?.[0];
+                error.textContent = "";
+                filename.textContent = "";
+
+                if (!file) return;
+
+                if (!isAllowed(file)) {
+                    input.value = "";
+                    error.textContent = "Моля, избери файл във формат JPG, JPEG или PNG.";
+                    return;
+                }
+
+                filename.textContent = file.name;
+            });
+
+            form.addEventListener("submit", (event) => {
+                const file = input.files?.[0];
+                if (!file || !isAllowed(file)) {
+                    event.preventDefault();
+                    error.textContent = file
+                        ? "Моля, избери файл във формат JPG, JPEG или PNG."
+                        : "Избери снимка за качване.";
+                }
+            });
+        })();
+    </script>
+}

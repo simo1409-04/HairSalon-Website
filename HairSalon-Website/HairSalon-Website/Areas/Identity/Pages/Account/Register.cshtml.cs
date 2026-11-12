@@ -14,17 +14,14 @@ namespace HairSalon_Website.Areas.Identity.Pages.Account;
 
 public class RegisterModel : PageModel
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<RegisterModel> _logger;
 
     public RegisterModel(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
         _logger = logger;
     }
 
@@ -39,8 +36,6 @@ public class RegisterModel : PageModel
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
     /// </summary>
-    public string? ReturnUrl { get; set; }
-
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
@@ -51,19 +46,19 @@ public class RegisterModel : PageModel
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Въведете имейл адрес.")]
+        [EmailAddress(ErrorMessage = "Въведете валиден имейл адрес.")]
+        [Display(Name = "Имейл")]
         public string Email { get; set; } = default!;
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Въведете парола.")]
+        [StringLength(100, ErrorMessage = "Паролата трябва да е между {2} и {1} знака.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Парола")]
         public string Password { get; set; } = default!;
 
         /// <summary>
@@ -71,37 +66,34 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Повтори паролата")]
+        [Compare("Password", ErrorMessage = "Двете пароли не съвпадат.")]
         public string? ConfirmPassword { get; set; }
     }
 
 
-    public void OnGet(string? returnUrl = null)
+    public void OnGet()
     {
-        ReturnUrl = returnUrl;
     }
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnPostAsync()
     {
-        returnUrl ??= Url.Content("~/");
-        ReturnUrl = returnUrl;
-
         if (ModelState.IsValid)
         {
+            var email = Input.Email.Trim();
             var user = new ApplicationUser
             {
-                UserName = Input.Email,
-                Email = Input.Email
+                UserName = email,
+                Email = email
             };
 
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("User created a new account with password.");
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return LocalRedirect(returnUrl);
+                _logger.LogInformation("Admin created an employee account.");
+                TempData["AccountCreated"] = $"Успешно регистрирахте акаунта {user.UserName}.";
+                return RedirectToPage("/Account/DeleteHairdresserAccount");
             }
             foreach (var error in result.Errors)
             {

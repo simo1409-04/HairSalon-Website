@@ -13,6 +13,7 @@
     const hairdresserSelect = document.getElementById("hairdresser-select");
     const hairdresserStep = document.getElementById("hairdresser-step");
     const hairdresserChoices = document.querySelectorAll("input[name='hairdresserChoice']");
+    const onlyOneHairdresser = isCreate && hairdresserChoices.length === 1;
     const hairdresserChoiceStatus = document.getElementById("hairdresser-choice-status");
     const hairdresserInput = document.getElementById("selected-hairdresser-id");
     const dateInput = document.getElementById("selected-reservation-date");
@@ -28,6 +29,10 @@
     const timeSlots = document.getElementById("time-slots");
     const dateLabel = document.getElementById("selected-date-label");
     const calendarStatus = document.getElementById("calendar-status");
+    const retryBusySlotsButton = document.createElement("button");
+    retryBusySlotsButton.type = "button";
+    retryBusySlotsButton.textContent = "Опитай отново";
+    retryBusySlotsButton.addEventListener("click", () => loadBusySlots());
     const continueButton = document.getElementById("continue-to-details");
     const selectionError = document.getElementById("calendar-selection-error");
     const servicesError = document.getElementById("services-error");
@@ -42,6 +47,7 @@
     let selectedDate = "";
     let selectedTime = "";
     let busySlots = {};
+    let availabilityLoaded = false;
     let confirmationReady = false;
     let notificationTimer;
     let hideNotificationTimer;
@@ -58,6 +64,14 @@
     if ([...hairdresserSelect.options].some(option => option.value === savedSelection.hairdresserId)) {
         hairdresserSelect.value = savedSelection.hairdresserId;
         restoreAfterLoad = savedSelection;
+    }
+
+    if (onlyOneHairdresser) {
+        const onlyHairdresserId = hairdresserChoices[0].value;
+        hairdresserSelect.value = onlyHairdresserId;
+        hairdresserInput.value = onlyHairdresserId;
+        hairdresserStep.hidden = true;
+        document.getElementById("change-hairdresser").hidden = true;
     }
 
     const monthFormat = new Intl.DateTimeFormat("bg-BG", {
@@ -95,6 +109,7 @@
     }
 
     function availableSlots(key) {
+        if (!availabilityLoaded) return [];
         if (isClosedDay(dateFromKey(key))) return [];
 
         return slots.filter(time => {
@@ -166,6 +181,10 @@
                 button.title = "Почивен ден";
                 description = "почивен ден";
                 button.disabled = true;
+            } else if (!availabilityLoaded) {
+                button.classList.add("calendar-day--past");
+                description = "графикът не е зареден";
+                button.disabled = true;
             } else if (freeTimes.length === 0) {
                 button.classList.add("calendar-day--full");
                 description = "няма свободни часове";
@@ -235,6 +254,7 @@
 
     async function loadBusySlots() {
         const hairdresserId = hairdresserSelect.value;
+        availabilityLoaded = false;
         hairdresserInput.value = hairdresserId;
         selectedDate = "";
         selectedTime = "";
@@ -268,6 +288,7 @@
                 busySlots[date] = times.map(time => time.slice(0, 5));
             }
 
+            availabilityLoaded = true;
             renderCalendar();
             calendarStatus.textContent = "Избери свободен ден и удобен час.";
 
@@ -281,7 +302,10 @@
             if (hairdresserSelect.value !== hairdresserId) return false;
             busySlots = {};
             renderCalendar();
-            calendarStatus.textContent = "Графикът не може да бъде зареден. Опитай отново.";
+            calendarStatus.replaceChildren(
+                document.createTextNode("Не успяхме да заредим свободните часове. "),
+                retryBusySlotsButton
+            );
             return false;
         }
     }
@@ -439,7 +463,8 @@
                 const loaded = await loadBusySlots();
                 if (!loaded) {
                     if (hairdresserSelect.value === choice.value) {
-                        hairdresserChoiceStatus.textContent = calendarStatus.textContent;
+                        hairdresserChoiceStatus.textContent =
+                            "Не успяхме да заредим свободните часове. Натисни фризьора отново.";
                     }
                     return;
                 }
@@ -528,7 +553,7 @@
 
     updateTotalPrice();
     if (hairdresserStep) {
-        calendarStep.hidden = true;
+        calendarStep.hidden = !onlyOneHairdresser;
         if (hairdresserSelect.value) {
             hairdresserChoiceStatus.textContent = "Зареждаме свободните часове...";
             loadBusySlots().then(loaded => {

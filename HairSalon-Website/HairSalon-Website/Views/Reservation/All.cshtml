@@ -20,6 +20,8 @@
          data-edit-url="@Url.Action("Edit", "Reservation")"
          data-delete-url="@Url.Action("Delete", "Reservation")">
 
+    <div hidden>@Html.AntiForgeryToken()</div>
+
     <div class="team-schedule__inner">
         <header class="team-schedule__heading">
             <div>

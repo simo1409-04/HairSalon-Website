@@ -14,6 +14,9 @@ namespace HairSalon.Services.Core.Reservations
 {
     public  class ReservationService(IRepository repository, ReservationResult result) : IReservationService
     {
+        private static readonly TimeZoneInfo SalonTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Sofia");
+        private static DateTime SalonNow => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SalonTimeZone);
+
         private List<TimeOnly> validSlots = new List<TimeOnly>
 {
     new TimeOnly(10, 0),
@@ -95,8 +98,9 @@ namespace HairSalon.Services.Core.Reservations
             List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
             List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
 
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+            var now = SalonNow;
+            var today = DateOnly.FromDateTime(now);
+            var currentTime = TimeOnly.FromDateTime(now);
 
             bool areServiceIdsValid =
                 serviceIds.Any() &&
@@ -217,7 +221,7 @@ namespace HairSalon.Services.Core.Reservations
         public async Task RemoveOldReservations()
         {
 
-            DateOnly todayDate = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly todayDate = DateOnly.FromDateTime(SalonNow);
 
             DateOnly theDate30DaysBeforeToday = todayDate.AddDays(-30);
 
@@ -231,24 +235,25 @@ namespace HairSalon.Services.Core.Reservations
 
                 
         }
-        public async Task<ReservationDtoImport> FindReservationWithIdForEdit(int id)
+        public async Task<ReservationDtoImport?> FindReservationWithIdForEdit(int id)
         {
 
-            Reservation reservation = await repository.All<Reservation>().FirstOrDefaultAsync(x => x.Id == id);
-            ReservationDtoImport reservationForEdit = new ReservationDtoImport();
-            if (reservation!=null)
+            Reservation? reservation = await repository.All<Reservation>().FirstOrDefaultAsync(x => x.Id == id);
+            if (reservation is null)
             {
-                reservationForEdit.ClientName = reservation.ClientName;
-                reservationForEdit.ClientPhone = reservation.ClientPhone;
-                reservationForEdit.Id = reservation.Id;
-                reservationForEdit.ReservationDate = reservation.ReservationDate;
-                reservationForEdit.ReservationTime = reservation.ReservationTime;
-                reservationForEdit.TotalPrice = reservation.TotalPrice;
-                reservationForEdit.HairDresserId = reservation.HairDresserId;
-
+                return null;
             }
 
-            return reservationForEdit;
+            return new ReservationDtoImport
+            {
+                ClientName = reservation.ClientName,
+                ClientPhone = reservation.ClientPhone,
+                Id = reservation.Id,
+                ReservationDate = reservation.ReservationDate,
+                ReservationTime = reservation.ReservationTime,
+                TotalPrice = reservation.TotalPrice,
+                HairDresserId = reservation.HairDresserId
+            };
 
         }
         public async Task<List<int>> GetServicesIdsForReservation(int reservationId)
@@ -277,8 +282,9 @@ namespace HairSalon.Services.Core.Reservations
             List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
             List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
 
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+            var now = SalonNow;
+            var today = DateOnly.FromDateTime(now);
+            var currentTime = TimeOnly.FromDateTime(now);
 
             bool areServiceIdsValid =
                 serviceIds.Any() &&
@@ -409,6 +415,42 @@ namespace HairSalon.Services.Core.Reservations
 
         }
 
+        public async Task<List<EmployeeReservationViewModel>> GetEmployeeReservations(int HairDresserId, DateOnly date)
+        {
+
+
+            List<EmployeeReservationViewModel> hairdresserReservations = await repository.All<Reservation>().Where(x => x.HairDresserId == HairDresserId).Where(r => r.ReservationDate == date).Select(r => new EmployeeReservationViewModel
+            {
+
+                ClientName = r.ClientName,
+
+                ClientPhone = r.ClientPhone,
+
+                ReservationDate = r.ReservationDate,
+
+                ReservationTime = r.ReservationTime,
+
+
+                TotalPrice = r.TotalPrice,
+
+                Services = r.Services.Select(s => new ServiceViewModelForReservationView
+                {
+                    Name = s.Name,
+                    Price = s.Price
+                }).ToList()
+            }).ToListAsync();
+
+
+
+            return hairdresserReservations;
+
+
+
+
+
+
+
+        }
 
         public async Task<bool> Delete(int reservationId)
         {

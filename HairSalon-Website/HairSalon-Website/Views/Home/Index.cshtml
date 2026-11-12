@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Graphite Barber Studio";
     List<ServiceView> services = ViewBag.Services as List<ServiceView> ?? new List<ServiceView>();
+    List<string> homeGalleryUrls = (ViewBag.HomeGallery as List<string> ?? new List<string>()).Take(5).ToList();
 }
 
 <div class="graphite-home">
@@ -83,21 +84,12 @@
             </div>
 
             <div class="graphite-gallery__grid" aria-label="Галерия с прически">
-                <figure class="gallery-card">
-                    <img src="~/images/gallery/precision-buzz-cut-front.jpg" alt="Къса мъжка прическа с плавно преливане, заснета отпред" loading="lazy" />
-                </figure>
-                <figure class="gallery-card">
-                    <img src="~/images/gallery/close-fade-back.jpg" alt="Къса мъжка прическа с плавно преливане, заснета отзад" loading="lazy" />
-                </figure>
-                <figure class="gallery-card">
-                    <img src="~/images/gallery/curly-textured-cut-and-beard.jpg" alt="Къдрава мъжка прическа с оформена брада" loading="lazy" />
-                </figure>
-                <figure class="gallery-card">
-                    <img src="~/images/gallery/buzz-cut-side-profile.jpg" alt="Къса мъжка прическа с плавно преливане, заснета в профил" loading="lazy" />
-                </figure>
-                <figure class="gallery-card">
-                    <img src="~/images/gallery/skin-fade-and-beard.jpg" alt="Къса мъжка прическа с преливане и оформена брада" loading="lazy" />
-                </figure>
+                @foreach (var imageUrl in homeGalleryUrls)
+                {
+                    <figure class="gallery-card">
+                        <img src="@imageUrl" alt="Работа от Graphite Barber Studio" loading="lazy" decoding="async" />
+                    </figure>
+                }
             </div>
         </div>
     </section>

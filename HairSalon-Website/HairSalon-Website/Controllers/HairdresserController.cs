@@ -72,6 +72,12 @@ namespace HairSalon_Website.Controllers
                 return RedirectToAction("AllAdmin");
             }
 
+            else if (status == HairDresserStatus.FileNotCompletlyCreated)
+            {
+                TempData["FileNotCreated"] = "Профилната снимка или снимката за сертификата не можа да бъде записана!";
+                return RedirectToAction("AllAdmin");
+            }
+
             else if (status == HairDresserStatus.Success)
             {
                 TempData["SucsessSavingHairDresser"] = "Фризъорът бъше запаметен!";

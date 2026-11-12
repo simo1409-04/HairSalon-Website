@@ -66,8 +66,8 @@
                         </a>
                     </li>
                         <li>
-                        <a asp-controller=""
-                           asp-action="">
+                        <a asp-controller="Gallery"
+                           asp-action="ViewAll">
 
                             Галерия(изглед за клиенти)
                         </a>
@@ -100,14 +100,20 @@
                             Услуги(админ)
                         </a>
                     </li>
-
-
-                     <li>
-                        <a asp-controller="Reservation"
-                           asp-action="All">
-                            upravlenie na akaunti
+                    <li>
+                        <a asp-controller="Gallery"
+                           asp-action="ViewAllAdmin">
+                            Галерия(админ)
                         </a>
                     </li>
+
+
+                    <li>
+    <a asp-area="Identity" asp-page="/Account/Register">Регистрирай нов акаунт за фризьор</a>
+</li>
+<li>
+    <a asp-area="Identity" asp-page="/Account/DeleteHairdresserAccount">Изтрий акаунт на фризьор</a>
+</li>
                 </ul>
 
                 <partial name="Layout__LoginPartial_Client" />

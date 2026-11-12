@@ -12,7 +12,7 @@ namespace HairSalon.Services.Core.Contracts
         Task<List<HairDresserReservationCreateDto>> LoadHairdressersForReservation();
         Task<ReservationResult> CreateReservation(ReservationDtoImport reservationDto, List<int> serviceIds);
         public Task<List<HairdresserViewModel>> ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth();
-        public Task<ReservationDtoImport> FindReservationWithIdForEdit(int id);
+        public Task<ReservationDtoImport?> FindReservationWithIdForEdit(int id);
 
 
         public Task<List<int>> GetServicesIdsForReservation(int reservationId);
@@ -24,6 +24,9 @@ namespace HairSalon.Services.Core.Contracts
 
 
         public Task<bool> Delete(int reservationId);
+        public Task<List<EmployeeReservationViewModel>> GetEmployeeReservations(int HairDresserId, DateOnly date);
+
+
 
     }
 }

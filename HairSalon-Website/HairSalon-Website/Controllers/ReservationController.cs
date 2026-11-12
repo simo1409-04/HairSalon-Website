@@ -1,6 +1,5 @@
-﻿using HairSalon.Data;
+using HairSalon.Data;
 using HairSalon.Data.DTOs.HairDresser;
-using HairSalon.Data.DTOs.Reservations;
 using HairSalon.Data.DTOs.Service;
 using HairSalon.Data.Models;
 using HairSalon.Services.Core.Contracts;
@@ -8,13 +7,14 @@ using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Reservations.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
+using HairSalon.Data.DTOs.Reservations;
+
 
 namespace HairSalon_Website.Controllers
 {
     public class ReservationController(IReservationService reservationService) : Controller
     {
-       
+
 
 
         [HttpGet]
@@ -32,7 +32,7 @@ namespace HairSalon_Website.Controllers
         {
 
             ViewBag.Services = await reservationService.LoadServicesForReservation();
-            
+
 
             ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
 
@@ -49,7 +49,7 @@ namespace HairSalon_Website.Controllers
 
             if (!ModelState.IsValid)
             {
-             
+
 
                 return View(reservationDto);
 
@@ -57,7 +57,7 @@ namespace HairSalon_Website.Controllers
 
            ReservationResult result = await reservationService.CreateReservation(reservationDto, serviceIds);
 
-               
+
 
             if(result.Status== ReservationStatus.WrongInputDataError)
             {
@@ -80,6 +80,17 @@ namespace HairSalon_Website.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+        }
+
+
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> AllHairdresser()
+        {
+
+            List<HairdresserViewModel> hairdressers = await reservationService.ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth();
+
+            return View("All", hairdressers);
         }
 
 
@@ -111,30 +122,24 @@ namespace HairSalon_Website.Controllers
             return Json(ReservationsForHairDresser);
         }
 
-        
+
         [HttpGet]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Edit(int Id)
         {
 
 
-            ReservationDtoImport reservation = await reservationService.FindReservationWithIdForEdit(Id);
-
+            ReservationDtoImport? reservation = await reservationService.FindReservationWithIdForEdit(Id);
+            if (reservation is null)
+            {
+                TempData["ErrorMessage"] = "Резервацията не беше намерена.";
+                return RedirectToAction("All");
+            }
 
             ViewBag.Services = await reservationService.LoadServicesForReservation();
             ViewBag.SelectedServiceIds = await reservationService.GetServicesIdsForReservation(Id);
-
             ViewBag.HairDressers = await reservationService.LoadHairdressersForReservation();
-
-            if (reservation!=null)
-            {
-
-
-                return View(reservation);
-
-            }
-
-            return RedirectToAction("All");
+            return View(reservation);
         }
 
 
@@ -277,6 +282,32 @@ namespace HairSalon_Website.Controllers
             }
 
         }
+
+
+        [HttpGet]
+        [Authorize]
+
+        public async Task<IActionResult> GetHairdresserEmployeeReservations(int id, DateOnly date)
+        {
+
+            List<EmployeeReservationViewModel> ReservationsForHairDresser = await reservationService.GetEmployeeReservations(id, date);
+
+
+
+            return Json(ReservationsForHairDresser);
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> AllEmployeesReservations()
+        {
+
+            List<HairdresserViewModel> hairdressers = await reservationService.ReadAllHairDressersWithTheirReservationsCountPerDayOfTheMounth();
+
+            return View(hairdressers);
+        }
+
 
 
     }

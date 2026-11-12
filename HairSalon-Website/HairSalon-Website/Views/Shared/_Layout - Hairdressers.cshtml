@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="bg">
 <head>
@@ -21,10 +21,14 @@
           href="~/HairSalon_Website.styles.css"
           asp-append-version="true" />
 
+    <link rel="stylesheet"
+          href="~/css/admin-layout.css"
+          asp-append-version="true" />
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
-<body>
+<body class="admin-layout">
     <partial name="_TempDataNotifications" />
 
     <header class="site-header">
@@ -64,9 +68,9 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a asp-controller=""
-                           asp-action="">
+                     <li>
+                        <a asp-controller="Gallery"
+                           asp-action="ViewAll">
 
                             Галерия(изглед за клиенти)
                         </a>
@@ -77,6 +81,13 @@
                            asp-action="All">
 
                             Екип(изглед за клиенти)
+                        </a>
+                    </li>
+                         <li>
+                        <a asp-controller="Reservation"
+                           asp-action="AllEmployeesReservations">
+
+                            Резервации(изглед за фризъор)
                         </a>
                     </li>
                 </ul>

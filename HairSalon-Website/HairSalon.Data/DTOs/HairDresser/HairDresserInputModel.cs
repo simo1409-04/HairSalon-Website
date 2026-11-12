@@ -29,11 +29,8 @@ namespace HairSalon.Data.DTOs.HairDresser
         public IFormFile ProfilePicture { get; set; } = null!;
 
 
-        [Required]
-        
         [MaxLength(HairDresserConstants.DetailsMaxLength)]
-
-        public string AdditionalInformation { get; set; }
+        public string? AdditionalInformation { get; set; }
 
     } 
 

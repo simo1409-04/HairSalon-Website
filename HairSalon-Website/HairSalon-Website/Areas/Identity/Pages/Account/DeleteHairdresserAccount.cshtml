@@ -1,0 +1,37 @@
+@page
+@model DeleteHairdresserAccountModel
+@{
+    ViewData["Title"] = "Изтрий акаунт на фризьор";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-7 col-lg-6">
+            <h1 class="mb-4">Изтрий акаунт на фризьор</h1>
+            <p>Въведете имейла на акаунта и своята администраторска парола.</p>
+
+            <form method="post" asp-antiforgery="true" autocomplete="off"
+                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете този акаунт?');">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label">Имейл на акаунта за изтриване</label>
+                    <input asp-for="Input.Email" class="form-control" type="email" autocomplete="off" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Input.AdminPassword" class="form-label">Парола на администратора за потвърждение</label>
+                    <input asp-for="Input.AdminPassword" class="form-control" type="password" autocomplete="off" />
+                    <span asp-validation-for="Input.AdminPassword" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-danger">Изтрий акаунта</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace HairSalon_Website.Controllers
 {
-    public class HomeController(IServicesService servicesService) : Controller
+    public class HomeController(IServicesService servicesService, IGalleryService galleryService) : Controller
     {
        
 
@@ -14,6 +14,7 @@ namespace HairSalon_Website.Controllers
         {
 
             ViewBag.Services = await servicesService.GetAllServices();
+            ViewBag.HomeGallery = galleryService.GetAllHomeGalleryUrls();
 
             if (User.IsInRole("Admin"))
             {
@@ -26,6 +27,7 @@ namespace HairSalon_Website.Controllers
         public async Task<IActionResult> IndexAdmin()
         {
             ViewBag.Services = await servicesService.GetAllServices();
+            ViewBag.HomeGallery = galleryService.GetAllHomeGalleryUrls();
 
 
 

@@ -1,5 +1,4 @@
 ﻿@{
-    Layout= "~/Views/Shared/_Layout.cshtml";
 
     if(User.IsInRole("Admin"))
     {
@@ -9,7 +8,7 @@
 
     }
 
-    else if(User.Identity.IsAuthenticated)
+    else if(User.Identity?.IsAuthenticated == true)
     {
         Layout= "~/Views/Shared/_Layout - Hairdressers.cshtml";
 

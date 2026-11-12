@@ -119,6 +119,10 @@
         const actions = makeElement("form", "booking-card__actions");
         actions.method = "post";
         actions.action = urlWithId(schedule.dataset.deleteUrl, reservation.id);
+        const antiforgeryToken = schedule.querySelector('input[name="__RequestVerificationToken"]');
+        if (antiforgeryToken) {
+            actions.append(antiforgeryToken.cloneNode());
+        }
 
         const editLink = makeElement("a", "", "Редактирай");
         editLink.href = urlWithId(schedule.dataset.editUrl, reservation.id);

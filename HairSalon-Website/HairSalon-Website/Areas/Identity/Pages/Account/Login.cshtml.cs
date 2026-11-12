@@ -69,7 +69,7 @@ public class LoginModel : PageModel
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Запомни ме")]
         public bool RememberMe { get; set; }
     }
 
@@ -87,27 +87,25 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-
-        returnUrl = Url.Content("/Home/Index");
-
-
-        if (User.IsInRole("Admin"))
-        {
-            returnUrl = Url.Content("/Reservation/All");
-
-        }
-
-      
-
         if (ModelState.IsValid)
         {
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
-                return LocalRedirect(returnUrl);
+                var account = await _signInManager.UserManager.FindByNameAsync(Input.Email);
+                if (account is not null && await _signInManager.UserManager.IsInRoleAsync(account, "Admin"))
+                {
+                    return LocalRedirect("/Reservation/All");
+                }
+
+                return LocalRedirect("/Home/Index");
+            }
+
+            if (result.IsLockedOut)
+            {
+                ModelState.AddModelError(string.Empty, "Този акаунт е временно заключен. Опитайте отново след няколко минути.");
+                return Page();
             }
             ModelState.AddModelError(string.Empty, "Невалиден имейл или парола.");
             return Page();

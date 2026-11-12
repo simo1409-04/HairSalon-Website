@@ -6,10 +6,13 @@ using HairSalon.Services.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using HairSalon.Services.Core.Hairdressers;
+using HairSalon.Services.Core.Gallery;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 builder.Services.AddRazorPages();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Wrong or missing connection string!");
 
@@ -36,11 +39,16 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<HairSalonDb>();
 
+// Check the account on every authenticated request so deleted employee sessions expire immediately.
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+    options.ValidationInterval = TimeSpan.Zero);
+
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ReservationResult>();
 builder.Services.AddScoped<IHairdresserService, HairdresserService>();
+builder.Services.AddScoped<IGalleryService, GalleryService>();
 
 var app = builder.Build();
 
@@ -71,8 +79,5 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-
-
-
 
 

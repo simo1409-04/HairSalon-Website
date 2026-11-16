@@ -13,11 +13,10 @@
         <div class="graphite-shell graphite-hero__content">
           
 
-            <h1 id="hero-title">Точност във всеки <em>детайл.</em></h1>
+            <h1 id="hero-title">Изглеждай добре.<br /><em>Чувствай се още по-добре.</em></h1>
 
             <p class="graphite-hero__text">
-                Класически барбер ритуал, модерни техники и отношение,
-                което започва още с първия разговор.
+                Защото първото впечатление започва от визията.
             </p>
 
             <a class="graphite-booking" href="/Reservation/Create">Запази час <span aria-hidden="true">→</span></a>
@@ -26,28 +25,46 @@
         <p class="graphite-hero__side-label" aria-hidden="true">Graphite Barber Studio · Est. 2026</p>
     </section>
 
-    <section class="graphite-intro" aria-labelledby="intro-title">
-        <div class="graphite-shell graphite-intro__grid">
-            <p class="graphite-kicker graphite-kicker--dark">За студиото</p>
-            <div>
-                <h2 id="intro-title">Изградена визия.<br /><em>Естествено усещане.</em></h2>
+    <section class="graphite-statement" aria-labelledby="statement-title">
+        <div class="graphite-shell graphite-statement__inner">
+            <h2 id="statement-title" data-reveal="left">Перфектната прическа не е лукс, а <em>отношение към себе си.</em></h2>
+            <div class="graphite-statement__copy" data-reveal="right">
                 <p>
-                    Тук всяка прическа се изгражда спрямо формата, косата и начина,
-                    по който искаш да се чувстваш, когато излезеш от стола.
+                    В GRAPHITE BARBER STUDIO ще откриеш професионално подстригване,
+                    прецизно оформяне на брадата и индивидуален подход, съобразен
+                    с твоето излъчване и стил.
+                </p>
+                <p>
+                    От класическата визия до най-актуалните тенденции – ние се грижим
+                    да си тръгнеш с повече от добра прическа. Със самочувствие.
                 </p>
             </div>
         </div>
     </section>
 
+    <section class="graphite-intro" aria-labelledby="intro-title">
+        <div class="graphite-shell graphite-intro__content">
+            <h2 id="intro-title" data-reveal="left">За <em>студиото</em></h2>
+            <p class="graphite-intro__lead" data-reveal="up">Стил, който говори вместо теб.</p>
+            <p class="graphite-intro__accent" data-reveal="up">Прецизност, характер и индивидуален подход.</p>
+            <p class="graphite-intro__text" data-reveal="up">
+                В GRAPHITE BARBER STUDIO всяка визия има значение. Съчетаваме
+                професионализъм, внимание към детайла и усет към модерния мъжки стил,
+                за да създадем визия, която подчертава твоя характер. Защото добрата
+                прическа не е просто външен вид – тя е самочувствие.
+            </p>
+        </div>
+    </section>
+
     <section class="graphite-services" id="services" aria-labelledby="services-title">
         <div class="graphite-shell graphite-services__grid">
-            <div class="graphite-services__heading">
+            <div class="graphite-services__heading" data-reveal="left">
                 <p class="graphite-kicker graphite-kicker--dark">Услуги и цени</p>
                 <h2 id="services-title">Грижа до последния <em>детайл.</em></h2>
                 <p>Избери услуга, за да прочетеш повече за нея.</p>
             </div>
 
-            <div class="graphite-services__list">
+            <div class="graphite-services__list" data-reveal="right">
                 @if (services.Count == 0)
                 {
                     <p class="graphite-services__empty">В момента няма добавени услуги.</p>
@@ -84,9 +101,12 @@
             </div>
 
             <div class="graphite-gallery__grid" aria-label="Галерия с прически">
-                @foreach (var imageUrl in homeGalleryUrls)
+                @for (var index = 0; index < homeGalleryUrls.Count; index++)
                 {
-                    <figure class="gallery-card">
+                    var imageUrl = homeGalleryUrls[index];
+                    var revealDirection = index % 2 == 0 ? "left" : "right";
+
+                    <figure class="gallery-card" data-safe-reveal="@revealDirection">
                         <img src="@imageUrl" alt="Работа от Graphite Barber Studio" loading="lazy" decoding="async" />
                     </figure>
                 }
@@ -94,3 +114,7 @@
         </div>
     </section>
 </div>
+
+@section Scripts {
+    <script src="~/js/home-scroll-reveal.js" asp-append-version="true"></script>
+}

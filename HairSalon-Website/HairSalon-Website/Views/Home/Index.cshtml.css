@@ -64,6 +64,7 @@
 }
 
 .graphite-hero h1,
+.graphite-statement h2,
 .graphite-intro h2,
 .graphite-services h2,
 .graphite-gallery h2 {
@@ -74,14 +75,15 @@
 }
 
 .graphite-hero h1 {
-    max-width: 650px;
+    max-width: 900px;
     margin-top: 50px;
     color: #fffaf3;
-    font-size: clamp(3.8rem, 8vw, 7.65rem);
-    line-height: .91;
+    font-size: clamp(3.5rem, 6.4vw, 6.4rem);
+    line-height: .94;
 }
 
     .graphite-hero h1 em,
+    .graphite-statement h2 em,
     .graphite-intro h2 em,
     .graphite-services h2 em {
         color: var(--copper);
@@ -136,15 +138,48 @@
     writing-mode: vertical-rl;
 }
 
-.graphite-intro {
-    padding-block: clamp(78px, 11vw, 150px);
-    background: var(--cream);
+.graphite-statement {
+    padding-block: clamp(72px, 9vw, 120px);
+    background: #090909;
+    color: #fffaf3;
 }
 
-.graphite-intro__grid {
+.graphite-statement__inner {
     display: grid;
-    grid-template-columns: minmax(150px, .55fr) minmax(0, 1.45fr);
-    gap: 40px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
+    gap: clamp(40px, 8vw, 120px);
+    align-items: start;
+}
+
+.graphite-statement h2 {
+    max-width: 760px;
+    font-size: clamp(2.65rem, 5vw, 4.9rem);
+    line-height: .98;
+}
+
+.graphite-statement__copy {
+    padding-top: 8px;
+}
+
+.graphite-statement__copy p {
+    margin: 0;
+    color: rgba(255, 250, 243, .72);
+    font-size: 1.03rem;
+    line-height: 1.8;
+}
+
+.graphite-statement__copy p + p {
+    margin-top: 22px;
+}
+
+.graphite-intro {
+    padding-block: clamp(78px, 11vw, 150px);
+    background: #090909;
+    color: #fffaf3;
+}
+
+.graphite-intro__content {
+    max-width: 1000px;
 }
 
 .graphite-intro h2,
@@ -158,10 +193,28 @@
     max-width: 730px;
 }
 
-.graphite-intro p:not(.graphite-kicker) {
-    max-width: 540px;
-    margin: 34px 0 0;
-    color: #625c56;
+.graphite-intro__lead {
+    max-width: 760px;
+    margin: 38px 0 0;
+    color: #fffaf3;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 3.2vw, 3rem);
+    line-height: 1.1;
+}
+
+.graphite-intro__accent {
+    max-width: 760px;
+    margin: 18px 0 0;
+    color: var(--copper);
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+.graphite-intro__text {
+    max-width: 720px;
+    margin: 32px 0 0;
+    color: rgba(255, 250, 243, .72);
     font-size: 1.04rem;
     line-height: 1.8;
 }
@@ -276,13 +329,13 @@
 
 .graphite-gallery__grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 14px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(28px, 6vw, 84px);
 }
 
 .gallery-card {
     min-width: 0;
-    aspect-ratio: 3 / 4;
+    height: clamp(560px, 82vh, 920px);
     margin: 0;
     overflow: hidden;
     background: #272422;
@@ -295,9 +348,40 @@
         object-fit: cover;
     }
 
-@media (min-width: 768px) and (max-width: 1100px) {
-    .graphite-gallery__grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+@media (prefers-reduced-motion: no-preference) {
+    .graphite-home.reveal-ready [data-reveal] {
+        opacity: 0;
+        transition: opacity .85s ease, transform .85s cubic-bezier(.2, .7, .2, 1);
+        will-change: opacity, transform;
+    }
+
+    .graphite-home.reveal-ready [data-reveal="left"] {
+        transform: translate3d(-72px, 0, 0);
+    }
+
+    .graphite-home.reveal-ready [data-reveal="right"] {
+        transform: translate3d(72px, 0, 0);
+    }
+
+    .graphite-home.reveal-ready [data-reveal="up"] {
+        transform: translate3d(0, 48px, 0);
+    }
+
+    .graphite-home.reveal-ready [data-reveal].is-visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    .graphite-intro__lead[data-reveal] {
+        transition-delay: 90ms;
+    }
+
+    .graphite-intro__accent[data-reveal] {
+        transition-delay: 170ms;
+    }
+
+    .graphite-intro__text[data-reveal] {
+        transition-delay: 250ms;
     }
 }
 
@@ -322,16 +406,20 @@
 
     .graphite-hero h1 {
         margin-top: 38px;
-        font-size: clamp(3.55rem, 15vw, 5.5rem);
+        font-size: clamp(2.9rem, 12vw, 4.5rem);
     }
 
     .graphite-hero__side-label {
         display: none;
     }
 
-    .graphite-intro__grid {
+    .graphite-statement__inner {
         grid-template-columns: 1fr;
-        gap: 22px;
+        gap: 30px;
+    }
+
+    .graphite-statement__copy {
+        padding-top: 0;
     }
 
     .graphite-services__grid {
@@ -353,7 +441,11 @@
     }
 
     .graphite-gallery__grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+    }
+
+    .gallery-card {
+        height: clamp(440px, 72svh, 720px);
     }
 }

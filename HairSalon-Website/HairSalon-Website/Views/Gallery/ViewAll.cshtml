@@ -21,7 +21,7 @@
                     {
                         string imageUrl = Model[i];
 
-                        <article class="gb-photo-card">
+                        <article class="gb-photo-card" data-safe-reveal="@(i % 2 == 0 ? "left" : "right")">
                             <button type="button"
                                     class="gb-photo-card__open"
                                     data-gallery-open
@@ -69,7 +69,7 @@
                     {
                         string imageUrl = homeGalleryUrls[i];
 
-                        <article class="gb-photo-card">
+                        <article class="gb-photo-card" data-safe-reveal="@(i % 2 == 0 ? "left" : "right")">
                             <button type="button"
                                     class="gb-photo-card__open"
                                     data-gallery-open
@@ -138,4 +138,5 @@
     <script src="~/js/gallery.js"
             asp-append-version="true"
             defer></script>
+    <script src="~/js/home-scroll-reveal.js" asp-append-version="true" defer></script>
 }

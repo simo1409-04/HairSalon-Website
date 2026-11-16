@@ -89,8 +89,6 @@ static async Task InitializeDatabaseAndAdminAsync(WebApplication app)
     await using var scope = app.Services.CreateAsyncScope();
     var services = scope.ServiceProvider;
 
-    var db = services.GetRequiredService<HairSalonDb>();
-    await db.Database.MigrateAsync();
 
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     if (!await roleManager.RoleExistsAsync("Admin"))

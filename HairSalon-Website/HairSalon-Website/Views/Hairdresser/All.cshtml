@@ -4,14 +4,14 @@
     ViewData["Title"] = "Екипът";
 }
 
-<div class="graphite-team">
+<div class="graphite-team" data-reveal-root>
     <header class="graphite-team__hero" aria-labelledby="team-title">
         <div class="graphite-team__shell graphite-team__hero-inner">
-            <div>
+            <div data-reveal="left">
                 <p class="graphite-team__eyebrow">Graphite Barber Studio / Екипът</p>
                 <h1 id="team-title">Хората зад <em>всеки детайл.</em></h1>
             </div>
-            <p class="graphite-team__hero-copy">
+            <p class="graphite-team__hero-copy" data-reveal="right">
                 Запознай се с хората, които превръщат добрата идея в прическа с характер.
             </p>
         </div>
@@ -20,7 +20,7 @@
 
     <section class="graphite-team__content" aria-labelledby="team-list-title">
         <div class="graphite-team__shell">
-            <div class="graphite-team__section-heading">
+            <div class="graphite-team__section-heading" data-reveal="up">
                 <div>
                     <p class="graphite-team__eyebrow graphite-team__eyebrow--dark">Нашият екип</p>
                     <h2 id="team-list-title">Запознай се с нас.</h2>
@@ -30,7 +30,7 @@
 
             @if (Model == null || Model.Count == 0)
             {
-                <div class="graphite-team__empty">
+                <div class="graphite-team__empty" data-reveal="up">
                     <span class="graphite-team__empty-mark" aria-hidden="true">G.</span>
                     <p>Скоро ще представим нашия екип.</p>
                 </div>
@@ -42,7 +42,7 @@
                     {
                         var hairdresser = Model[index];
 
-                        <article class="graphite-team__card">
+                        <article class="graphite-team__card" data-reveal="up">
                             <div class="graphite-team__portrait">
                                 @if (!string.IsNullOrWhiteSpace(hairdresser.ProfilePictureUrl))
                                 {
@@ -137,4 +137,5 @@
             dialog.addEventListener('close', () => trigger?.focus());
         })();
     </script>
+    <script src="~/js/home-scroll-reveal.js" asp-append-version="true"></script>
 }

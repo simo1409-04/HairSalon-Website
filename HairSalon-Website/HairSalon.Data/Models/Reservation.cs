@@ -10,17 +10,11 @@ namespace HairSalon.Data.Models
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Името на клиента е задължително")]
-
-        [MinLength(3,
-            ErrorMessage = "Името трябва да съдържа поне {1} букви")]
-
-        [MaxLength(ClientNameMaxLength,
-            ErrorMessage = "Името не трябва да надвишава {1} знака")]
-
-        [RegularExpression(@"^[А-Яа-яA-Za-z]+$",
-            ErrorMessage = "Името трябва да съдържа само букви")]
-
+        [Required(ErrorMessage = "Името е задължително")]
+        [MaxLength(ClientNameMaxLength, ErrorMessage = "Името не трябва да надвишава 100 знака")]
+        [RegularExpression(
+    @"^[\p{L}]+(?:[ '\-][\p{L}]+)*$",
+    ErrorMessage = "Името може да съдържа само букви, интервали, тирета и апострофи.")]
         public string ClientName { get; set; } = null!;
 
 

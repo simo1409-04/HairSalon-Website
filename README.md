@@ -1,4 +1,4 @@
-Graphite Barber Studio
+# Graphite Barber Studio
 
 Full-stack ASP.NET Core MVC application for a barber studio. Customers can browse services and staff, view available time slots and create reservations. Administrators manage bookings, services, staff accounts and both public galleries from a role-protected interface.
 

@@ -18,6 +18,13 @@ namespace HairSalon.Data.DTOs.HairDresser
             ErrorMessage = "Името не трябва да надвишава {1} знака")]
         [RegularExpression(@"^[А-Яа-яЁёЪъЬьІіҺһ\s\-”„""']+$", ErrorMessage = "Името трябва да съдържа само букви на кирилица, интервали или тирета.")] public string Name { get; set; } = null!;
 
+        [Required(ErrorMessage = "Имейл адресът е задължителен")]
+        [EmailAddress(ErrorMessage = "Въведи валиден имейл адрес")]
+        [RegularExpression(HairDresserConstants.EmailPattern, ErrorMessage = "Въведи валиден имейл адрес")]
+        [MaxLength(HairDresserConstants.EmailMaxLength,
+            ErrorMessage = "Имейл адресът не трябва да надвишава {1} знака")]
+        public string Email { get; set; } = null!;
+
 
 
         public IFormFile? AcademicCertificate { get; set; } = null!;

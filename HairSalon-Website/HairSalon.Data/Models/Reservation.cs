@@ -22,6 +22,7 @@ namespace HairSalon.Data.Models
         [Required(ErrorMessage = "Телефонът е задължителен")]
         [MinLength(ClientPhoneMinLength, ErrorMessage = "Телефонът трябва да има поне {1} цифри")]
         [MaxLength(ClientPhoneMaxLength, ErrorMessage = "Телефонът не трябва да надвишава {1} цифри")]
+        [RegularExpression(ClientPhonePattern, ErrorMessage = "Телефонът трябва да съдържа само цифри")]
         public string ClientPhone { get; set; } = null!;
 
         [Required(ErrorMessage = "Датата на резервация е задължителна")]

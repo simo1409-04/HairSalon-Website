@@ -10,7 +10,8 @@ namespace HairSalon.Services.Core.Hairdressers.Enums
         WrongFormatError,
         DatabaseError,
             IdNotFound,
-            FileNotCompletlyCreated
+            FileNotCompletlyCreated,
+        EmailAlreadyExists
 
     }
 }

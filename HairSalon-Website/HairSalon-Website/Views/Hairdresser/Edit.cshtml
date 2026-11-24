@@ -26,6 +26,12 @@
             </div>
 
             <div class="hairdresser-add__field">
+                <label asp-for="Email">Имейл адрес</label>
+                <input asp-for="Email" type="email" class="hairdresser-add__input" autocomplete="email" />
+                <span asp-validation-for="Email" class="hairdresser-add__error"></span>
+            </div>
+
+            <div class="hairdresser-add__field">
                 <label asp-for="AdditionalInformation">Допълнителна информация <span class="hairdresser-add__optional">(по желание)</span></label>
                 <textarea asp-for="AdditionalInformation" class="hairdresser-add__input hairdresser-add__textarea" rows="5"></textarea>
                 <span asp-validation-for="AdditionalInformation" class="hairdresser-add__error"></span>

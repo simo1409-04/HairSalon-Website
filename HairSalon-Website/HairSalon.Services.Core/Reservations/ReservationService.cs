@@ -98,6 +98,7 @@ namespace HairSalon.Services.Core.Reservations
             List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
             List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
 
+
             var now = SalonNow;
             var today = DateOnly.FromDateTime(now);
             var currentTime = TimeOnly.FromDateTime(now);
@@ -108,6 +109,7 @@ namespace HairSalon.Services.Core.Reservations
             bool isHairDresserIdIsValid = HairDresserIdsInDb.Contains(reservationDto.HairDresserId);
             bool isSlotAvailable =!await repository.All<Reservation>().AnyAsync(x => x.ReservationDate == reservationDto.ReservationDate && x.ReservationTime == reservationDto.ReservationTime && x.HairDresserId == reservationDto.HairDresserId);
             bool isDayOfWeekForReservationValid = !nonWorkingDays.Contains(reservationDto.ReservationDate.DayOfWeek);
+           
 
             if (areServiceIdsValid  && isHairDresserIdIsValid && isSlotAvailable && isDayOfWeekForReservationValid)
             {

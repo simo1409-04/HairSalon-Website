@@ -21,6 +21,7 @@ namespace HairSalon.Data.DTOs.Reservations
         [Required(ErrorMessage = "Телефонът е задължителен")]
         [MinLength(ValidationConstants.ReservationConstants.ClientPhoneMinLength, ErrorMessage = "Телефонът трябва да има поне {1} цифри")]
         [MaxLength(ValidationConstants.ReservationConstants.ClientPhoneMaxLength, ErrorMessage = "Телефонът не трябва да надвишава {1} цифри")]
+        [RegularExpression(ValidationConstants.ReservationConstants.ClientPhonePattern, ErrorMessage = "Телефонът трябва да съдържа само цифри")]
         public string ClientPhone { get; set; } = null!;
 
         [Required(ErrorMessage = "Датата на резервация е задължителна")]

@@ -15,7 +15,8 @@ new HairDresser
     Name = "Александър Димитров",
     ProfilePictureUrl = "/images/aleksandar-dimitrov/profile-picture.png",
     AcademicCertificateUrl = "/images/aleksandar-dimitrov/certificate.png",
-    AdditionalInformation = "Специализира в мъжко подстригване, оформяне на брада и класически барбер стил."
+    AdditionalInformation = "Специализира в мъжко подстригване, оформяне на брада и класически барбер стил.",
+    Email = "simeon.ivanov@gmail.com"
 },
 new HairDresser
 {
@@ -23,7 +24,8 @@ new HairDresser
     Name = "Виктория Петрова",
     ProfilePictureUrl = "/images/viktoria-petrova/profile-picture.png",
     AcademicCertificateUrl = "/images/viktoria-petrova/certificate.png",
-    AdditionalInformation = "Специализира в боядисване, балеаж, кичури и съвременни дамски прически."
+    AdditionalInformation = "Специализира в боядисване, балеаж, кичури и съвременни дамски прически.",
+    Email = "viktoria.petrova@gmail.com"
 },
 new HairDresser
 {
@@ -31,7 +33,8 @@ new HairDresser
     Name = "Мартин Иванов",
     ProfilePictureUrl = "/images/martin-ivanov/profile-picture.png",
     AcademicCertificateUrl = "/images/martin-ivanov/certificate.png",
-    AdditionalInformation = "Работи с модерни мъжки и унисекс прически, оформяне и ежедневен стайлинг."
+    AdditionalInformation = "Работи с модерни мъжки и унисекс прически, оформяне и ежедневен стайлинг.",
+    Email = "martin.ivanov@gmail.com"
 }
         };
 

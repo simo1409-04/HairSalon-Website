@@ -105,6 +105,11 @@ namespace HairSalon.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -125,6 +130,7 @@ namespace HairSalon.Data.Migrations
                             Id = 1,
                             AcademicCertificateUrl = "/images/aleksandar-dimitrov/certificate.png",
                             AdditionalInformation = "Специализира в мъжко подстригване, оформяне на брада и класически барбер стил.",
+                            Email = "simeon.ivanov@gmail.com",
                             Name = "Александър Димитров",
                             ProfilePictureUrl = "/images/aleksandar-dimitrov/profile-picture.png"
                         },
@@ -133,6 +139,7 @@ namespace HairSalon.Data.Migrations
                             Id = 2,
                             AcademicCertificateUrl = "/images/viktoria-petrova/certificate.png",
                             AdditionalInformation = "Специализира в боядисване, балеаж, кичури и съвременни дамски прически.",
+                            Email = "viktoria.petrova@gmail.com",
                             Name = "Виктория Петрова",
                             ProfilePictureUrl = "/images/viktoria-petrova/profile-picture.png"
                         },
@@ -141,6 +148,7 @@ namespace HairSalon.Data.Migrations
                             Id = 3,
                             AcademicCertificateUrl = "/images/martin-ivanov/certificate.png",
                             AdditionalInformation = "Работи с модерни мъжки и унисекс прически, оформяне и ежедневен стайлинг.",
+                            Email = "martin.ivanov@gmail.com",
                             Name = "Мартин Иванов",
                             ProfilePictureUrl = "/images/martin-ivanov/profile-picture.png"
                         });

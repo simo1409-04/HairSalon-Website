@@ -28,6 +28,11 @@ namespace HairSalon.Services.Core.Hairdressers
 
         public async Task<HairDresserStatus> AddHairDresser(HairDresserInputModel model)
         {
+
+            bool isEmailUnique = !await repository.All<HairDresser>()
+                .AnyAsync(x => x.Email == model.Email);
+
+
             string profileExtension =
                 Path.GetExtension(model.ProfilePicture.FileName).ToLowerInvariant();
 
@@ -43,6 +48,13 @@ namespace HairSalon.Services.Core.Hairdressers
                 certificateExtension == ".png" ||
                 certificateExtension == ".jpg" ||
                 certificateExtension == ".jpeg";
+
+
+
+            if(!isEmailUnique)
+            {
+                return HairDresserStatus.EmailAlreadyExists;
+            }
 
             if (!profileFormatIsValid || !certificateFormatIsValid)
             {
@@ -118,7 +130,8 @@ namespace HairSalon.Services.Core.Hairdressers
                 ProfilePictureUrl =
                     $"/images/Hairdressers/profile-pictures/{profileFileName}",
                 AcademicCertificateUrl =
-                    $"/images/Hairdressers/certificate-pictures/{certificateFileName}"
+                    $"/images/Hairdressers/certificate-pictures/{certificateFileName}", 
+                Email = model.Email
             };
 
             try
@@ -153,7 +166,7 @@ namespace HairSalon.Services.Core.Hairdressers
 
                 Name = x.Name,
                 Id = x.Id,
-              
+                Email = x.Email,
 AdditionalInformation=x.AdditionalInformation
             }).FirstOrDefaultAsync(x => x.Id == id);
 
@@ -170,6 +183,11 @@ AdditionalInformation=x.AdditionalInformation
             {
                 return EditStatus.IdNotFound;
             }
+
+            bool isEmailUnique = !await repository.All<HairDresser>()
+                .AnyAsync(x => x.Email == model.Email && x.Id != id);
+
+
 
             string profilePictureRootFolderPath = Path.Combine(
                 environment.WebRootPath, "images", "Hairdressers", "profile-pictures");
@@ -188,6 +206,11 @@ AdditionalInformation=x.AdditionalInformation
             string newFileNameCertificatePicture = "";
 
             string fullFilePathForProfilePicture = "";
+
+            if(!isEmailUnique)
+            {
+                return EditStatus.EmailAlreadyExists;
+            }
 
             if (isProfilePictureForEdit)
             {
@@ -291,6 +314,7 @@ AdditionalInformation=x.AdditionalInformation
             hairDresserForDb.AdditionalInformation = model.AdditionalInformation ?? string.Empty;
             hairDresserForDb.ProfilePictureUrl = profilePictureUrlForDb;
             hairDresserForDb.AcademicCertificateUrl = certificatePictureUrlForDb;
+            hairDresserForDb.Email = model.Email;
 
             try
             {

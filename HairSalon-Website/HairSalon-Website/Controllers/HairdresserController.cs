@@ -55,6 +55,8 @@ namespace HairSalon_Website.Controllers
 
             HairDresserStatus status=   await hairdresserService.AddHairDresser(model);
 
+            
+
 
              if (status == HairDresserStatus.WrongFormatError)
             {
@@ -64,6 +66,11 @@ namespace HairSalon_Website.Controllers
 
 
 
+            }
+            else if (status == HairDresserStatus.EmailAlreadyExists)
+            {
+                TempData["ErrorEmailExists"] = "Имейл адресът вече съществува! Моля, въведете друг имейл адрес.";
+                return View("Add", model);
             }
 
             else if (status == HairDresserStatus.DatabaseError)
@@ -126,6 +133,11 @@ namespace HairSalon_Website.Controllers
 
             EditStatus status= await hairdresserService.EditHairdresserById(id, model);
 
+            if(status==EditStatus.EmailAlreadyExists)
+            {
+                TempData["EmailExists"] = "Имейл адресът вече съществува! Моля, въведете друг имейл адрес.";
+                return View("Edit", model);
+            }
 
             if(status==EditStatus.IdNotFound)
             {

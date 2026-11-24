@@ -29,7 +29,13 @@ namespace HairSalon.Data.Models
         [MaxLength(HairDresserConstants.DetailsMaxLength)]
         [Required]
 
-        public string AdditionalInformation { get; set; }
+        public string AdditionalInformation { get; set; } = null!;
+
+        [Required]
+        [EmailAddress]
+        [RegularExpression(HairDresserConstants.EmailPattern, ErrorMessage = "Въведи валиден имейл адрес")]
+        [MaxLength(HairDresserConstants.EmailMaxLength)]
+        public string Email { get; set; } = null!;
 
         public virtual ICollection<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
 

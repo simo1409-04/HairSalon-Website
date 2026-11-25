@@ -7,12 +7,14 @@ using HairSalon.Data.Models;
 using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Reservations.Enums;
 using Microsoft.EntityFrameworkCore;
+using HairSalon.Services.Core.Messeges;
+using SalonMapper = HairSalon.Services.Core.Mapper.Mapper;
 
 
 
 namespace HairSalon.Services.Core.Reservations
 {
-    public  class ReservationService(IRepository repository, ReservationResult result) : IReservationService
+    public  class ReservationService(IRepository repository, ReservationResult result, SalonMapper mapper, IEmailService emailService) : IReservationService
     {
         private static readonly TimeZoneInfo SalonTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Sofia");
         private static DateTime SalonNow => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, SalonTimeZone);
@@ -56,13 +58,8 @@ namespace HairSalon.Services.Core.Reservations
         public async Task<List<ServiceInReservationCreateDto>> LoadServicesForReservation()
         {
         
-            List<ServiceInReservationCreateDto> Services = await repository.All<Service>()
-                .Select(x => new ServiceInReservationCreateDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Price = x.Price
-                })
+            List<ServiceInReservationCreateDto> Services = await mapper
+                .ProjectReservationServices(repository.All<Service>())
                 .ToListAsync();
 
             return Services;
@@ -75,13 +72,8 @@ namespace HairSalon.Services.Core.Reservations
 
           
 
-            List<HairDresserReservationCreateDto> hairDressers= await repository.All<HairDresser>()
-                .Select(x => new HairDresserReservationCreateDto
-                {
-                    ProfilePictureUrl= x.ProfilePictureUrl,
-                    Name = x.Name,
-                    Value = x.Id
-                })
+            List<HairDresserReservationCreateDto> hairDressers= await mapper
+                .ProjectReservationHairdressers(repository.All<HairDresser>())
                 .ToListAsync();
 
             return hairDressers;
@@ -97,6 +89,10 @@ namespace HairSalon.Services.Core.Reservations
 
             List<int> serviceIdsInDb = await repository.All<Service>().Select(x => x.Id).ToListAsync();
             List<int> HairDresserIdsInDb = await repository.All<HairDresser>().Select(x => x.Id).ToListAsync();
+            string messegeForClient = "";
+            string messegeForHairdresser = "";
+            Reservation reservationForDb = null;
+
 
 
             var now = SalonNow;
@@ -130,10 +126,11 @@ namespace HairSalon.Services.Core.Reservations
                         List<Service> servicesForReservationDb = await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).ToListAsync();
                         HairDresser? hairDresser = await repository.All<HairDresser>().FirstOrDefaultAsync(x => x.Id == reservationDto.HairDresserId);
 
-                        Reservation reservationForDb = new Reservation
+                         reservationForDb = new Reservation
                         {
                             ClientName = reservationDto.ClientName,
                             ClientPhone = reservationDto.ClientPhone,
+                            ClientEmail = reservationDto.ClientEmail,
                             ReservationDate = reservationDto.ReservationDate,
                             ReservationTime = reservationDto.ReservationTime,
                             HairDresser = hairDresser,
@@ -151,8 +148,7 @@ namespace HairSalon.Services.Core.Reservations
                             result.Status = ReservationStatus.Success;
                             result.Reservation = reservationForDb;
 
-
-                            return (result);
+                          
 
 
                         }
@@ -172,16 +168,52 @@ namespace HairSalon.Services.Core.Reservations
 
 
                     }
+                    else
+                    {
 
+                        result.Status = ReservationStatus.WrongInputDataError;
+                        return result;
+                    }
+
+                }
+                else
+                {
+
+                    result.Status = ReservationStatus.WrongInputDataError;
+                    return result;
                 }
 
             }
+            else
+            {
+                result.Status = ReservationStatus.WrongInputDataError;
 
-            result.Status = ReservationStatus.WrongInputDataError;
+
+                return result;
+            }
 
 
-            return result;
+            try
+            {
+                if (reservationForDb.ClientEmail != null)
+                {
+                    messegeForClient = ReservationEmailMessages.GetClientMessage(reservationForDb);
+                    await emailService.SendEmail(reservationForDb.ClientEmail, "Hair Salon Reservation Confirmation", messegeForClient);
+                }
 
+
+                messegeForHairdresser = ReservationEmailMessages.GetHairdresserMessage(reservationForDb);
+
+                await emailService.SendEmail(reservationForDb.HairDresser.Email, "Graphite Barber Studio - New Reservation", messegeForHairdresser);
+
+
+                return result;
+            }
+            catch(Exception)
+            {
+                result.Status = ReservationStatus.EmailSendingError;
+                return result;
+            }
 
 
 
@@ -246,16 +278,7 @@ namespace HairSalon.Services.Core.Reservations
                 return null;
             }
 
-            return new ReservationDtoImport
-            {
-                ClientName = reservation.ClientName,
-                ClientPhone = reservation.ClientPhone,
-                Id = reservation.Id,
-                ReservationDate = reservation.ReservationDate,
-                ReservationTime = reservation.ReservationTime,
-                TotalPrice = reservation.TotalPrice,
-                HairDresserId = reservation.HairDresserId
-            };
+            return mapper.ToReservationDtoImport(reservation);
 
         }
         public async Task<List<int>> GetServicesIdsForReservation(int reservationId)
@@ -383,27 +406,11 @@ namespace HairSalon.Services.Core.Reservations
         {
 
 
-            List<ReservationViewModel> hairdresserReservations = await repository.All<Reservation>().Where(x => x.HairDresserId == HairDresserId).Where(r => r.ReservationDate == date).Select(r => new ReservationViewModel
-            {
-                Id = r.Id,
-
-                ClientName = r.ClientName,
-
-                ClientPhone = r.ClientPhone,
-
-                ReservationDate = r.ReservationDate,
-
-                ReservationTime = r.ReservationTime,
-
-
-                TotalPrice = r.TotalPrice,
-
-                Services = r.Services.Select(s => new ServiceViewModelForReservationView
-                {
-                    Name = s.Name,
-                    Price = s.Price
-                }).ToList()
-            }).ToListAsync();
+            List<ReservationViewModel> hairdresserReservations = await mapper
+                .ProjectReservationViews(repository.All<Reservation>()
+                    .Where(x => x.HairDresserId == HairDresserId)
+                    .Where(r => r.ReservationDate == date))
+                .ToListAsync();
 
 
 
@@ -421,26 +428,11 @@ namespace HairSalon.Services.Core.Reservations
         {
 
 
-            List<EmployeeReservationViewModel> hairdresserReservations = await repository.All<Reservation>().Where(x => x.HairDresserId == HairDresserId).Where(r => r.ReservationDate == date).Select(r => new EmployeeReservationViewModel
-            {
-
-                ClientName = r.ClientName,
-
-                ClientPhone = r.ClientPhone,
-
-                ReservationDate = r.ReservationDate,
-
-                ReservationTime = r.ReservationTime,
-
-
-                TotalPrice = r.TotalPrice,
-
-                Services = r.Services.Select(s => new ServiceViewModelForReservationView
-                {
-                    Name = s.Name,
-                    Price = s.Price
-                }).ToList()
-            }).ToListAsync();
+            List<EmployeeReservationViewModel> hairdresserReservations = await mapper
+                .ProjectEmployeeReservationViews(repository.All<Reservation>()
+                    .Where(x => x.HairDresserId == HairDresserId)
+                    .Where(r => r.ReservationDate == date))
+                .ToListAsync();
 
 
 

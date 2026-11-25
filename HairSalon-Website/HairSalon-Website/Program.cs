@@ -1,13 +1,15 @@
 using HairSalon.Data;
 using HairSalon.Data.Contracts;
 using HairSalon.Services.Core.Contracts;
+using HairSalon.Services.Core.Gallery;
+using HairSalon.Services.Core.Hairdressers;
+using HairSalon.Services.Core.NewFolder;
 using HairSalon.Services.Core.Reservations;
 using HairSalon.Services.Core.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using HairSalon.Services.Core.Hairdressers;
-using HairSalon.Services.Core.Gallery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SalonMapper = HairSalon.Services.Core.Mapper.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,11 +46,13 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
     options.ValidationInterval = TimeSpan.Zero);
 
 builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<SalonMapper>();
 builder.Services.AddScoped<IServicesService, ServicesService>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ReservationResult>();
 builder.Services.AddScoped<IHairdresserService, HairdresserService>();
 builder.Services.AddScoped<IGalleryService, GalleryService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

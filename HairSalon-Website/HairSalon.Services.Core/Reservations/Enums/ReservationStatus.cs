@@ -9,7 +9,8 @@ namespace HairSalon.Services.Core.Reservations.Enums
     {
         Success,
         WrongInputDataError,
-        DatabaseError
+        DatabaseError,
+        EmailSendingError
 
     }
 }

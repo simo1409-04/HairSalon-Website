@@ -65,8 +65,13 @@ namespace HairSalon_Website.Controllers
                 return View(reservationDto);
 
             }
+            if(result.Status == ReservationStatus.EmailSendingError)
+            {
+                @TempData["ErrorSaving"] = "Резервацията беше запазена, но не успяхме да изпратим имейл за потвърждение. Моля, свържи се с нас за потвърждение";
+                return View("Result", result.Reservation);
+            }
 
-            if(result.Status == ReservationStatus.Success)
+            if (result.Status == ReservationStatus.Success)
             {
 
                 return View("Result", result.Reservation);

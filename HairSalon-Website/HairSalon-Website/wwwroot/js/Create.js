@@ -419,6 +419,9 @@
             form.elements.namedItem("ClientName").value.trim();
         document.getElementById("confirmation-phone").textContent =
             form.elements.namedItem("ClientPhone").value.trim();
+        const clientEmail = form.elements.namedItem("ClientEmail").value.trim();
+        document.getElementById("confirmation-email").textContent = clientEmail;
+        document.getElementById("confirmation-email-row").hidden = !clientEmail;
         document.getElementById("confirmation-hairdresser").textContent =
             hairdresserSelect.selectedOptions[0].textContent.trim();
         document.getElementById("confirmation-date").textContent =

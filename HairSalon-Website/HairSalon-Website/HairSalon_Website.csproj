@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>HairSalon_Website</RootNamespace>
+    <UserSecretsId>0e91005e-3c1d-4f07-844b-46852869b763</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

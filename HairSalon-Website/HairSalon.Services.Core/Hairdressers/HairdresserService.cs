@@ -5,24 +5,18 @@ using HairSalon.Services.Core.Contracts;
 using HairSalon.Services.Core.Hairdressers.Enums;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using SalonMapper = HairSalon.Services.Core.Mapper.Mapper;
 
 namespace HairSalon.Services.Core.Hairdressers
 {
     public class HairdresserService(
         IRepository repository,
-        IWebHostEnvironment environment) : IHairdresserService
+        IWebHostEnvironment environment,
+        SalonMapper mapper) : IHairdresserService
     {
         public async Task<List<HairdresserDto>> ReadAll()
         {
-            return await repository.All<HairDresser>()
-                .Select(x => new HairdresserDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    AcademicCertificateUrl = x.AcademicCertificateUrl,
-                    ProfilePictureUrl = x.ProfilePictureUrl,
-                    AdditionalInformation = x.AdditionalInformation
-                })
+            return await mapper.ProjectHairdresserDtos(repository.All<HairDresser>())
                 .ToListAsync();
         }
 
@@ -161,14 +155,9 @@ namespace HairSalon.Services.Core.Hairdressers
 
 
 
-            HairdresserEdit hairDresser = await repository.All<HairDresser>().Select(x => new HairdresserEdit
-            {
-
-                Name = x.Name,
-                Id = x.Id,
-                Email = x.Email,
-AdditionalInformation=x.AdditionalInformation
-            }).FirstOrDefaultAsync(x => x.Id == id);
+            HairdresserEdit hairDresser = await mapper
+                .ProjectHairdresserEdits(repository.All<HairDresser>().Where(x => x.Id == id))
+                .FirstOrDefaultAsync();
 
             return hairDresser;
 

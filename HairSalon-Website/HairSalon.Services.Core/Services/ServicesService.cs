@@ -3,22 +3,22 @@ using HairSalon.Data.DTOs.Service;
 using HairSalon.Data.Models;
 using HairSalon.Services.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
+using SalonMapper = HairSalon.Services.Core.Mapper.Mapper;
 
 namespace HairSalon.Services.Core.Services
 {
-    public class ServicesService(IRepository repository) : IServicesService
+    public class ServicesService(IRepository repository, SalonMapper mapper) : IServicesService
     {
         public async Task<List<ServiceView>> GetAllServices()
         {
-            List<ServiceView> services = await repository.All<Service>()
-                .Select(x => new ServiceView { Id = x.Id, Name = x.Name, Details = x.Details, Price = x.Price })
+            List<ServiceView> services = await mapper.ProjectServiceViews(repository.All<Service>())
                 .ToListAsync();
 
             return services;
         }
         public async Task CreateService(ServiceView service)
         {
-            Service serviceForDb = new Service { Details=service.Details, Name=service.Name, Price= service.Price };
+            Service serviceForDb = mapper.ToNewService(service);
 
             repository.Add<Service>(serviceForDb);
 
@@ -36,7 +36,7 @@ namespace HairSalon.Services.Core.Services
 
             }
 
-            ServiceView serviceModel = new ServiceView { Id = serviceForEdit.Id, Details = serviceForEdit.Details, Name = serviceForEdit.Name, Price = serviceForEdit.Price };
+            ServiceView serviceModel = mapper.ToServiceView(serviceForEdit);
 
 
             return serviceModel;
@@ -53,9 +53,7 @@ namespace HairSalon.Services.Core.Services
                 return null;
 
             }
-            ServiceForEditInDb.Details = model.Details;
-            ServiceForEditInDb.Name = model.Name;
-            ServiceForEditInDb.Price = model.Price;
+            mapper.UpdateService(model, ServiceForEditInDb);
 
 
 

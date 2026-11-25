@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static HairSalon.Data.Common.ValidationConstants;
 using static HairSalon.Data.Common.ValidationConstants.ReservationConstants;
 
 namespace HairSalon.Data.Models
@@ -39,6 +40,13 @@ namespace HairSalon.Data.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
+
+        [EmailAddress(ErrorMessage = "Въведи валиден имейл адрес")]
+        [RegularExpression(HairDresserConstants.EmailPattern, ErrorMessage = "Въведи валиден имейл адрес")]
+        [MaxLength(HairDresserConstants.EmailMaxLength,
+            ErrorMessage = "Имейл адресът не трябва да надвишава {1} знака")]
+        public string? ClientEmail { get; set; }
+
         public virtual HairDresser? HairDresser { get; set; }
 
         public virtual ICollection<Service> Services { get; set; } = new HashSet<Service>();

@@ -1,6 +1,7 @@
 using HairSalon.Data.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static HairSalon.Data.Common.ValidationConstants;
 using static HairSalon.Data.Common.ValidationConstants.ReservationConstants;
 
 namespace HairSalon.Data.DTOs.Reservations
@@ -20,6 +21,12 @@ namespace HairSalon.Data.DTOs.Reservations
         [MaxLength(ClientPhoneMaxLength, ErrorMessage = "Телефонът не трябва да надвишава {1} цифри")]
         [RegularExpression(ClientPhonePattern, ErrorMessage = "Телефонът трябва да съдържа само цифри")]
         public string ClientPhone { get; set; } = null!;
+
+        [EmailAddress(ErrorMessage = "Въведи валиден имейл адрес")]
+        [RegularExpression(HairDresserConstants.EmailPattern, ErrorMessage = "Въведи валиден имейл адрес")]
+        [MaxLength(HairDresserConstants.EmailMaxLength,
+            ErrorMessage = "Имейл адресът не трябва да надвишава {1} знака")]
+        public string? ClientEmail { get; set; }
 
         [Required(ErrorMessage = "Датата на резервация е задължителна")]
         public DateOnly ReservationDate { get; set; }

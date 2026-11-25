@@ -162,6 +162,10 @@ namespace HairSalon.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ClientEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
                     b.Property<string>("ClientName")
                         .IsRequired()
                         .HasMaxLength(50)

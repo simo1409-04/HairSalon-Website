@@ -310,6 +310,10 @@ namespace HairSalon.Services.Core.Reservations
             var now = SalonNow;
             var today = DateOnly.FromDateTime(now);
             var currentTime = TimeOnly.FromDateTime(now);
+            Reservation reservationForDb = null;
+            string messegeForClient = "";
+            string messegeForHairdresser = "";
+
 
             bool areServiceIdsValid =
                 serviceIds.Any() &&
@@ -338,7 +342,7 @@ namespace HairSalon.Services.Core.Reservations
                         List<Service> servicesForReservationDb = await repository.All<Service>().Where(x => serviceIds.Contains(x.Id)).ToListAsync();
                         HairDresser? hairDresser = await repository.All<HairDresser>().FirstOrDefaultAsync(x => x.Id == reservationDto.HairDresserId);
 
-                        Reservation? reservationForDb = await repository.All<Reservation>()
+                         reservationForDb = await repository.All<Reservation>()
                             .Include(x => x.Services)
                             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -356,9 +360,15 @@ namespace HairSalon.Services.Core.Reservations
                         reservationForDb.HairDresser = hairDresser;
                         reservationForDb.TotalPrice = CorrectTotalPricePrice;
                         reservationForDb.Services = servicesForReservationDb;
-                        
 
                         
+                        
+                            reservationForDb.ClientEmail = reservationDto.ClientEmail;
+
+
+
+
+
 
                         try
                         {
@@ -366,15 +376,16 @@ namespace HairSalon.Services.Core.Reservations
 
 
                             result.Status = ReservationStatus.Success;
+                            result.Reservation = reservationForDb;
 
 
-                            return (result);
 
 
                         }
 
                         catch (Exception)
                         {
+
                             result.Status = ReservationStatus.DatabaseError;
 
 
@@ -387,15 +398,52 @@ namespace HairSalon.Services.Core.Reservations
 
 
                     }
+                    else
+                    {
 
+                        result.Status = ReservationStatus.WrongInputDataError;
+                        return result;
+                    }
+
+                }
+                else
+                {
+
+                    result.Status = ReservationStatus.WrongInputDataError;
+                    return result;
                 }
 
             }
+            else
+            {
+                result.Status = ReservationStatus.WrongInputDataError;
 
-            result.Status = ReservationStatus.WrongInputDataError;
+
+                return result;
+            }
 
 
-            return result;
+            try
+            {
+                if (reservationForDb.ClientEmail != null)
+                {
+                    messegeForClient = ReservationEmailMessages.GetClientMessage(reservationForDb);
+                    await emailService.SendEmail(reservationForDb.ClientEmail, "Hair Salon Reservation Confirmation", messegeForClient);
+                }
+
+
+                messegeForHairdresser = ReservationEmailMessages.GetHairdresserMessage(reservationForDb);
+
+                await emailService.SendEmail(reservationForDb.HairDresser.Email, "Graphite Barber Studio - New Reservation", messegeForHairdresser);
+
+
+                return result;
+            }
+            catch (Exception)
+            {
+                result.Status = ReservationStatus.EmailSendingError;
+                return result;
+            }
 
 
 

@@ -24,6 +24,7 @@ Full-stack ASP.NET Core MVC application for a barber studio. Customers can brows
 
 - [Product tour](#product-tour)
 - [Customer experience](#customer-experience)
+- [Email notifications](#email-notifications)
 - [Employee workspace](#employee-workspace)
 - [Administrator workspace](#administrator-workspace)
 - [Reservation integrity](#reservation-integrity)
@@ -35,6 +36,7 @@ Full-stack ASP.NET Core MVC application for a barber studio. Customers can brows
 ## Highlights
 
 - Customer reservation flow with employee, date, time and multi-service selection.
+- Email confirmation for customers and reservation notifications for the selected employee, when SMTP is configured.
 - Server-side price calculation based on the current service prices in SQL Server.
 - Live busy-slot lookup for the selected employee.
 - Database-level protection against double booking through a unique index on employee, date and time.
@@ -108,6 +110,23 @@ flowchart LR
 | Confirmation | Review the saved booking and server-calculated total price |
 
 The browser only submits identifiers and customer input. Availability, employee existence, selected services and the final price are verified again on the server.
+
+## Email notifications
+
+After a public reservation is saved, the application sends a confirmation to the customer when an email address was supplied and sends a new-reservation notification to the selected hairdresser. SMTP uses MailKit with STARTTLS. The booking result page confirms the reservation, not email delivery; an SMTP failure does not undo a saved reservation, so check the recipient mailboxes separately.
+
+The sender settings are read from .NET configuration:
+
+| Environment variable | .NET configuration key | Value |
+| --- | --- | --- |
+| `EmailSettings__SmtpServer` | `EmailSettings:SmtpServer` | `smtp.gmail.com` |
+| `EmailSettings__Port` | `EmailSettings:Port` | `587` |
+| `EmailSettings__Username` | `EmailSettings:Username` | The full Gmail sender address |
+| `EmailSettings__Password` | `EmailSettings:Password` | A Google App Password; keep it secret |
+
+For local development, set these environment variables in the launch environment or use .NET User Secrets for the password. Do not put real passwords in `appsettings.json` or commit them to Git. The double underscore (`__`) maps to a colon in .NET configuration.
+
+For Gmail SMTP, enable 2-Step Verification on the sender's Google Account and create an App Password specifically for this application. Use that App Password as `EmailSettings__Password`, not the account's normal password. Google may not offer App Passwords for managed accounts, accounts enrolled in Advanced Protection, or accounts configured to require security keys only. See Google's [App Password guidance](https://support.google.com/mail/answer/185833?hl=en) and [Gmail SMTP settings](https://support.google.com/mail/answer/7104828).
 
 ## Employee workspace
 
@@ -328,6 +347,22 @@ Production hosting requires:
 3. The EF Core migrations applied to the target database.
 4. Write access to the application image directories because gallery and staff images are stored on disk.
 5. HTTPS configured with a certificate trusted for the public domain.
+
+If reservation emails are enabled, add these environment variables to the hosting control panel:
+
+- `EmailSettings__SmtpServer`: `smtp.gmail.com`
+- `EmailSettings__Port`: `587`
+- `EmailSettings__Username`: the full Gmail sender address
+- `EmailSettings__Password`: the sender account's Google App Password
+
+Keep the App Password in the host's secret/environment-variable settings; do not add it to the repository or publish profile. For SmarterASP.NET, see [setting environment variables](https://www.smarterasp.net/support/kb/a2437/how-to-set-environment-variable-for-your-account.aspx). Recycle/restart the application pool after changing environment variables so the running app reads the new values.
+
+### Verify email delivery on the deployed site
+
+1. Set the four SMTP variables and restart/recycle the application pool.
+2. Make a test reservation on the public website using a mailbox you control as the customer email.
+3. Check that mailbox and the selected hairdresser's mailbox, including Spam/Junk.
+4. If either message is missing, verify the sender address and App Password, Gmail 2-Step Verification, SMTP host/port, and hosting environment variables. The reservation result page by itself does not confirm that email reached its recipient.
 
 For deployments that replace the application directory, uploaded image folders should be included in the hosting backup strategy or moved to durable object storage.
 

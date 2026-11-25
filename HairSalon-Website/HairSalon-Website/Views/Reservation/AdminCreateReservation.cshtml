@@ -257,6 +257,19 @@
 
                         <span asp-validation-for="ClientPhone"></span>
                     </div>
+
+                    <div class="reservation-field reservation-field--full">
+                        <label asp-for="ClientEmail">Имейл адрес (по желание)</label>
+
+                        <input asp-for="ClientEmail"
+                               type="email"
+                               class="reservation-input"
+                               placeholder="name@example.com"
+                               autocomplete="email"
+                               inputmode="email" />
+
+                        <span asp-validation-for="ClientEmail"></span>
+                    </div>
                 </div>
 
                 <fieldset class="services-picker">
@@ -342,6 +355,11 @@
                     <div class="reservation-result-detail">
                         <span>Телефон</span>
                         <strong id="confirmation-phone"></strong>
+                    </div>
+
+                    <div class="reservation-result-detail" id="confirmation-email-row" hidden>
+                        <span>Имейл</span>
+                        <strong id="confirmation-email"></strong>
                     </div>
 
                     <div class="reservation-result-detail">

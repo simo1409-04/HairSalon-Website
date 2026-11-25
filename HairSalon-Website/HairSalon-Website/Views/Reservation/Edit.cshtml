@@ -25,9 +25,10 @@
                 Избери фризьор, ден и свободен час. След това завърши
                 резервацията само с няколко стъпки.
             </p>
-        </section>
+        </section> 
 
-        <form asp-controller="Reservation"
+
+        <form asp-controller="Reservation"               
               asp-action="EditConfirm"
               asp-route-id="@Model.Id"
               method="post"
@@ -256,6 +257,21 @@
 
                         <span asp-validation-for="ClientPhone"></span>
                     </div>
+                   
+                 <div class="reservation-field">
+                        <label asp-for="ClientEmail">Имейл адрес (по желание)</label>
+
+                        <input asp-for="ClientEmail"
+                               type="email"
+                               class="reservation-input"
+                               placeholder="name@example.com"
+                               autocomplete="email"
+                               inputmode="email" />
+
+                        <span asp-validation-for="ClientEmail"></span>
+                    </div>
+
+                    
                 </div>
 
                 <fieldset class="services-picker">
